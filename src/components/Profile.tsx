@@ -11,18 +11,18 @@ export default function Profile() {
   return (
     <div className="min-h-screen">
       <p className="text-3xl font-semibold mt-8"> User Profile</p>
-      <div className="min-h-screen flex gap-8 justify-center items-center text-2xl text-left">
-        <div className="">
-          <p>Email: </p>
-          <p>First Name: </p>
-          <p>Last Name:</p>
-          <p>Role:</p>
+      <div className="min-h-screen flex flex-col gap-4 justify-center items-center text-2xl text-left">
+        <div className="flex justify-between w-full max-w-sm items-center">
+          <p className="w-1/2">Email: </p>
+          <p className="w-1/2">{user.email}</p>
         </div>
-        <div>
-          <p>{user.email}</p>
-          <p>{user.firstName}</p>
-          <p>{user.lastName}</p>
-          <p>{user.role}</p>
+        <div className="flex justify-between w-full max-w-sm items-center">
+          <p className="w-1/2">First Name: </p>
+          <p className="w-1/2">{user.firstName}</p>
+        </div>
+        <div className="flex justify-between w-full max-w-sm items-center">
+          <p className="w-1/2">Last Name:</p>
+          <p className="w-1/2"> {user.lastName}</p>
         </div>
       </div>
     </div>
