@@ -12,7 +12,7 @@ export default function Categories() {
 
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedCategory, setSelectedCategory] = useState({
+  const [selectedCategory, setSelectedCategory] = useState<Category>({
     id: 0,
     name: "",
   });

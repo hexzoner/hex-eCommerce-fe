@@ -4,18 +4,18 @@ import { restoreToken } from "../../utils/storage";
 import LoadingSpinner from "../LoadingSpinner";
 import sortTables from "../../utils/sortTables";
 
-export default function Products() {
-  interface Product {
-    id: number;
-    name: string;
-    description: string;
-    price: number;
-    categoryId: number;
-  }
+export interface Product {
+  id: number;
+  name: string;
+  description: string;
+  price: number;
+  categoryId: number;
+}
 
+export default function Products() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedProduct, setSelectedProducts] = useState({
+  const [selectedProduct, setSelectedProducts] = useState<Product>({
     id: 0,
     name: "",
     description: "",
@@ -24,7 +24,7 @@ export default function Products() {
   });
 
   useEffect(() => {
-    const fetchUsers = async () => {
+    const fetchProducts = async () => {
       setLoading(true);
       try {
         const token = restoreToken();
@@ -38,7 +38,7 @@ export default function Products() {
         setLoading(false);
       }
     };
-    fetchUsers();
+    fetchProducts();
   }, []);
 
   const [sortOrder, setSortOrder] = useState("asc");
