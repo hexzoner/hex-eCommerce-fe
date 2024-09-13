@@ -14,6 +14,11 @@ export default function Orders() {
     total: number;
     createdAt: string;
     updatedAt: string;
+    user: {
+      firstName: string;
+      lastName: string;
+      email: string;
+    };
   }
 
   const [orders, setOrders] = useState<Order[]>([]);
@@ -25,6 +30,11 @@ export default function Orders() {
     total: 0,
     createdAt: "",
     updatedAt: "",
+    user: {
+      firstName: "",
+      lastName: "",
+      email: "",
+    },
   });
 
   useEffect(() => {
@@ -34,7 +44,7 @@ export default function Orders() {
         const token = restoreToken();
         if (!token) return;
         const orders = await getOrders(token);
-        // console.log(users);
+        // console.log(orders);
         setOrders(sortTables(orders, "id", "asc"));
         setLoading(false);
       } catch (err) {
@@ -60,7 +70,7 @@ export default function Orders() {
 
   return (
     <div className="min-h-screen">
-      <p className="text-3xl my-6">Products [{selectedOrder?.id}]</p>
+      <p className="text-3xl my-6">Orders [{selectedOrder?.id}]</p>
 
       <div className="overflow-x-auto rounded-md max-w-6xl m-auto">
         <table className="table rounded-md table-zebra table-sm w-full shadow-md">
@@ -69,7 +79,7 @@ export default function Orders() {
               <th className="font-bold">
                 <div className="flex gap-1 items-center">
                   <span>ID</span>
-                  <button title="SortById" className="hover:cursor-pointer" onClick={() => handleSortClick("id")}>
+                  <button title="Sort" className="hover:cursor-pointer" onClick={() => handleSortClick("id")}>
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"
@@ -85,7 +95,23 @@ export default function Orders() {
               <th className="font-bold">
                 <div className="flex gap-1 items-center">
                   <span>userId</span>
-                  <button title="SortByEmail" className="hover:cursor-pointer" onClick={() => handleSortClick("userId")}>
+                  <button title="Sort" className="hover:cursor-pointer" onClick={() => handleSortClick("userId")}>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth="1.5"
+                      stroke="currentColor"
+                      className="size-6">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 15 12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9" />
+                    </svg>
+                  </button>
+                </div>
+              </th>
+              <th className="font-bold">
+                <div className="flex gap-1 items-center">
+                  <span>Email</span>
+                  <button title="Sort" className="hover:cursor-pointer" onClick={() => handleSortClick("email")}>
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"
@@ -101,7 +127,7 @@ export default function Orders() {
               <th className="font-bold">
                 <div className="flex gap-1 items-center">
                   <span>Products</span>
-                  <button title="SortByEmail" className="hover:cursor-pointer" onClick={() => handleSortClick("products")}>
+                  <button title="Sort" className="hover:cursor-pointer" onClick={() => handleSortClick("products")}>
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"
@@ -117,7 +143,7 @@ export default function Orders() {
               <th className="font-bold">
                 <div className="flex gap-1 items-center">
                   <span>total</span>
-                  <button title="SortByEmail" className="hover:cursor-pointer" onClick={() => handleSortClick("total")}>
+                  <button title="Sort" className="hover:cursor-pointer" onClick={() => handleSortClick("total")}>
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"
@@ -133,7 +159,7 @@ export default function Orders() {
               <th className="font-bold">
                 <div className="flex gap-1 items-center">
                   <span>Created At</span>
-                  <button title="SortByEmail" className="hover:cursor-pointer" onClick={() => handleSortClick("createdAt")}>
+                  <button title="Sort" className="hover:cursor-pointer" onClick={() => handleSortClick("createdAt")}>
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"
@@ -149,7 +175,7 @@ export default function Orders() {
               <th className="font-bold">
                 <div className="flex gap-1 items-center">
                   <span>Updated At</span>
-                  <button title="SortByEmail" className="hover:cursor-pointer" onClick={() => handleSortClick("updatedAt")}>
+                  <button title="Sort" className="hover:cursor-pointer" onClick={() => handleSortClick("updatedAt")}>
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"
@@ -176,8 +202,9 @@ export default function Orders() {
                   }}>
                   <td className={borderMarkup}>{order.id}</td>
                   <td className={borderMarkup}>{order.userId}</td>
+                  <td className={borderMarkup}>{order.user.email}</td>
                   <td className={borderMarkup}>{order.products.length}</td>
-                  <td className={borderMarkup}>{order.total}</td>
+                  <td className={borderMarkup}>${order.total}</td>
                   <td className={borderMarkup}>{formatDateFull(order.createdAt)}</td>
                   <td className={borderMarkup}>{formatDateFull(order.updatedAt)}</td>
                 </tr>
