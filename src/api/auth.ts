@@ -26,6 +26,28 @@ export const loginApiCall = async (email: string, password: string) => {
   return response;
 };
 
+export const signUpApiCall = async (data: { email: string; password: string; confirmPassword: string; firstName: string; lastName: string }) => {
+  const response = await axios
+    .post(`${baseURL}/signup`, data)
+    .then((res) => {
+      if (res.data.status === "error") {
+        toast.error(res.data.message);
+        return null;
+      } else {
+        toast.success("Signup successful");
+        return res.data;
+      }
+    })
+    .catch((err) => {
+      const error = err.response.data;
+      toast.error(error.message);
+      throw new Error("Signup failed");
+    });
+  return response;
+};
+
+// export const signUpApiCall = async
+
 export const meApi = async (token: string) => {
   const response = await axios
     .get(`${baseURL}/me`, {

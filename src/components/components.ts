@@ -12,5 +12,24 @@ import Navbar from "./Navbar";
 import OrderDetails from "./OrderDetails";
 import LoadingSpinner from "./LoadingSpinner";
 import Toast from "./Toast";
+import ForgotPassword from "./ForgotPassword";
+import Unauthorized from "./Unauthorized";
 
-export { About, Cart, Home, NotFound, ProductDetails, Signup, Login, Profile, Footer, MyOrders, Navbar, OrderDetails, LoadingSpinner, Toast };
+export {
+  About,
+  Cart,
+  Home,
+  NotFound,
+  ProductDetails,
+  Signup,
+  Login,
+  Profile,
+  Footer,
+  MyOrders,
+  Navbar,
+  OrderDetails,
+  LoadingSpinner,
+  Toast,
+  ForgotPassword,
+  Unauthorized,
+};

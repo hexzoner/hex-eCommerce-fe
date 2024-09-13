@@ -13,12 +13,35 @@ export default function Navbar() {
     <div className="bg-base-300 ">
       <div className="navbar max-w-screen-xl m-auto">
         <div className="flex-1">
-          <NavLink to="/" className={navLinkClass}>
-            Home
-          </NavLink>
-          <NavLink to="/about" className={navLinkClass}>
-            About
-          </NavLink>
+          {isAuthenticated && user.role == "admin" ? (
+            <>
+              <NavLink to="admin/dashboard" className={navLinkClass}>
+                Dashboard
+              </NavLink>
+              <NavLink to="admin/categories" className={navLinkClass}>
+                Categories
+              </NavLink>
+              <NavLink to="admin/products" className={navLinkClass}>
+                Products
+              </NavLink>
+              <NavLink to="admin/orders" className={navLinkClass}>
+                Orders
+              </NavLink>
+              <NavLink to="admin/users" className={navLinkClass}>
+                Users
+              </NavLink>
+            </>
+          ) : (
+            <>
+              <NavLink to="/" className={navLinkClass}>
+                Home
+              </NavLink>
+              <NavLink to="/about" className={navLinkClass}>
+                About
+              </NavLink>
+              {isAuthenticated && user.role == "user" && <></>}
+            </>
+          )}
         </div>
         {!isAuthenticated ? (
           <div className="flex-none">
@@ -40,7 +63,12 @@ export default function Navbar() {
               }>
               <UserProfileSVG />
             </NavLink>
-            <button onClick={logout} className="btn btn-ghost text-lg ">
+            <button
+              onClick={() => {
+                logout();
+                // window.location.href = "/";
+              }}
+              className="btn btn-ghost text-lg ">
               Logout
             </button>
           </div>

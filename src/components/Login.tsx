@@ -26,7 +26,8 @@ export default function Login() {
       setAuthLoading(false);
       setIsLoading(false);
       storeToken(res.token);
-      navigate("/");
+      if (res.user.role === "admin") navigate("/admin/dashboard");
+      else navigate("/");
     } catch (err) {
       setIsLoading(false);
     }
@@ -89,7 +90,14 @@ export default function Login() {
           Login
         </button>
         <div className="label ">
-          <span className="label-text-alt text-info hover:underline hover:cursor-pointer">Forgot your password?</span>
+          <span onClick={() => navigate("/forgot-password")} className="label-text-alt text-info hover:underline hover:cursor-pointer">
+            Forgot your password?
+          </span>
+        </div>
+        <div className="label ">
+          <span onClick={() => navigate("/signup")} className="label-text-alt text-info hover:underline hover:cursor-pointer">
+            Don't have an account yet? Signup here!
+          </span>
         </div>
       </form>
     </div>
