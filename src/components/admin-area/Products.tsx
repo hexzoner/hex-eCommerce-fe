@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { restoreToken } from "../../utils/storage";
 import LoadingSpinner from "../LoadingSpinner";
 import sortTables from "../../utils/sortTables";
-import { ProductModal } from "./admin-components";
+import { ProductModal, CreateProductModal } from "./admin-components";
 
 export interface Product {
   id: number;
@@ -59,6 +59,11 @@ export default function Products() {
     setProducts(sortedUsers);
   };
 
+  function createProduct() {
+    const createProductModal = document.getElementById("create_product_modal");
+    if (createProductModal) (createProductModal as HTMLDialogElement).showModal();
+  }
+
   if (loading) return <LoadingSpinner />;
 
   const borderMarkup = ""; //border-[2px] border-base-content p-3 my-4 font-semibold";
@@ -66,7 +71,11 @@ export default function Products() {
   return (
     <div className="min-h-screen">
       <p className="text-3xl my-6">Products [{selectedProduct?.id}]</p>
-
+      <div className="w-full flex max-w-4xl m-auto justify-end mb-4">
+        <button onClick={createProduct} className="btn btn-outline">
+          Create Product
+        </button>
+      </div>
       <div className="overflow-x-auto rounded-md max-w-6xl m-auto">
         <table className="table rounded-md table-zebra table-sm w-full shadow-md">
           <thead className="text-sm bg-base-300">
@@ -178,6 +187,7 @@ export default function Products() {
         </table>
         {/* <Pagination page={page} setPage={setPage} totalPages={totalPages} perPage={perPage} setPerPage={setPerPage} totalResults={totalTasks} /> */}
         <ProductModal product={selectedProduct} />
+        <CreateProductModal setProducts={setProducts} />
       </div>
     </div>
   );

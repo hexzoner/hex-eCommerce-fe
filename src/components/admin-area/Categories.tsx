@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { restoreToken } from "../../utils/storage";
 import LoadingSpinner from "../LoadingSpinner";
 import sortTables from "../../utils/sortTables";
-import CategoryModal from "./CategoryModal";
+import { CategoryModal, CreateCategoryModal } from "./admin-components";
 
 export interface Category {
   id: number;
@@ -49,15 +49,22 @@ export default function Categories() {
     setCategories(sortedUsers);
   };
 
+  function createCategory() {
+    const categoryModal = document.getElementById("create_category_modal");
+    if (categoryModal) (categoryModal as HTMLDialogElement).showModal();
+  }
+
   if (loading) return <LoadingSpinner />;
 
   const borderMarkup = ""; //border-[2px] border-base-content p-3 my-4 font-semibold";
   return (
     <div className="min-h-screen">
-      <p className="text-3xl my-6">Categories [{selectedCategory?.id}]</p>
+      <p className="text-3xl my-6">Categories </p>
 
       <div className="w-full flex max-w-4xl m-auto justify-end mb-4">
-        <button className="btn btn-outline">Create Category</button>
+        <button onClick={createCategory} className="btn btn-outline">
+          Create Category
+        </button>
       </div>
       <div className="overflow-x-auto rounded-md max-w-4xl m-auto">
         <table className="table rounded-md table-zebra table-sm w-full shadow-md">
@@ -118,7 +125,8 @@ export default function Categories() {
 
         {/* <Pagination page={page} setPage={setPage} totalPages={totalPages} perPage={perPage} setPerPage={setPerPage} totalResults={totalTasks} /> */}
         {/* <TaskDetailsPopup task={selectedTask} /> */}
-        <CategoryModal category={selectedCategory} />
+        <CategoryModal category={selectedCategory} setSelectedCategory={setSelectedCategory} setCategories={setCategories} />
+        <CreateCategoryModal setCategories={setCategories} />
       </div>
     </div>
   );

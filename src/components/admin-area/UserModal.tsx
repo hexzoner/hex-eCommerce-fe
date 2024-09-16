@@ -1,4 +1,5 @@
 import { User } from "./Users";
+import { formatDateFull } from "../../utils/dateUtils";
 
 export default function UserModal({ user }: { user: User }) {
   return (
@@ -13,9 +14,9 @@ export default function UserModal({ user }: { user: User }) {
               <p className="py-4">[Id: {user.id}]</p>
             </div>
             <p className="py-4">{user.email}</p>
-            <p className="py-4">Address: {user.address}</p>
+            <p className="py-4">Address: {!user.address || user.address == "" ? "N/A" : user.address}</p>
             <p className="py-4">Role: {user.role}</p>
-            <p className="py-4">Created at: {user.createdAt}</p>
+            <p className="py-4">Created at: {formatDateFull(user.createdAt)}</p>
             <div className="modal-action">
               <form method="dialog">
                 {/* if there is a button in form, it will close the modal */}

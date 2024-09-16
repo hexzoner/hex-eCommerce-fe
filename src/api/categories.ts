@@ -1,4 +1,5 @@
 import axios from "axios";
+import { Category } from "../components/admin-area/Categories";
 // import { toast } from "react-toastify";
 
 const API_URL = import.meta.env.VITE_API_URL;
@@ -18,5 +19,47 @@ export const getCategories = async (token: string) => {
       return res.data;
     })
     .catch((err) => console.log(err.data.message));
+  return response;
+};
+
+export const updateCategory = async (token: string, category: Category) => {
+  const response = await axios
+    .put(
+      `${baseURL}/${category.id}`,
+      { name: category.name },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    )
+    .then((res) => {
+      // console.log(res.data);
+      return res.data;
+    })
+    .catch((err) => console.log(err.data));
+
+  return response;
+};
+
+export const createCategory = async (token: string, category: Category) => {
+  const response = await axios
+    .post(
+      `${baseURL}`,
+      { name: category.name },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    )
+    .then((res) => {
+      // console.log(res.data);
+      return res.data;
+    })
+    .catch((err) => console.log(err.data));
+
   return response;
 };
