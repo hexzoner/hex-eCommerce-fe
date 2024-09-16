@@ -3,13 +3,19 @@ import { useState, useEffect } from "react";
 import { restoreToken } from "../../utils/storage";
 import LoadingSpinner from "../LoadingSpinner";
 import sortTables from "../../utils/sortTables";
+import CategoryModal from "./CategoryModal";
+
+export interface Category {
+  id: number;
+  name: string;
+}
 
 export default function Categories() {
-  interface Category {
-    id: number;
-    name: string;
+  {
+    /* <button className="btn" onClick={() => document.getElementById("my_modal_1").showModal()}>
+        open modal
+      </button> */
   }
-
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState<Category>({
@@ -50,6 +56,9 @@ export default function Categories() {
     <div className="min-h-screen">
       <p className="text-3xl my-6">Categories [{selectedCategory?.id}]</p>
 
+      <div className="w-full flex max-w-4xl m-auto justify-end mb-4">
+        <button className="btn btn-outline">Create Category</button>
+      </div>
       <div className="overflow-x-auto rounded-md max-w-4xl m-auto">
         <table className="table rounded-md table-zebra table-sm w-full shadow-md">
           <thead className="text-sm bg-base-300">
@@ -96,7 +105,8 @@ export default function Categories() {
                   className="hover cursor-pointer"
                   onClick={() => {
                     setSelectedCategory(category);
-                    // document.getElementById("taskDetails").showModal();
+                    const categoryModal = document.getElementById("category_modal");
+                    if (categoryModal) (categoryModal as HTMLDialogElement).showModal();
                   }}>
                   <td className={borderMarkup}>{category.id}</td>
                   <td className={borderMarkup}>{category.name}</td>
@@ -108,6 +118,7 @@ export default function Categories() {
 
         {/* <Pagination page={page} setPage={setPage} totalPages={totalPages} perPage={perPage} setPerPage={setPerPage} totalResults={totalTasks} /> */}
         {/* <TaskDetailsPopup task={selectedTask} /> */}
+        <CategoryModal category={selectedCategory} />
       </div>
     </div>
   );

@@ -3,17 +3,20 @@ import { useState, useEffect } from "react";
 import { restoreToken } from "../../utils/storage";
 import LoadingSpinner from "../LoadingSpinner";
 import sortTables from "../../utils/sortTables";
+import { formatDateFull } from "../../utils/dateUtils";
+import { UserModal } from "./admin-components";
+
+export interface User {
+  id: number;
+  email: string;
+  firstName: string;
+  lastName: string;
+  address: string;
+  role: string;
+  createdAt: string;
+}
 
 export default function Users() {
-  interface User {
-    id: number;
-    email: string;
-    firstName: string;
-    lastName: string;
-    address: string;
-    role: string;
-  }
-
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedUser, setSelectedUser] = useState({
@@ -23,6 +26,7 @@ export default function Users() {
     lastName: "",
     address: "",
     role: "",
+    createdAt: "",
   });
 
   useEffect(() => {
@@ -59,7 +63,7 @@ export default function Users() {
     <div className="min-h-screen">
       <p className="text-3xl my-6">Users [{selectedUser?.id}]</p>
 
-      <div className="overflow-x-auto rounded-md max-w-7xl m-auto">
+      <div className="overflow-x-auto rounded-md max-w-6xl m-auto">
         <table className="table rounded-md table-zebra table-sm w-full shadow-md">
           <thead className="text-sm bg-base-300">
             <tr>
@@ -143,35 +147,54 @@ export default function Users() {
                   </button>
                 </div>
               </th>
+              <th className="font-bold">
+                <div className="flex gap-1 items-center">
+                  <span>Created at</span>
+                  <button title="SortByRole" className="hover:cursor-pointer" onClick={() => handleSortClick("createdAt")}>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth="1.5"
+                      stroke="currentColor"
+                      className="size-6">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 15 12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9" />
+                    </svg>
+                  </button>
+                </div>
+              </th>
             </tr>
           </thead>
           <tbody>
-            {users.map((user: { id: number; email: string; firstName: string; lastName: string; address: string; role: string }) => {
-              return (
-                <tr
-                  key={user.id}
-                  className="hover cursor-pointer"
-                  onClick={() => {
-                    setSelectedUser(user);
-                    // document.getElementById("taskDetails").showModal();
-                  }}>
-                  <td className={borderMarkup}>{user.id}</td>
-                  <td className={borderMarkup}>{user.email}</td>
-                  <td className={borderMarkup}>
-                    {user.firstName} {user.lastName}
-                  </td>
+            {users.map(
+              (user: { id: number; email: string; firstName: string; lastName: string; address: string; role: string; createdAt: string }) => {
+                return (
+                  <tr
+                    key={user.id}
+                    className="hover cursor-pointer"
+                    onClick={() => {
+                      setSelectedUser(user);
+                      const orderModal = document.getElementById("user_modal");
+                      if (orderModal) (orderModal as HTMLDialogElement).showModal();
+                    }}>
+                    <td className={borderMarkup}>{user.id}</td>
+                    <td className={borderMarkup}>{user.email}</td>
+                    <td className={borderMarkup}>
+                      {user.firstName} {user.lastName}
+                    </td>
 
-                  <td className={borderMarkup}>{user.address}</td>
-                  <td className={borderMarkup}>{user.role}</td>
-                </tr>
-              );
-            })}
+                    <td className={borderMarkup}>{user.address}</td>
+                    <td className={borderMarkup}>{user.role}</td>
+                    <td className={borderMarkup}>{formatDateFull(user.createdAt)}</td>
+                  </tr>
+                );
+              }
+            )}
           </tbody>
         </table>
 
         {/* <Pagination page={page} setPage={setPage} totalPages={totalPages} perPage={perPage} setPerPage={setPerPage} totalResults={totalTasks} /> */}
-
-        {/* <TaskDetailsPopup task={selectedTask} /> */}
+        <UserModal user={selectedUser} />
       </div>
     </div>
   );

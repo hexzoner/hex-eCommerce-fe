@@ -5,22 +5,23 @@ import LoadingSpinner from "../LoadingSpinner";
 import sortTables from "../../utils/sortTables";
 import { Product } from "./Products";
 import { formatDateFull } from "../../utils/dateUtils";
+import { OrderModal } from "./admin-components";
+
+export interface Order {
+  id: number;
+  userId: number;
+  products: Product[];
+  total: number;
+  createdAt: string;
+  updatedAt: string;
+  user: {
+    firstName: string;
+    lastName: string;
+    email: string;
+  };
+}
 
 export default function Orders() {
-  interface Order {
-    id: number;
-    userId: number;
-    products: Product[];
-    total: number;
-    createdAt: string;
-    updatedAt: string;
-    user: {
-      firstName: string;
-      lastName: string;
-      email: string;
-    };
-  }
-
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedOrder, setSelectedOrder] = useState<Order>({
@@ -198,7 +199,8 @@ export default function Orders() {
                   className="hover cursor-pointer"
                   onClick={() => {
                     setSelectedOrder(order);
-                    // document.getElementById("taskDetails").showModal();
+                    const orderModal = document.getElementById("order_modal");
+                    if (orderModal) (orderModal as HTMLDialogElement).showModal();
                   }}>
                   <td className={borderMarkup}>{order.id}</td>
                   <td className={borderMarkup}>{order.userId}</td>
@@ -214,7 +216,8 @@ export default function Orders() {
         </table>
 
         {/* <Pagination page={page} setPage={setPage} totalPages={totalPages} perPage={perPage} setPerPage={setPerPage} totalResults={totalTasks} /> */}
-        {/* <TaskDetailsPopup task={selectedTask} /> */}
+
+        <OrderModal order={selectedOrder} />
       </div>
     </div>
   );

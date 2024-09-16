@@ -3,13 +3,19 @@ import { useState, useEffect } from "react";
 import { restoreToken } from "../../utils/storage";
 import LoadingSpinner from "../LoadingSpinner";
 import sortTables from "../../utils/sortTables";
+import { ProductModal } from "./admin-components";
 
 export interface Product {
   id: number;
   name: string;
   description: string;
   price: number;
-  categoryId: number;
+  quantity: number;
+
+  category: {
+    id: number;
+    name: string;
+  };
 }
 
 export default function Products() {
@@ -20,7 +26,11 @@ export default function Products() {
     name: "",
     description: "",
     price: 0,
-    categoryId: 0,
+    quantity: 0,
+    category: {
+      id: 0,
+      name: "",
+    },
   });
 
   useEffect(() => {
@@ -30,7 +40,7 @@ export default function Products() {
         const token = restoreToken();
         if (!token) return;
         const products = await getProducts(token);
-        // console.log(users);
+        // console.log(products);
         setProducts(sortTables(products, "id", "asc"));
         setLoading(false);
       } catch (err) {
@@ -128,7 +138,7 @@ export default function Products() {
               <th className="font-bold">
                 <div className="flex gap-1 items-center">
                   <span>Category ID</span>
-                  <button title="SortByEmail" className="hover:cursor-pointer" onClick={() => handleSortClick("categoryId")}>
+                  <button title="SortByEmail" className="hover:cursor-pointer" onClick={() => handleSortClick("category.id")}>
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"
@@ -151,21 +161,23 @@ export default function Products() {
                   className="hover cursor-pointer"
                   onClick={() => {
                     setSelectedProducts(product);
-                    // document.getElementById("taskDetails").showModal();
+                    const productModal = document.getElementById("product_modal");
+                    if (productModal) (productModal as HTMLDialogElement).showModal();
                   }}>
                   <td className={borderMarkup}>{product.id}</td>
                   <td className={borderMarkup}>{product.name}</td>
                   <td className={borderMarkup}>{product.description}</td>
-                  <td className={borderMarkup}>{product.price}</td>
-                  <td className={borderMarkup}>{product.categoryId}</td>
+                  <td className={borderMarkup}>${product.price}</td>
+                  <td className={borderMarkup}>
+                    {product.category.name} [{product.category.id}]
+                  </td>
                 </tr>
               );
             })}
           </tbody>
         </table>
-
         {/* <Pagination page={page} setPage={setPage} totalPages={totalPages} perPage={perPage} setPerPage={setPerPage} totalResults={totalTasks} /> */}
-        {/* <TaskDetailsPopup task={selectedTask} /> */}
+        <ProductModal product={selectedProduct} />
       </div>
     </div>
   );
