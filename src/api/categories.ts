@@ -63,3 +63,20 @@ export const createCategory = async (token: string, category: Category) => {
 
   return response;
 };
+
+export const deleteCategory = async (token: string, id: number) => {
+  const response = await axios
+    .delete(`${baseURL}/${id}`, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    })
+    .then((res) => {
+      // console.log(res.data);
+      return res.data;
+    })
+    .catch((err) => console.log(err.data));
+
+  return response;
+};

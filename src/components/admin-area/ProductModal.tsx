@@ -1,8 +1,45 @@
 import { Product } from "./Products";
 import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { ConfirmPopup } from "./admin-components";
 
 export default function ProductModal({ product }: { product: Product }) {
+  const [editMode, setEditMode] = useState(false);
+  // const [loading, setLoading] = useState(false);
+
+  function handleDelete(e: React.MouseEvent) {
+    e.preventDefault();
+    const deletePopup = document.getElementById("confirmPopup");
+    if (deletePopup) (deletePopup as HTMLDialogElement).showModal();
+  }
+
+  function handleEdit(e: React.MouseEvent) {
+    e.preventDefault();
+    setEditMode(true);
+  }
+
+  async function finishEdit(e: React.MouseEvent) {
+    e.preventDefault();
+    // setLoading(true);
+    // await updateCategory(restoreToken(), category);
+    // setCategories((prev) => {
+    //   return prev.map((c) => {
+    //     if (c.id === category.id) {
+    //       return category;
+    //     }
+    //     return c;
+    //   });
+    // });
+    setEditMode(false);
+    // setLoading(false);
+  }
+
+  async function handleConfirmDelete() {
+    // await deleteCategory(restoreToken(), category.id);
+    // const deletePopup = document.getElementById("category_modal");
+    // if (deletePopup) (deletePopup as HTMLDialogElement).close();
+    // setCategories((prev) => prev.filter((x) => x.id != category.id));
+  }
+
   return (
     <>
       <dialog id="product_modal" className="modal">
@@ -19,82 +56,25 @@ export default function ProductModal({ product }: { product: Product }) {
             </p>
             <div className="modal-action">
               <form method="dialog">
-                {/* if there is a button in form, it will close the modal */}
-                <button className="btn">Close</button>
+                <button onClick={handleDelete} className="btn btn-error btn-sm">
+                  Delete
+                </button>
+                {editMode ? (
+                  <button onClick={finishEdit} className="btn btn-warning btn-sm">
+                    Save
+                  </button>
+                ) : (
+                  <button onClick={handleEdit} className="btn btn-warning btn-sm">
+                    Edit
+                  </button>
+                )}
+                <button className="btn btn-sm">Close</button>
               </form>
             </div>
           </div>
         </div>
       </dialog>
-    </>
-  );
-}
-
-export function CreateProductModal({ setProducts }: { setCategories: React.Dispatch<React.SetStateAction<Product[]>> }) {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    // reset,
-  } = useForm<{ name: string; description: string; price: number; category: number }>();
-
-  async function onSubmit(data: { name: string; description: string; price: number; category: number }) {
-    console.log(data);
-  }
-
-  // const [newProduct, setNewProduct] = useState({
-  //   name: "",
-  //   description: "",
-  //   price: 0,
-  //   category: 0,
-  //   id: 0,
-  // });
-
-  return (
-    <>
-      <dialog id="product_modal" className="modal">
-        <div className="modal-box">
-          <form autoComplete="off" onSubmit={handleSubmit(onSubmit)}>
-            <div className="max-w-96 m-auto text-left">
-              <input
-                type="text"
-                className="grow"
-                placeholder="Enter a product name"
-                autoComplete="off"
-                {...register("name", {
-                  required: "Name is required",
-                })}
-              />
-
-              <input
-                type="text"
-                className="grow"
-                placeholder="Enter a product description"
-                autoComplete="off"
-                {...register("description", {
-                  required: "Description is required",
-                })}
-              />
-
-              <input
-                type="text"
-                className="grow"
-                placeholder="Enter a product price"
-                autoComplete="off"
-                {...register("price", {
-                  required: "Price is required",
-                })}
-              />
-              <div className="modal-action">
-                <form method="dialog">
-                  {/* if there is a button in form, it will close the modal */}
-                  <button className="btn">Close</button>
-                </form>
-              </div>
-            </div>
-          </form>
-        </div>
-      </dialog>
+      <ConfirmPopup confirmText="Are you sure you want to delete this product?" deleteConfirmed={handleConfirmDelete} />
     </>
   );
 }

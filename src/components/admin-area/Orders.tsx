@@ -71,7 +71,7 @@ export default function Orders() {
 
   return (
     <div className="min-h-screen">
-      <p className="text-3xl my-6">Orders [{selectedOrder?.id}]</p>
+      <p className="text-3xl my-6">Orders</p>
 
       <div className="overflow-x-auto rounded-md max-w-6xl m-auto">
         <table className="table rounded-md table-zebra table-sm w-full shadow-md">

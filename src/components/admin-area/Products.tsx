@@ -3,7 +3,8 @@ import { useState, useEffect } from "react";
 import { restoreToken } from "../../utils/storage";
 import LoadingSpinner from "../LoadingSpinner";
 import sortTables from "../../utils/sortTables";
-import { ProductModal, CreateProductModal } from "./admin-components";
+import { CreateProductModal } from "./admin-components";
+import { formatDateFull } from "../../utils/dateUtils";
 
 export interface Product {
   id: number;
@@ -11,17 +12,16 @@ export interface Product {
   description: string;
   price: number;
   quantity: number;
-
+  isEdit: boolean;
   category: {
     id: number;
     name: string;
   };
+  createdAt: string;
 }
 
 export default function Products() {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [selectedProduct, setSelectedProducts] = useState<Product>({
+  const emptyProduct = {
     id: 0,
     name: "",
     description: "",
@@ -31,7 +31,12 @@ export default function Products() {
       id: 0,
       name: "",
     },
-  });
+    isEdit: false,
+    createdAt: "",
+  };
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [selectedProduct, setSelectedProduct] = useState<Product>(emptyProduct);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -41,7 +46,7 @@ export default function Products() {
         if (!token) return;
         const products = await getProducts(token);
         // console.log(products);
-        setProducts(sortTables(products, "id", "asc"));
+        setProducts(sortTables(products, "id", "desc"));
         setLoading(false);
       } catch (err) {
         console.log(err);
@@ -60,6 +65,7 @@ export default function Products() {
   };
 
   function createProduct() {
+    setSelectedProduct(emptyProduct);
     const createProductModal = document.getElementById("create_product_modal");
     if (createProductModal) (createProductModal as HTMLDialogElement).showModal();
   }
@@ -70,9 +76,9 @@ export default function Products() {
 
   return (
     <div className="min-h-screen">
-      <p className="text-3xl my-6">Products [{selectedProduct?.id}]</p>
-      <div className="w-full flex max-w-4xl m-auto justify-end mb-4">
-        <button onClick={createProduct} className="btn btn-outline">
+      <div className="w-full flex max-w-6xl m-auto justify-center items-center mb-4 gap-4">
+        <p className="text-3xl my-6">Products</p>
+        <button onClick={createProduct} className="btn btn-outline btn-sm">
           Create Product
         </button>
       </div>
@@ -160,6 +166,22 @@ export default function Products() {
                   </button>
                 </div>
               </th>
+              <th className="font-bold">
+                <div className="flex gap-1 items-center">
+                  <span>Created At</span>
+                  <button title="Sort" className="hover:cursor-pointer" onClick={() => handleSortClick("createdAt")}>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth="1.5"
+                      stroke="currentColor"
+                      className="size-6">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 15 12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9" />
+                    </svg>
+                  </button>
+                </div>
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -169,25 +191,28 @@ export default function Products() {
                   key={product.id}
                   className="hover cursor-pointer"
                   onClick={() => {
-                    setSelectedProducts(product);
-                    const productModal = document.getElementById("product_modal");
+                    product.isEdit = true;
+                    setSelectedProduct(product);
+                    // const productModal = document.getElementById("product_modal");
+                    const productModal = document.getElementById("create_product_modal");
                     if (productModal) (productModal as HTMLDialogElement).showModal();
                   }}>
                   <td className={borderMarkup}>{product.id}</td>
                   <td className={borderMarkup}>{product.name}</td>
                   <td className={borderMarkup}>{product.description}</td>
-                  <td className={borderMarkup}>${product.price}</td>
+                  <td className="w-1/6">€{product.price}</td>
                   <td className={borderMarkup}>
                     {product.category.name} [{product.category.id}]
                   </td>
+                  <td className="w-[12%]">{formatDateFull(product.createdAt)}</td>
                 </tr>
               );
             })}
           </tbody>
         </table>
         {/* <Pagination page={page} setPage={setPage} totalPages={totalPages} perPage={perPage} setPerPage={setPerPage} totalResults={totalTasks} /> */}
-        <ProductModal product={selectedProduct} />
-        <CreateProductModal setProducts={setProducts} />
+        {/* <ProductModal product={selectedProduct} /> */}
+        <CreateProductModal product={selectedProduct} setProducts={setProducts} />
       </div>
     </div>
   );

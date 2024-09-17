@@ -11,11 +11,6 @@ export interface Category {
 }
 
 export default function Categories() {
-  {
-    /* <button className="btn" onClick={() => document.getElementById("my_modal_1").showModal()}>
-        open modal
-      </button> */
-  }
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState<Category>({
@@ -59,19 +54,18 @@ export default function Categories() {
   const borderMarkup = ""; //border-[2px] border-base-content p-3 my-4 font-semibold";
   return (
     <div className="min-h-screen">
-      <p className="text-3xl my-6">Categories </p>
-
-      <div className="w-full flex max-w-4xl m-auto justify-end mb-4">
-        <button onClick={createCategory} className="btn btn-outline">
+      <div className="w-full flex max-w-3xl m-auto justify-center mb-4 items-center gap-4">
+        <p className="text-3xl my-6">Categories </p>
+        <button onClick={createCategory} className="btn btn-outline btn-sm">
           Create Category
         </button>
       </div>
-      <div className="overflow-x-auto rounded-md max-w-4xl m-auto">
+      <div className="overflow-x-auto rounded-md max-w-3xl m-auto">
         <table className="table rounded-md table-zebra table-sm w-full shadow-md">
           <thead className="text-sm bg-base-300">
             <tr>
-              <th className="font-bold">
-                <div className="flex gap-1 items-center">
+              <th className="font-bold w-1/6">
+                <div className="flex gap-1 items-center ">
                   <span>ID</span>
                   <button title="SortById" className="hover:cursor-pointer" onClick={() => handleSortClick("id")}>
                     <svg

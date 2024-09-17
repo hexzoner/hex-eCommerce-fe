@@ -16,12 +16,12 @@ export default function OrderModal({ order }: { order: Order }) {
               {order.products.map((x, index) => {
                 return (
                   <div key={index}>
-                    {index + 1}. {x.name} - ${x.price} x {x.quantity}
+                    {index + 1}. {x.name} - €{x.price} x {x.quantity}
                   </div>
                 );
               })}
             </div>
-            <p className="py-4">Order Total: ${order.total}</p>
+            <p className="py-4">Order Total: €{order.total}</p>
             <p className="py-4">Created at: {formatDateFull(order.createdAt)}</p>
             {order.updatedAt > order.createdAt && <p className="py-4">Updated at: {formatDateFull(order.updatedAt)}</p>}
             <div className="modal-action">

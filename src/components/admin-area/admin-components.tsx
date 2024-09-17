@@ -10,6 +10,7 @@ import { CreateProductModal } from "./CreateProductModal";
 import ProductModal from "./ProductModal";
 import OrderModal from "./OrderModal";
 import UserModal from "./UserModal";
+import ConfirmPopup from "./ConfirmPopup";
 
 export {
   Categories,
@@ -24,4 +25,5 @@ export {
   UserModal,
   CreateCategoryModal,
   CreateProductModal,
+  ConfirmPopup,
 };

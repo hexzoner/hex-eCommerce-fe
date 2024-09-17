@@ -1,7 +1,8 @@
 import { Category } from "./Categories";
 import { useState } from "react";
-import { updateCategory, createCategory, getCategories } from "../../api/categories";
+import { updateCategory, createCategory, getCategories, deleteCategory } from "../../api/categories";
 import { restoreToken } from "../../utils/storage";
+import { ConfirmPopup } from "./admin-components";
 
 interface CategoryModalProps {
   category: Category;
@@ -19,6 +20,8 @@ export default function CategoryModal({ category, setSelectedCategory, setCatego
 
   function handleDelete(e: React.MouseEvent) {
     e.preventDefault();
+    const deletePopup = document.getElementById("confirmPopup");
+    if (deletePopup) (deletePopup as HTMLDialogElement).showModal();
   }
 
   function handleEdit(e: React.MouseEvent) {
@@ -40,6 +43,13 @@ export default function CategoryModal({ category, setSelectedCategory, setCatego
     });
     setEditMode(false);
     setLoading(false);
+  }
+
+  async function handleConfirmDelete() {
+    await deleteCategory(restoreToken(), category.id);
+    const deletePopup = document.getElementById("category_modal");
+    if (deletePopup) (deletePopup as HTMLDialogElement).close();
+    setCategories((prev) => prev.filter((x) => x.id != category.id));
   }
 
   return (
@@ -89,6 +99,7 @@ export default function CategoryModal({ category, setSelectedCategory, setCatego
           )}
         </div>
       </dialog>
+      <ConfirmPopup confirmText="Are you sure you want to delete this category?" deleteConfirmed={handleConfirmDelete} />
     </>
   );
 }
@@ -135,7 +146,7 @@ export function CreateCategoryModal({ setCategories }: { setCategories: React.Di
                   value={newCategory.name}
                   type="text"
                   placeholder="Type here"
-                  className="input input-bordered w-full max-w-xs"
+                  className="input input-bordered w-full "
                 />
               </div>
             )}
