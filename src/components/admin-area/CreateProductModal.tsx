@@ -15,7 +15,7 @@ export function CreateProductModal({ product, setProducts }: { product: Product;
     handleSubmit,
     formState: { errors },
     reset,
-  } = useForm<{ name: string; description: string; price: number | string; category: number | string }>();
+  } = useForm<{ name: string; description: string; price: number | string; category: number | string; image: string }>();
 
   useEffect(() => {
     reset({
@@ -23,6 +23,7 @@ export function CreateProductModal({ product, setProducts }: { product: Product;
       description: product.description,
       price: product.isEdit ? product.price : "",
       category: product.isEdit ? product.category.id : "",
+      image: product.image,
     });
   }, [product]);
 
@@ -53,13 +54,13 @@ export function CreateProductModal({ product, setProducts }: { product: Product;
     setProducts((prev) => prev.filter((x) => x.id != product.id));
   }
 
-  async function onSubmit(data: { name: string; description: string; price: string | number; category: number | string }) {
+  async function onSubmit(data: { name: string; description: string; price: string | number; category: number | string; image: string }) {
     const price = typeof data.price === "string" ? parseFloat(data.price) : data.price;
     const category = typeof data.category === "string" ? parseInt(data.category) : data.category;
     // console.log({ name: data.name, description: data.description, price, categoryId: category });
     if (!product.isEdit) {
       try {
-        await createProduct(restoreToken(), { name: data.name, description: data.description, price, categoryId: category });
+        await createProduct(restoreToken(), { name: data.name, description: data.description, price, categoryId: category, image: data.image });
       } catch (err) {
         console.log(err);
       }
@@ -71,6 +72,7 @@ export function CreateProductModal({ product, setProducts }: { product: Product;
           price,
           categoryId: category,
           id: product.id,
+          image: data.image,
         });
       } catch (err) {
         console.log(err);
@@ -95,7 +97,7 @@ export function CreateProductModal({ product, setProducts }: { product: Product;
                 <div className="w-1/2 flex flex-col gap-6">
                   <input
                     type="text"
-                    className="input input-bordered w-full grow"
+                    className="input input-bordered w-full"
                     placeholder="Enter a product name"
                     autoComplete="off"
                     {...register("name", {
@@ -115,11 +117,11 @@ export function CreateProductModal({ product, setProducts }: { product: Product;
                     })}
                   />
                   {errors.description && (
-                    <p className="font-semibold text-error text-xs text-left top-[16.7rem] absolute">{errors.description.message?.toString()}</p>
+                    <p className="font-semibold text-error text-xs text-left top-[20.7rem] absolute">{errors.description.message?.toString()}</p>
                   )}
                   <input
                     type="text"
-                    className="input input-bordered w-full grow"
+                    className="input input-bordered w-full "
                     placeholder="Enter a product price"
                     autoComplete="off"
                     {...register("price", {
@@ -138,29 +140,40 @@ export function CreateProductModal({ product, setProducts }: { product: Product;
                     })}
                   />
                   {errors.price && (
-                    <p className="font-semibold text-error text-xs text-left top-[21.3rem] absolute">{errors.price.message?.toString()}</p>
+                    <p className="font-semibold text-error text-xs text-left top-[25.3rem] absolute">{errors.price.message?.toString()}</p>
                   )}
                 </div>
-                <select
-                  className="select select-bordered w-1/2"
-                  {...register("category", {
-                    required: "Category is required",
-                  })}>
-                  <option value="">Select a category</option>
-                  {categories.map((category: any) => {
-                    return (
-                      <option key={category.id} value={category.id}>
-                        {category.name}
-                      </option>
-                    );
-                  })}
-                </select>
+                <div className="w-1/2 flex flex-col gap-6">
+                  <select
+                    className="select select-bordered w-full"
+                    {...register("category", {
+                      required: "Category is required",
+                    })}>
+                    <option value="">Select a category</option>
+                    {categories.map((category: any) => {
+                      return (
+                        <option key={category.id} value={category.id}>
+                          {category.name}
+                        </option>
+                      );
+                    })}
+                  </select>
+                  {errors.category && (
+                    <p className="text-error text-xs text-left top-[7.3rem] right-8 absolute font-semibold">{errors.category.message?.toString()}</p>
+                  )}
+
+                  <input type="text" className="input input-bordered w-full " placeholder="Image URL" autoComplete="off" {...register("image")} />
+                  {errors.image && (
+                    <p className="font-semibold text-error text-xs text-left top-[7.4rem] absolute">{errors.image.message?.toString()}</p>
+                  )}
+                  {product.image?.length > 0 && (
+                    <div className="flex justify-center">
+                      <img src={product.image} alt="product" className="h-1/2" />
+                    </div>
+                  )}
+                </div>
               </div>
-              <div className="bg-white relative right-0 top-0">
-                {errors.category && (
-                  <p className="text-error text-xs text-left top-[-15.3rem] right-0 absolute font-semibold">{errors.category.message?.toString()}</p>
-                )}
-              </div>
+
               <div className="flex w-full justify-evenly">
                 {product.isEdit ? (
                   <>

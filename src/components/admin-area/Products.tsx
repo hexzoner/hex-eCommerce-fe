@@ -18,6 +18,7 @@ export interface Product {
     name: string;
   };
   createdAt: string;
+  image: string;
 }
 
 export default function Products() {
@@ -33,6 +34,7 @@ export default function Products() {
     },
     isEdit: false,
     createdAt: "",
+    image: "",
   };
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);

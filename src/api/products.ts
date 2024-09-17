@@ -23,13 +23,16 @@ export const getProducts = async (token: string) => {
   return response;
 };
 
-export const createProduct = async (token: string, product: { name: string; description: string; price: number; categoryId: number }) => {
-  console.log({
-    name: product.name,
-    description: product.description,
-    price: product.price,
-    categoryId: product.categoryId,
-  });
+export const createProduct = async (
+  token: string,
+  product: { name: string; description: string; price: number; categoryId: number; image: string }
+) => {
+  // console.log({
+  //   name: product.name,
+  //   description: product.description,
+  //   price: product.price,
+  //   categoryId: product.categoryId,
+  // });
   const response = await axios
     .post(
       `${baseURL}`,
@@ -54,12 +57,16 @@ export const createProduct = async (token: string, product: { name: string; desc
   return response;
 };
 
-export const updateProduct = async (token: string, product: { name: string; description: string; price: number; categoryId: number; id: number }) => {
+export const updateProduct = async (
+  token: string,
+  product: { name: string; description: string; price: number; categoryId: number; id: number; image: string }
+) => {
   const body = {
     name: product.name,
     description: product.description,
     price: product.price,
     categoryId: product.categoryId,
+    image: product.image,
   };
 
   const response = await axios
