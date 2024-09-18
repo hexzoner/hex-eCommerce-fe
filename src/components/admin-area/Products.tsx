@@ -4,7 +4,7 @@ import { restoreToken } from "../../utils/storage";
 import LoadingSpinner from "../LoadingSpinner";
 import sortTables from "../../utils/sortTables";
 import { CreateProductModal } from "./admin-components";
-import { formatDateFull } from "../../utils/dateUtils";
+import { formatDateShort } from "../../utils/dateUtils";
 
 export interface Product {
   id: number;
@@ -14,6 +14,10 @@ export interface Product {
   quantity: number;
   isEdit: boolean;
   category: {
+    id: number;
+    name: string;
+  };
+  color: {
     id: number;
     name: string;
   };
@@ -29,6 +33,10 @@ export default function Products() {
     price: 0,
     quantity: 0,
     category: {
+      id: 0,
+      name: "",
+    },
+    color: {
       id: 0,
       name: "",
     },
@@ -154,8 +162,24 @@ export default function Products() {
               </th>
               <th className="font-bold">
                 <div className="flex gap-1 items-center">
-                  <span>Category ID</span>
+                  <span>Category</span>
                   <button title="SortByEmail" className="hover:cursor-pointer" onClick={() => handleSortClick("category.id")}>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth="1.5"
+                      stroke="currentColor"
+                      className="size-6">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 15 12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9" />
+                    </svg>
+                  </button>
+                </div>
+              </th>
+              <th className="font-bold">
+                <div className="flex gap-1 items-center">
+                  <span>Color</span>
+                  <button title="Sort" className="hover:cursor-pointer" onClick={() => handleSortClick("color.id")}>
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"
@@ -203,10 +227,9 @@ export default function Products() {
                   <td className={borderMarkup}>{product.name}</td>
                   <td className={borderMarkup}>{product.description}</td>
                   <td className="w-1/6">€{product.price}</td>
-                  <td className={borderMarkup}>
-                    {product.category.name} [{product.category.id}]
-                  </td>
-                  <td className="w-[12%]">{formatDateFull(product.createdAt)}</td>
+                  <td className={borderMarkup}>{product.category.name}</td>
+                  <td className={borderMarkup}>{product.color.name}</td>
+                  <td className="w-[12%]">{formatDateShort(product.createdAt)}</td>
                 </tr>
               );
             })}

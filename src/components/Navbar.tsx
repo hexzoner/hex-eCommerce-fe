@@ -1,16 +1,19 @@
 import { NavLink } from "react-router-dom";
 import { useAuth } from "../context";
+// import { mainMakrupColors } from "./Home";
 
 export default function Navbar() {
   const { user, isAuthenticated, logout } = useAuth();
-  const navLinkClass = ({ isActive }: { isActive: boolean }) =>
-    `btn btn-ghost text-lg  + ${isActive ? "underline underline-offset-4 text-accent" : ""} `;
+  const navLinkClass = ({ isActive }: { isActive: boolean }) => `btn btn-ghost  + ${isActive ? "underline underline-offset-4 text-accent" : ""} `;
 
   const htmlElement = document.querySelector("html");
-  if (htmlElement) htmlElement.setAttribute("data-theme", "business");
+  if (htmlElement) {
+    if (user && user.role == "admin") htmlElement.setAttribute("data-theme", "business");
+    else htmlElement.setAttribute("data-theme", "light");
+  }
 
   return (
-    <div className="bg-base-300 ">
+    <div className="bg-[#1f3041] text-white">
       <div className="navbar max-w-screen-xl m-auto">
         <div className="flex-1">
           {isAuthenticated && user.role == "admin" ? (
@@ -20,6 +23,9 @@ export default function Navbar() {
               </NavLink>
               <NavLink to="admin/categories" className={navLinkClass}>
                 Categories
+              </NavLink>
+              <NavLink to="admin/colors" className={navLinkClass}>
+                Colors
               </NavLink>
               <NavLink to="admin/products" className={navLinkClass}>
                 Products
@@ -53,9 +59,9 @@ export default function Navbar() {
             </NavLink>
           </div>
         ) : (
-          <div className="flex gap-4">
-            <span className="text-sm italic">Logged as: </span>
-            <span className="text-secondary mr-4">{user?.email}</span>
+          <div className="flex gap-4 text-sm">
+            <span className="italic">Logged as: </span>
+            <span className="text-secondary mr-2">{user?.email}</span>
             <NavLink
               to="/profile"
               className={({ isActive }: { isActive: boolean }) =>
@@ -68,7 +74,7 @@ export default function Navbar() {
                 logout();
                 // window.location.href = "/";
               }}
-              className="btn btn-ghost text-lg ">
+              className="btn btn-ghost  ">
               Logout
             </button>
           </div>

@@ -6,6 +6,7 @@ import { loginApiCall } from "../api/auth";
 // import { toast } from "react-toastify";
 import { useAuth } from "../context";
 import { storeToken } from "../utils/storage";
+// import { mainMakrupColors } from "./Home";
 
 export default function Login() {
   const [isLoading, setIsLoading] = useState(false);

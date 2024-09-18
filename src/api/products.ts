@@ -25,7 +25,7 @@ export const getProducts = async (token: string) => {
 
 export const createProduct = async (
   token: string,
-  product: { name: string; description: string; price: number; categoryId: number; image: string }
+  product: { name: string; description: string; price: number; categoryId: number; image: string; colorId: number }
 ) => {
   // console.log({
   //   name: product.name,
@@ -41,6 +41,7 @@ export const createProduct = async (
         description: product.description,
         price: product.price,
         categoryId: product.categoryId,
+        colorId: product.colorId,
       },
       {
         headers: {
@@ -59,7 +60,7 @@ export const createProduct = async (
 
 export const updateProduct = async (
   token: string,
-  product: { name: string; description: string; price: number; categoryId: number; id: number; image: string }
+  product: { name: string; description: string; price: number; categoryId: number; id: number; image: string; colorId: number }
 ) => {
   const body = {
     name: product.name,
@@ -67,6 +68,7 @@ export const updateProduct = async (
     price: product.price,
     categoryId: product.categoryId,
     image: product.image,
+    colorId: product.colorId,
   };
 
   const response = await axios

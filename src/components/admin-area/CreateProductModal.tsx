@@ -2,6 +2,7 @@ import { Product } from "./Products";
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { getCategories } from "../../api/categories";
+import { getColors } from "../../api/colors";
 import { createProduct, updateProduct, deleteProduct } from "../../api/products";
 import { restoreToken } from "../../utils/storage";
 import { ConfirmPopup } from "./admin-components";
@@ -9,6 +10,7 @@ import { LoadingSpinnerSmall } from "./CategoryModal";
 
 export function CreateProductModal({ product, setProducts }: { product: Product; setProducts: React.Dispatch<React.SetStateAction<Product[]>> }) {
   const [categories, setCategories] = useState([]);
+  const [colors, setColors] = useState([]);
   const [loading, setLoading] = useState(false);
 
   const {
@@ -16,7 +18,7 @@ export function CreateProductModal({ product, setProducts }: { product: Product;
     handleSubmit,
     formState: { errors },
     reset,
-  } = useForm<{ name: string; description: string; price: number | string; category: number | string; image: string }>();
+  } = useForm<{ name: string; description: string; price: number | string; category: number | string; image: string; color: number | string }>();
 
   useEffect(() => {
     reset({
@@ -24,6 +26,7 @@ export function CreateProductModal({ product, setProducts }: { product: Product;
       description: product.description,
       price: product.isEdit ? product.price : "",
       category: product.isEdit ? product.category.id : "",
+      color: product.isEdit ? product.color.id : "",
       image: product.image,
     });
   }, [product]);
@@ -38,7 +41,18 @@ export function CreateProductModal({ product, setProducts }: { product: Product;
         console.log(err);
       }
     };
+
+    const fetchColors = async () => {
+      try {
+        const colors = await getColors(restoreToken());
+        setColors(colors);
+        // console.log(categories);
+      } catch (err) {
+        console.log(err);
+      }
+    };
     fetchCategories();
+    fetchColors();
   }, []);
 
   function handleDelete(e: React.MouseEvent) {
@@ -55,14 +69,29 @@ export function CreateProductModal({ product, setProducts }: { product: Product;
     setProducts((prev) => prev.filter((x) => x.id != product.id));
   }
 
-  async function onSubmit(data: { name: string; description: string; price: string | number; category: number | string; image: string }) {
+  async function onSubmit(data: {
+    name: string;
+    description: string;
+    price: string | number;
+    category: number | string;
+    color: number | string;
+    image: string;
+  }) {
     const price = typeof data.price === "string" ? parseFloat(data.price) : data.price;
     const category = typeof data.category === "string" ? parseInt(data.category) : data.category;
+    const color = typeof data.color === "string" ? parseInt(data.color) : data.color;
     // console.log({ name: data.name, description: data.description, price, categoryId: category });
     setLoading(true);
     if (!product.isEdit) {
       try {
-        await createProduct(restoreToken(), { name: data.name, description: data.description, price, categoryId: category, image: data.image });
+        await createProduct(restoreToken(), {
+          name: data.name,
+          description: data.description,
+          price,
+          categoryId: category,
+          image: data.image,
+          colorId: color,
+        });
       } catch (err) {
         console.log(err);
       }
@@ -75,6 +104,7 @@ export function CreateProductModal({ product, setProducts }: { product: Product;
           categoryId: category,
           id: product.id,
           image: data.image,
+          colorId: color,
         });
       } catch (err) {
         console.log(err);
@@ -166,6 +196,24 @@ export function CreateProductModal({ product, setProducts }: { product: Product;
                       <p className="text-error text-xs text-left top-[7.3rem] right-8 absolute font-semibold">
                         {errors.category.message?.toString()}
                       </p>
+                    )}
+
+                    <select
+                      className="select select-bordered w-full"
+                      {...register("color", {
+                        required: "Color is required",
+                      })}>
+                      <option value="">Select a color</option>
+                      {colors.map((color: any) => {
+                        return (
+                          <option key={color.id} value={color.id}>
+                            {color.name}
+                          </option>
+                        );
+                      })}
+                    </select>
+                    {errors.color && (
+                      <p className="text-error text-xs text-left top-[11.8rem] right-8 absolute font-semibold">{errors.color.message?.toString()}</p>
                     )}
 
                     <input type="text" className="input input-bordered w-full " placeholder="Image URL" autoComplete="off" {...register("image")} />

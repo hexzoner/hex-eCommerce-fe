@@ -11,6 +11,7 @@ import ProductModal from "./ProductModal";
 import OrderModal from "./OrderModal";
 import UserModal from "./UserModal";
 import ConfirmPopup from "./ConfirmPopup";
+import Colors from "./Colors";
 
 export {
   Categories,
@@ -26,4 +27,5 @@ export {
   CreateCategoryModal,
   CreateProductModal,
   ConfirmPopup,
+  Colors,
 };
