@@ -61,7 +61,7 @@ export default function Navbar() {
         ) : (
           <div className="flex gap-4 text-sm">
             <span className="italic">Logged as: </span>
-            <span className="text-secondary mr-2">{user?.email}</span>
+            <span className="text-accent mr-2">{user?.email}</span>
             <NavLink
               to="/profile"
               className={({ isActive }: { isActive: boolean }) =>

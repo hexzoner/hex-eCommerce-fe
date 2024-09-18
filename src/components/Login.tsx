@@ -91,12 +91,12 @@ export default function Login() {
           Login
         </button>
         <div className="label ">
-          <span onClick={() => navigate("/forgot-password")} className="label-text-alt text-info hover:underline hover:cursor-pointer">
+          <span onClick={() => navigate("/forgot-password")} className="label-text-alt font-bold text-blue-600 hover:underline hover:cursor-pointer">
             Forgot your password?
           </span>
         </div>
         <div className="label ">
-          <span onClick={() => navigate("/signup")} className="label-text-alt text-info hover:underline hover:cursor-pointer">
+          <span onClick={() => navigate("/signup")} className="label-text-alt font-bold text-blue-600  hover:underline hover:cursor-pointer">
             Don't have an account yet? Signup here!
           </span>
         </div>

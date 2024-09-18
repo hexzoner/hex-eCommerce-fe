@@ -147,7 +147,7 @@ export default function Signup() {
         </button>
 
         <div className="label ">
-          <span onClick={() => navigate("/login")} className="label-text-alt text-info hover:underline hover:cursor-pointer">
+          <span onClick={() => navigate("/login")} className="label-text-alt font-bold text-blue-600 hover:underline hover:cursor-pointer">
             Already have an account yet? Login here!
           </span>
         </div>

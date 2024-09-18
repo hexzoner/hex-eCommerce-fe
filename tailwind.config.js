@@ -4,6 +4,8 @@ export default {
     extend: {
       fontFamily: {
         sofia: ["Sofia Pro", "sans-serif"],
+        raleway: ["Raleway", "sans-serif"],
+        montserrat: ["Montserrat", "sans-serif"],
       },
     },
   },

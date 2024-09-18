@@ -5,7 +5,7 @@ import { AuthContextProvider } from "../context";
 const MainLayout = () => {
   return (
     <>
-      <div className="font-sofia">
+      <div className="font-montserrat font-medium">
         <AuthContextProvider>
           <Navbar />
           <Outlet />
