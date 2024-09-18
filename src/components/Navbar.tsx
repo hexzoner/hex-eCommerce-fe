@@ -4,12 +4,12 @@ import { useAuth } from "../context";
 
 export default function Navbar() {
   const { user, isAuthenticated, logout } = useAuth();
-  const navLinkClass = ({ isActive }: { isActive: boolean }) => `btn btn-ghost  + ${isActive ? "underline underline-offset-4 text-accent" : ""} `;
+  const navLinkClass = ({ isActive }: { isActive: boolean }) => `btn btn-ghost  + ${isActive ? "underline underline-offset-4 text-info" : ""} `;
 
   const htmlElement = document.querySelector("html");
   if (htmlElement) {
     if (user && user.role == "admin") htmlElement.setAttribute("data-theme", "business");
-    else htmlElement.setAttribute("data-theme", "light");
+    else htmlElement.setAttribute("data-theme", "winter");
   }
 
   return (
