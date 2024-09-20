@@ -64,7 +64,7 @@ export default function Users() {
       <p className="text-3xl my-6">Users [{selectedUser?.id}]</p>
 
       <div className="overflow-x-auto rounded-md max-w-6xl m-auto">
-        <table className="table rounded-md table-zebra table-sm w-full shadow-md">
+        <table className="table rounded-md table-zebra table-sm w-full shadow-md mb-12">
           <thead className="text-sm bg-base-300">
             <tr>
               <th className="font-bold">

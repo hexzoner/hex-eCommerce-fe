@@ -3,11 +3,11 @@ import { useAuth } from "../context";
 // import { mainMakrupColors } from "./Home";
 
 export default function Navbar() {
-  const { user, isAuthenticated, logout } = useAuth();
+  const { user, isAuthenticated, logout, authLoading } = useAuth();
   const navLinkClass = ({ isActive }: { isActive: boolean }) => `btn btn-ghost  + ${isActive ? "underline underline-offset-4 text-info" : ""} `;
 
   const htmlElement = document.querySelector("html");
-  if (htmlElement) {
+  if (htmlElement && !authLoading) {
     if (user && user.role == "admin") htmlElement.setAttribute("data-theme", "business");
     else htmlElement.setAttribute("data-theme", "winter");
   }

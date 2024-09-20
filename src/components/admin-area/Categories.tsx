@@ -61,7 +61,7 @@ export default function Categories() {
         </button>
       </div>
       <div className="overflow-x-auto rounded-md max-w-3xl m-auto">
-        <table className="table rounded-md table-zebra table-sm w-full shadow-md">
+        <table className="table rounded-md table-zebra table-sm w-full shadow-md mb-12">
           <thead className="text-sm bg-base-300">
             <tr>
               <th className="font-bold w-1/6">
