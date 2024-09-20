@@ -59,15 +59,19 @@ export default function Navbar() {
             </NavLink>
           </div>
         ) : (
-          <div className="flex gap-4 text-sm">
+          <div className="flex gap-1 text-sm">
             <span className="italic">Logged as: </span>
-            <span className="text-accent mr-2">{user?.email}</span>
+            <span className="text-accent mr-3">{user?.email}</span>
             <NavLink
               to="/profile"
               className={({ isActive }: { isActive: boolean }) =>
                 `cursor-pointer hover:opacity-75 "  + ${isActive ? "fill-accent" : "fill-current"} `
               }>
               <UserProfileSVG />
+            </NavLink>
+
+            <NavLink to="/wishlist" className={navLinkClass}>
+              Wishlist
             </NavLink>
             <button
               onClick={() => {

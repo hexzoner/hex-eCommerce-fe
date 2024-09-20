@@ -4,25 +4,35 @@ import { useEffect, useState } from "react";
 import LoadingSpinner from "./LoadingSpinner";
 import { Product } from "./admin-area/Products";
 import { truncateText } from "../utils/sortTables";
+import { addToWishlist, removeFromWishlist, getWishlist } from "../api/wishlist";
+import { restoreToken } from "../utils/storage";
+import { toast } from "react-toastify";
 
 export default function Home() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+  const [wishlist, setWishlist] = useState<any[]>([]);
 
   useEffect(() => {
-    const fetchProducts = async () => {
-      setLoading(true);
-      try {
-        const products = await getProducts("token");
-        setProducts(products);
-        // console.log(products);
-        setLoading(false);
-      } catch (err) {
+    setLoading(true);
+    const token = restoreToken();
+    if (!token) return;
+
+    getWishlist(token)
+      .then((res) => setWishlist(res))
+      .catch((err) => {
         console.log(err);
-        setLoading(false);
-      }
-    };
-    fetchProducts();
+        toast.error(err.message);
+      })
+      .finally(() => {
+        getProducts(token)
+          .then((res) => setProducts(res))
+          .catch((err) => {
+            console.log(err);
+            toast.error(err.message);
+          })
+          .finally(() => setLoading(false));
+      });
   }, []);
 
   if (loading)
@@ -37,9 +47,9 @@ export default function Home() {
       <p className="text-2xl text-left mt-8 ml-16 font-semibold ">Our collection of handmade rugs</p>
       <p className="text-base text-left mt-4 ml-16">Discover our collection, handmade of eco-friendly wool material</p>
       <section className="my-8 px-12">
-        <div className="grid grid-cols-4 gap-2">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2">
           {products.map((product) => {
-            return <ProductCard key={product.id} product={product} />;
+            return <ProductCard key={product.id} product={product} setProducts={setProducts} wishlist={wishlist} />;
           })}
         </div>
       </section>
@@ -47,18 +57,18 @@ export default function Home() {
   );
 }
 
-export const ProductCard = ({ product }: { product: Product }) => {
+export const ProductCard = ({ product, setProducts, wishlist }: { product: Product; setProducts: any; wishlist: any }) => {
   return (
-    <div className="card bg-base-100 w-80 ">
+    <div className="card bg-base-100 w-72 mx-auto">
       <figure>
-        <img className="w-80 h-48 object-cover" src={product.image} alt="Rug Image" />
+        <img className="w-72 h-48 object-cover" src={product.image} alt="Rug Image" />
       </figure>
       <div className="card-body">
         <h2 className="text-xl font-bold text-center flex items-center justify-between">
           <div className="opacity-0">+</div>
           {product.name}
           {/* <div className="badge badge-secondary"></div> */}
-          <FavIcon />
+          <FavIcon product={product} setProducts={setProducts} wishlist={wishlist} />
         </h2>
         €{product.price}
         <p className="text-sm text-justify ">{truncateText(product.description, 128)}</p>
@@ -71,12 +81,44 @@ export const ProductCard = ({ product }: { product: Product }) => {
   );
 };
 
-export function FavIcon() {
-  const [favorited, setFavorited] = useState(false);
+export function FavIcon({ product, wishlist }: { product: Product; setProducts: any; wishlist: any }) {
+  function isInWishlist() {
+    const wishlistToArray = Object.values(wishlist);
+    return wishlistToArray.some((item: any) => item.id === product.id);
+  }
+
+  const [favorited, setFavorited] = useState(isInWishlist());
+
+  function handleAddtoWishlist() {
+    const token = restoreToken();
+    if (!token) return;
+
+    if (favorited) {
+      removeFromWishlist(token, product.id)
+        .then((res) => {
+          toast.success(res.message);
+          setFavorited(false);
+        })
+        .catch((err) => {
+          console.log(err);
+          toast.error(err.message);
+        });
+    } else {
+      addToWishlist(token, product.id)
+        .then((res) => {
+          toast.success(res.message);
+          setFavorited(true);
+        })
+        .catch((err) => {
+          console.log(err);
+          toast.error(err.message);
+        });
+    }
+  }
 
   return (
     <svg
-      onClick={() => setFavorited(!favorited)}
+      onClick={handleAddtoWishlist}
       className="size-4 stroke-black hover:cursor-pointer hover:animate-pulse"
       width="22"
       height="19"

@@ -23,6 +23,7 @@ export interface Product {
   };
   createdAt: string;
   image: string;
+  wishlisted: boolean;
 }
 
 export default function Products() {
@@ -43,6 +44,7 @@ export default function Products() {
     isEdit: false,
     createdAt: "",
     image: "",
+    wishlisted: false,
   };
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);

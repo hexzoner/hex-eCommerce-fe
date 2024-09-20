@@ -14,6 +14,7 @@ import LoadingSpinner from "./LoadingSpinner";
 import Toast from "./Toast";
 import ForgotPassword from "./ForgotPassword";
 import Unauthorized from "./Unauthorized";
+import Wishlist from "./Wishlist";
 
 export {
   About,
@@ -32,4 +33,5 @@ export {
   Toast,
   ForgotPassword,
   Unauthorized,
+  Wishlist,
 };
