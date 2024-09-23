@@ -1,6 +1,8 @@
 import { createContext, useContext } from "react";
 import AuthContextProvider from "./AuthContextProvider";
+import ShopContextProvider from "./ShopContextProvider";
 
+// AuthContext -----------------------------------------------------
 interface AuthContextProps {
   user: any;
   setUser: React.Dispatch<React.SetStateAction<any>>;
@@ -27,4 +29,25 @@ const useAuth = () => {
   return context;
 };
 
-export { AuthContext, useAuth, AuthContextProvider };
+// ShopContext -----------------------------------------------------
+interface ShopContextProps {
+  wishlist: any[];
+  setWishlist: React.Dispatch<React.SetStateAction<any[]>>;
+  shopLoading: boolean;
+  setShopLoading: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+const ShopContext = createContext<ShopContextProps>({
+  wishlist: [],
+  setWishlist: () => {},
+  shopLoading: true,
+  setShopLoading: () => {},
+});
+
+const useShop = () => {
+  const context = useContext(ShopContext);
+  if (!context) throw new Error("useShop must be used within a ShopContextProvider");
+  return context;
+};
+
+export { AuthContext, useAuth, AuthContextProvider, ShopContextProvider, ShopContext, useShop };

@@ -4,38 +4,29 @@ import { useEffect, useState } from "react";
 import LoadingSpinner from "./LoadingSpinner";
 import { Product } from "./admin-area/Products";
 import { truncateText } from "../utils/sortTables";
-import { addToWishlist, removeFromWishlist, getWishlist } from "../api/wishlist";
+import { addToWishlist, removeFromWishlist } from "../api/wishlist";
 import { restoreToken } from "../utils/storage";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import { useShop } from "../context";
 
 export default function Home() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
-  const [wishlist, setWishlist] = useState<any[]>([]);
+  const { wishlist, setWishlist, shopLoading } = useShop();
 
   useEffect(() => {
     setLoading(true);
+    if (shopLoading) return;
     const token = restoreToken();
-    getWishlist(token)
-      .then((res) => {
-        // console.log(res);
-        setWishlist(res);
-      })
+    getProducts(token)
+      .then((res) => setProducts(res))
       .catch((err) => {
         console.log(err);
         toast.error(err.message);
       })
-      .finally(() => {
-        getProducts(token)
-          .then((res) => setProducts(res))
-          .catch((err) => {
-            console.log(err);
-            toast.error(err.message);
-          })
-          .finally(() => setLoading(false));
-      });
-  }, []);
+      .finally(() => setLoading(false));
+  }, [shopLoading]);
 
   if (loading)
     return (
@@ -51,7 +42,7 @@ export default function Home() {
       <section className="my-8 px-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2">
           {products.map((product) => {
-            return <ProductCard key={product.id} product={product} setProducts={setProducts} wishlist={wishlist} />;
+            return <ProductCard key={product.id} product={product} wishlist={wishlist} setWishlist={setWishlist} />;
           })}
         </div>
       </section>
@@ -59,7 +50,7 @@ export default function Home() {
   );
 }
 
-export const ProductCard = ({ product, setProducts, wishlist }: { product: Product; setProducts: any; wishlist: any }) => {
+export const ProductCard = ({ product, wishlist, setWishlist }: { product: Product; wishlist: any; setWishlist: any }) => {
   const navigate = useNavigate();
   function handleClick() {
     navigate(`/product/${product.id}`);
@@ -77,7 +68,7 @@ export const ProductCard = ({ product, setProducts, wishlist }: { product: Produ
             {product.name}
           </div>
           {/* <div className="badge badge-secondary"></div> */}
-          <FavIcon product={product} setProducts={setProducts} wishlist={wishlist} />
+          <FavIcon product={product} wishlist={wishlist} setWishlist={setWishlist} />
         </h2>
         €{product.price}
         <p className="text-sm text-justify ">{truncateText(product.description, 128)}</p>
@@ -90,7 +81,7 @@ export const ProductCard = ({ product, setProducts, wishlist }: { product: Produ
   );
 };
 
-export function FavIcon({ product, wishlist }: { product: Product; setProducts: any; wishlist: any }) {
+export function FavIcon({ product, wishlist, setWishlist }: { product: Product; wishlist: any; setWishlist?: any }) {
   function isInWishlist() {
     if (!wishlist) return false;
     const wishlistToArray = Object.values(wishlist);
@@ -106,6 +97,7 @@ export function FavIcon({ product, wishlist }: { product: Product; setProducts: 
     if (favorited) {
       removeFromWishlist(token, product.id)
         .then((res) => {
+          setWishlist((prev: any) => prev.filter((i: any) => i.id !== product.id));
           toast.success(res.message);
           setFavorited(false);
         })
@@ -116,6 +108,7 @@ export function FavIcon({ product, wishlist }: { product: Product; setProducts: 
     } else {
       addToWishlist(token, product.id)
         .then((res) => {
+          setWishlist((prev: any) => [...prev, product]);
           toast.success(res.message);
           setFavorited(true);
         })

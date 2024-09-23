@@ -1,28 +1,13 @@
-import { getWishlist, removeFromWishlist } from "../api/wishlist";
-import { useEffect, useState } from "react";
+import { removeFromWishlist } from "../api/wishlist";
+// import { useEffect, useState } from "react";
 import { restoreToken } from "../utils/storage";
 import { toast } from "react-toastify";
+import { useShop } from "../context";
 import LoadingSpinner from "./LoadingSpinner";
 
 export default function Wishlist() {
-  const [wishlist, setWishlist] = useState<any[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    const token = restoreToken();
-    if (!token) return;
-    getWishlist(token)
-      .then((res) => {
-        setWishlist(res);
-        // console.log(res);
-      })
-      .catch((err) => {
-        console.log(err);
-      })
-      .finally(() => setIsLoading(false));
-  }, []);
-
-  if (isLoading) return <LoadingSpinner />;
+  const { wishlist, setWishlist, shopLoading } = useShop();
+  if (shopLoading) return <LoadingSpinner />;
 
   return (
     <div className="min-h-screen pb-12">
