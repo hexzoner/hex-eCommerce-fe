@@ -6,12 +6,11 @@ const API_URL = import.meta.env.VITE_API_URL;
 if (!API_URL) throw new Error("API URL is required, are you missing a .env file?");
 const baseURL = `${API_URL}/colors`;
 
-export const getColors = async (token: string) => {
+export const getColors = async () => {
   const response = await axios
     .get(`${baseURL}`, {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
       },
     })
     .then((res) => {

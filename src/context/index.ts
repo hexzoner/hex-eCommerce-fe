@@ -35,6 +35,10 @@ interface ShopContextProps {
   setWishlist: React.Dispatch<React.SetStateAction<any[]>>;
   shopLoading: boolean;
   setShopLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  categories: any[];
+  setCategories: React.Dispatch<React.SetStateAction<any[]>>;
+  colors: any[];
+  setColors: React.Dispatch<React.SetStateAction<any[]>>;
 }
 
 const ShopContext = createContext<ShopContextProps>({
@@ -42,6 +46,10 @@ const ShopContext = createContext<ShopContextProps>({
   setWishlist: () => {},
   shopLoading: true,
   setShopLoading: () => {},
+  categories: [],
+  setCategories: () => {},
+  colors: [],
+  setColors: () => {},
 });
 
 const useShop = () => {

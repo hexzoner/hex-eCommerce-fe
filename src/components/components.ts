@@ -15,6 +15,7 @@ import Toast from "./Toast";
 import ForgotPassword from "./ForgotPassword";
 import Unauthorized from "./Unauthorized";
 import Wishlist from "./Wishlist";
+import Filters from "./Filters";
 
 export {
   About,
@@ -34,4 +35,5 @@ export {
   ForgotPassword,
   Unauthorized,
   Wishlist,
+  Filters,
 };

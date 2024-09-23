@@ -9,6 +9,7 @@ import { restoreToken } from "../utils/storage";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { useShop } from "../context";
+import { Filters } from "../components/components";
 
 export default function Home() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -35,10 +36,14 @@ export default function Home() {
     );
 
   return (
-    <div className={mainMakrupColors + " min-h-screen max-w-[90rem] m-auto "}>
-      <p className="text-2xl text-left mt-8 ml-16 font-semibold ">Our collection of handmade rugs</p>
-      <p className="text-base text-left mt-4 ml-16">Discover our collection, handmade of eco-friendly wool material</p>
-      <section className="my-8 px-12">
+    <div className={mainMakrupColors + " min-h-screen max-w-[80rem] m-auto "}>
+      <p className="text-2xl text-left mt-8 font-semibold px-5">Our collection of handmade rugs</p>
+      <p className="text-base text-left mt-4 px-5">Discover our collection, handmade of eco-friendly wool material</p>
+      {/* <Filters products={products} setProducts={setProducts} /> */}
+      <div className="px-5 my-6">
+        <Filters />
+      </div>
+      <section className="my-8 ">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2">
           {products.map((product) => {
             return <ProductCard key={product.id} product={product} wishlist={wishlist} setWishlist={setWishlist} />;
