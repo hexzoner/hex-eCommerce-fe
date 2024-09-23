@@ -7,6 +7,7 @@ import { truncateText } from "../utils/sortTables";
 import { addToWishlist, removeFromWishlist, getWishlist } from "../api/wishlist";
 import { restoreToken } from "../utils/storage";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 export default function Home() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -16,10 +17,11 @@ export default function Home() {
   useEffect(() => {
     setLoading(true);
     const token = restoreToken();
-    if (!token) return;
-
     getWishlist(token)
-      .then((res) => setWishlist(res))
+      .then((res) => {
+        // console.log(res);
+        setWishlist(res);
+      })
       .catch((err) => {
         console.log(err);
         toast.error(err.message);
@@ -58,15 +60,22 @@ export default function Home() {
 }
 
 export const ProductCard = ({ product, setProducts, wishlist }: { product: Product; setProducts: any; wishlist: any }) => {
+  const navigate = useNavigate();
+  function handleClick() {
+    navigate(`/product/${product.id}`);
+  }
+
   return (
     <div className="card bg-base-100 w-72 mx-auto">
       <figure>
-        <img className="w-72 h-48 object-cover" src={product.image} alt="Rug Image" />
+        <img onClick={handleClick} className="w-72 h-48 object-cover  cursor-pointer" src={product.image} alt="Rug Image" />
       </figure>
       <div className="card-body">
-        <h2 className="text-xl font-bold text-center flex items-center justify-between">
+        <h2 className="text-xl font-bold text-center flex items-center justify-between ">
           <div className="opacity-0">+</div>
-          {product.name}
+          <div onClick={handleClick} className="cursor-pointer hover:text-[#b04e2d]">
+            {product.name}
+          </div>
           {/* <div className="badge badge-secondary"></div> */}
           <FavIcon product={product} setProducts={setProducts} wishlist={wishlist} />
         </h2>
@@ -83,6 +92,7 @@ export const ProductCard = ({ product, setProducts, wishlist }: { product: Produ
 
 export function FavIcon({ product, wishlist }: { product: Product; setProducts: any; wishlist: any }) {
   function isInWishlist() {
+    if (!wishlist) return false;
     const wishlistToArray = Object.values(wishlist);
     return wishlistToArray.some((item: any) => item.id === product.id);
   }

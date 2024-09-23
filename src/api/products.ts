@@ -105,3 +105,18 @@ export const deleteProduct = async (token: string, id: number) => {
 
   return response;
 };
+
+export const getProductById = async (id: number) => {
+  const response = await axios
+    .get(`${baseURL}/${id}`, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+    .then((res) => {
+      // console.log(res.data);
+      return res.data;
+    })
+    .catch((err) => console.log(err.data.message));
+  return response;
+};

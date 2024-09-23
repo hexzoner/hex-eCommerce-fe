@@ -26,7 +26,7 @@ export default function Wishlist() {
 
   return (
     <div className="min-h-screen pb-12">
-      <p className="text-3xl mt-8">Your Wishlist</p>
+      <p className="text-3xl mt-8">My Wishlist</p>
       <section>
         <div>
           {wishlist.length === 0 ? (
