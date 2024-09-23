@@ -2,15 +2,22 @@ import { useState, ReactNode, useEffect } from "react";
 import { restoreToken } from "../utils/storage";
 import { getWishlist } from "../api/wishlist";
 import { ShopContext } from ".";
+import { useAuth } from "../context";
 
 const ShopProvider = ({ children }: { children: ReactNode }) => {
+  const { user, isAuthenticated } = useAuth();
   const [wishlist, setWishlist] = useState<any[]>([]);
   const [shopLoading, setShopLoading] = useState(true);
 
   useEffect(() => {
-    const token = restoreToken();
-    if (!token) return;
-    getWishlist(token)
+    if (!user) {
+      setWishlist([]);
+      setShopLoading(false);
+      return;
+    }
+    if (user.role === "admin") return;
+
+    getWishlist(restoreToken())
       .then((res) => {
         setWishlist(res);
         // console.log(res);
@@ -19,7 +26,7 @@ const ShopProvider = ({ children }: { children: ReactNode }) => {
         console.log(err);
       })
       .finally(() => setShopLoading(false));
-  }, []);
+  }, [user, isAuthenticated]);
 
   return <ShopContext.Provider value={{ wishlist, setWishlist, shopLoading, setShopLoading }}>{children}</ShopContext.Provider>;
 };

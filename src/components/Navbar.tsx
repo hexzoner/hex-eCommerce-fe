@@ -49,37 +49,53 @@ export default function Navbar() {
             </>
           )}
         </div>
-        {!isAuthenticated ? (
-          <div className="flex-none">
-            <NavLink to="/login" className={navLinkClass}>
-              Login
-            </NavLink>
-            <NavLink to="/signup" className={navLinkClass}>
-              Signup
-            </NavLink>
-          </div>
-        ) : (
-          <div className="flex gap-1 text-sm">
-            <span className="italic">Logged as: </span>
-            <span className="text-info mr-3">{user?.email}</span>
-            <NavLink
-              to="/profile"
-              className={({ isActive }: { isActive: boolean }) => `cursor-pointer hover:opacity-75 "  + ${isActive ? "fill-info" : "fill-current"} `}>
-              <UserProfileSVG />
-            </NavLink>
+        <div></div>
+        {!authLoading ? (
+          <>
+            {!isAuthenticated ? (
+              <div className="flex-none">
+                <NavLink to="/login" className={navLinkClass}>
+                  Login
+                </NavLink>
+                <NavLink to="/signup" className={navLinkClass}>
+                  Signup
+                </NavLink>
+              </div>
+            ) : (
+              <div className="flex gap-1 text-sm">
+                <span className="italic">Logged as: </span>
+                <span className="text-info mr-3">{user?.email}</span>
+                <NavLink
+                  to="/profile"
+                  className={({ isActive }: { isActive: boolean }) =>
+                    `cursor-pointer hover:opacity-75 "  + ${isActive ? "fill-info" : "fill-current"} `
+                  }>
+                  <UserProfileSVG />
+                </NavLink>
 
-            <NavLink to="/wishlist" className={navLinkClass}>
-              Wishlist
-            </NavLink>
-            <button
-              onClick={() => {
-                logout();
-                // window.location.href = "/";
-              }}
-              className="btn btn-ghost  ">
-              Logout
-            </button>
-          </div>
+                {user.role === "user" && (
+                  <>
+                    <NavLink to="/wishlist" className={navLinkClass}>
+                      Wishlist
+                    </NavLink>
+                    <NavLink to="/cart" className={navLinkClass}>
+                      Cart
+                    </NavLink>
+                  </>
+                )}
+                <button
+                  onClick={() => {
+                    logout();
+                    // window.location.href = "/";
+                  }}
+                  className="btn btn-ghost  ">
+                  Logout
+                </button>
+              </div>
+            )}
+          </>
+        ) : (
+          <></>
         )}
       </div>
     </div>

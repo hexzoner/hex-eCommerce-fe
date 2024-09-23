@@ -18,8 +18,7 @@ export default function Home() {
   useEffect(() => {
     setLoading(true);
     if (shopLoading) return;
-    const token = restoreToken();
-    getProducts(token)
+    getProducts(restoreToken())
       .then((res) => setProducts(res))
       .catch((err) => {
         console.log(err);
@@ -28,7 +27,7 @@ export default function Home() {
       .finally(() => setLoading(false));
   }, [shopLoading]);
 
-  if (loading)
+  if (loading || shopLoading)
     return (
       <div className={mainMakrupColors}>
         <LoadingSpinner />
@@ -89,6 +88,10 @@ export function FavIcon({ product, wishlist, setWishlist }: { product: Product; 
   }
 
   const [favorited, setFavorited] = useState(isInWishlist());
+
+  useEffect(() => {
+    setFavorited(isInWishlist());
+  }, [wishlist]);
 
   function handleAddtoWishlist() {
     const token = restoreToken();
