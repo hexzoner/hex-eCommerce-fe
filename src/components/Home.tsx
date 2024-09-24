@@ -1,7 +1,7 @@
 export const mainMakrupColors = "bg-white text-[#363636]";
 import { getProducts } from "../api/products";
 import { useEffect, useState } from "react";
-import LoadingSpinner from "./LoadingSpinner";
+// import LoadingSpinner from "./LoadingSpinner";
 import { Product } from "./admin-area/Products";
 import { truncateText } from "../utils/sortTables";
 import { addToWishlist, removeFromWishlist } from "../api/wishlist";
@@ -13,42 +13,52 @@ import { Filters } from "../components/components";
 
 export default function Home() {
   const [products, setProducts] = useState<Product[]>([]);
+  const [selectedCategories, setSelectedCategories] = useState<any[]>([]);
+  const [selectedColors, setSelectedColors] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const { wishlist, setWishlist, shopLoading } = useShop();
 
   useEffect(() => {
+    // if (shopLoading) return;
     setLoading(true);
-    if (shopLoading) return;
-    getProducts(restoreToken())
+    // console.log("Filters - fetching products");
+    getProducts(
+      selectedCategories.map((x) => x.id),
+      selectedColors.map((x) => x.id)
+    )
       .then((res) => setProducts(res))
-      .catch((err) => {
-        console.log(err);
-        toast.error(err.message);
-      })
+      .catch((err) => console.log(err))
       .finally(() => setLoading(false));
-  }, [shopLoading]);
-
-  if (loading || shopLoading)
-    return (
-      <div className={mainMakrupColors}>
-        <LoadingSpinner />
-      </div>
-    );
+  }, [selectedCategories, selectedColors]);
 
   return (
     <div className={mainMakrupColors + " min-h-screen max-w-[80rem] m-auto "}>
       <p className="text-2xl text-left mt-8 font-semibold px-5">Our collection of handmade rugs</p>
       <p className="text-base text-left mt-4 px-5">Discover our collection, handmade of eco-friendly wool material</p>
-      {/* <Filters products={products} setProducts={setProducts} /> */}
       <div className="px-5 my-6">
-        <Filters />
+        <Filters
+          selectedColors={selectedColors}
+          selectedCategories={selectedCategories}
+          setProducts={setProducts}
+          setSelectedCategories={setSelectedCategories}
+          setSelectedColors={setSelectedColors}
+        />
       </div>
       <section className="my-8 ">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2">
-          {products.map((product) => {
-            return <ProductCard key={product.id} product={product} wishlist={wishlist} setWishlist={setWishlist} />;
-          })}
-        </div>
+        {loading || shopLoading ? (
+          <div className="flex flex-col justify-center items-center min-h-[50vh]">
+            <span className="loading loading-spinner loading-lg"></span>
+          </div>
+        ) : (
+          <>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2">
+              {products.map((product) => {
+                return <ProductCard key={product.id} product={product} wishlist={wishlist} setWishlist={setWishlist} />;
+              })}
+            </div>
+            {products.length === 0 && <p className="text-center text-xl mt-24">No products found</p>}
+          </>
+        )}
       </section>
     </div>
   );

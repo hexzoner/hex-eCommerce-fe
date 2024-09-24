@@ -2,11 +2,21 @@
 // import { getCategories } from "../api/categories";
 import { useState, useRef } from "react";
 import { useShop } from "../context";
+// import { getProducts } from "../api/products";
 
-export default function Filters() {
+export default function Filters({
+  setSelectedCategories,
+  setSelectedColors,
+  selectedCategories,
+  selectedColors,
+}: {
+  setProducts: any;
+  setSelectedCategories: any;
+  setSelectedColors: any;
+  selectedCategories: any[];
+  selectedColors: any[];
+}) {
   const { categories, colors } = useShop();
-  const [selectedCategories, setSelectedCategories] = useState<any[]>([]);
-  const [selectedColors, setSelectedColors] = useState<any[]>([]);
 
   return (
     <div>
@@ -15,26 +25,26 @@ export default function Filters() {
         <FilterDropdown name="Color" options={colors} setSelected={setSelectedColors} />
       </div>
       {selectedCategories.map((x, index) => (
-        <SelectedTag key={index} name={x} setSelected={setSelectedCategories} />
+        <SelectedTag key={index} obj={x} setSelected={setSelectedCategories} />
       ))}
 
       {selectedColors.map((x, index) => (
-        <SelectedTag key={index} name={x} setSelected={setSelectedColors} />
+        <SelectedTag key={index} obj={x} setSelected={setSelectedColors} />
       ))}
     </div>
   );
 }
 
-function SelectedTag({ name, setSelected }: { name: string; setSelected: any }) {
+function SelectedTag({ obj, setSelected }: { obj: any; setSelected: any }) {
   function handleRemove() {
     setSelected((prev: any) => {
-      return prev.filter((x: any) => x != name);
+      return prev.filter((x: any) => x.id != obj.id);
     });
   }
 
   return (
     <div className="badge badge-primary m-1 px-2 py-4 gap-2">
-      <span>{name}</span>
+      <span>{obj.name}</span>
       <span onClick={handleRemove} className="cursor-pointer">
         ✕
       </span>
@@ -71,7 +81,7 @@ function FilterDropdown({ name, options, setSelected }: { name: string; options:
         {options.map((option) => {
           return (
             <li key={option.id}>
-              <MultiSelectLine name={option.name} setSelected={setSelected} />
+              <MultiSelectLine id={option.id} name={option.name} setSelected={setSelected} />
             </li>
           );
         })}
@@ -80,10 +90,10 @@ function FilterDropdown({ name, options, setSelected }: { name: string; options:
   );
 }
 
-function MultiSelectLine({ name, setSelected }: { name: string; setSelected: any }) {
+function MultiSelectLine({ name, setSelected, id }: { name: string; setSelected: any; id: number }) {
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
-    if (e.target.checked) setSelected((prev: any) => [...prev, name]);
-    else setSelected((prev: any) => prev.filter((item: any) => item !== name));
+    if (e.target.checked) setSelected((prev: any) => [...prev, { id, name }]);
+    else setSelected((prev: any) => prev.filter((item: any) => item.id !== id));
   }
 
   return (

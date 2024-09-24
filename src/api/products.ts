@@ -2,18 +2,25 @@ import axios from "axios";
 // import { toast } from "react-toastify";
 // import { Product } from "../components/admin-area/Products";
 import { toast } from "react-toastify";
+import { restoreToken } from "../utils/storage";
 
 const API_URL = import.meta.env.VITE_API_URL;
 if (!API_URL) throw new Error("API URL is required, are you missing a .env file?");
 const baseURL = `${API_URL}/products`;
+const headers = {
+  "Content-Type": "application/json",
+  Authorization: `Bearer ${restoreToken()}`,
+};
 
-export const getProducts = async (token: string) => {
+export const getProducts = async (categories?: number[], colors?: number[]) => {
+  ///products?category=1,2&color=2
+  let url = `${baseURL}?`;
+  if (categories) url += `category=${categories.join(",")}&`;
+  if (colors) url += `color=${colors.join(",")}`;
+
   const response = await axios
-    .get(`${baseURL}`, {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
+    .get(url, {
+      headers,
     })
     .then((res) => {
       //   console.log(res.data);
@@ -23,16 +30,14 @@ export const getProducts = async (token: string) => {
   return response;
 };
 
-export const createProduct = async (
-  token: string,
-  product: { name: string; description: string; price: number; categoryId: number; image: string; colorId: number }
-) => {
-  // console.log({
-  //   name: product.name,
-  //   description: product.description,
-  //   price: product.price,
-  //   categoryId: product.categoryId,
-  // });
+export const createProduct = async (product: {
+  name: string;
+  description: string;
+  price: number;
+  categoryId: number;
+  image: string;
+  colorId: number;
+}) => {
   const response = await axios
     .post(
       `${baseURL}`,
@@ -44,10 +49,7 @@ export const createProduct = async (
         colorId: product.colorId,
       },
       {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
+        headers,
       }
     )
     .then((res) => {
@@ -58,10 +60,15 @@ export const createProduct = async (
   return response;
 };
 
-export const updateProduct = async (
-  token: string,
-  product: { name: string; description: string; price: number; categoryId: number; id: number; image: string; colorId: number }
-) => {
+export const updateProduct = async (product: {
+  name: string;
+  description: string;
+  price: number;
+  categoryId: number;
+  id: number;
+  image: string;
+  colorId: number;
+}) => {
   const body = {
     name: product.name,
     description: product.description,
@@ -73,10 +80,7 @@ export const updateProduct = async (
 
   const response = await axios
     .put(`${baseURL}/${product.id}`, body, {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
+      headers,
     })
     .then((res) => {
       //   console.log(res.data);
@@ -89,13 +93,10 @@ export const updateProduct = async (
   return response;
 };
 
-export const deleteProduct = async (token: string, id: number) => {
+export const deleteProduct = async (id: number) => {
   const response = await axios
     .delete(`${baseURL}/${id}`, {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
+      headers,
     })
     .then((res) => {
       // console.log(res.data);
