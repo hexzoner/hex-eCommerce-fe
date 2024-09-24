@@ -1,6 +1,5 @@
 import { getProducts } from "../../api/products";
 import { useState, useEffect } from "react";
-import { restoreToken } from "../../utils/storage";
 import LoadingSpinner from "../LoadingSpinner";
 import sortTables from "../../utils/sortTables";
 import { CreateProductModal } from "./admin-components";
@@ -54,9 +53,9 @@ export default function Products() {
     const fetchProducts = async () => {
       setLoading(true);
       try {
-        const token = restoreToken();
-        if (!token) return;
-        const products = await getProducts(token);
+        // const token = restoreToken();
+        // if (!token) return;
+        const products = await getProducts();
         // console.log(products);
         setProducts(sortTables(products, "id", "desc"));
         setLoading(false);

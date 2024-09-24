@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { getCategories } from "../../api/categories";
 import { getColors } from "../../api/colors";
 import { createProduct, updateProduct, deleteProduct } from "../../api/products";
-import { restoreToken } from "../../utils/storage";
+// import { restoreToken } from "../../utils/storage";
 import { ConfirmPopup } from "./admin-components";
 import { LoadingSpinnerSmall } from "./CategoryModal";
 
@@ -34,7 +34,7 @@ export function CreateProductModal({ product, setProducts }: { product: Product;
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const categories = await getCategories(restoreToken());
+        const categories = await getCategories();
         setCategories(categories);
         // console.log(categories);
       } catch (err) {
@@ -44,7 +44,7 @@ export function CreateProductModal({ product, setProducts }: { product: Product;
 
     const fetchColors = async () => {
       try {
-        const colors = await getColors(restoreToken());
+        const colors = await getColors();
         setColors(colors);
         // console.log(categories);
       } catch (err) {
@@ -63,7 +63,7 @@ export function CreateProductModal({ product, setProducts }: { product: Product;
 
   async function handleConfirmDelete() {
     // console.log("Deleting product " + product.id);
-    await deleteProduct(restoreToken(), product.id);
+    await deleteProduct(product.id);
     const deletePopup = document.getElementById("create_product_modal");
     if (deletePopup) (deletePopup as HTMLDialogElement).close();
     setProducts((prev) => prev.filter((x) => x.id != product.id));
@@ -84,7 +84,7 @@ export function CreateProductModal({ product, setProducts }: { product: Product;
     setLoading(true);
     if (!product.isEdit) {
       try {
-        await createProduct(restoreToken(), {
+        await createProduct({
           name: data.name,
           description: data.description,
           price,
@@ -97,7 +97,7 @@ export function CreateProductModal({ product, setProducts }: { product: Product;
       }
     } else {
       try {
-        await updateProduct(restoreToken(), {
+        await updateProduct({
           name: data.name,
           description: data.description,
           price,
