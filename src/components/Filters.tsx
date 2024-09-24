@@ -31,7 +31,7 @@ export default function Filters({
         />
         <FilterDropdown name="Color" options={colors} setSelected={setSelectedColors} selected={selectedColors} selectedRemoved={selectedRemoved} />
       </div>
-      // Selected categories tags for the selected filters.
+      {/* Selected categories tags for the selected filters. */}
       {selectedCategories.map((x, index) => (
         <SelectedTag
           key={index}
@@ -41,7 +41,7 @@ export default function Filters({
           selectedRemoved={selectedRemoved}
         />
       ))}
-      // Selected color tags for the selected filters.
+      {/* Selected color tags for the selected filters. */}
       {selectedColors.map((x, index) => (
         <SelectedTag key={index} obj={x} setSelected={setSelectedColors} selectedRemoved={selectedRemoved} setSelectedRemoved={setSelectedRemoved} />
       ))}
