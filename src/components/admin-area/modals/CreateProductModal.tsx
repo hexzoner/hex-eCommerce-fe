@@ -127,6 +127,7 @@ export function CreateProductModal({
           sizes: selectedSizes.map((s) => s.id),
         });
         setUpdate((prev) => !prev);
+        closing();
       } catch (err) {
         console.log(err);
       }
@@ -143,17 +144,21 @@ export function CreateProductModal({
           sizes: selectedSizes.map((s) => s.id),
         });
         setUpdate((prev) => !prev);
+        closing();
       } catch (err) {
         console.log(err);
       }
     }
 
     setLoading(false);
-    const popup = document.getElementById("create_product_modal");
-    if (popup) (popup as HTMLDialogElement).close();
-    // setProducts(await getProducts(restoreToken()));
-    // window.location.reload(); //refresh the page
-    reset();
+
+    function closing() {
+      const popup = document.getElementById("create_product_modal");
+      if (popup) (popup as HTMLDialogElement).close();
+      reset();
+      // window.location.reload(); //refresh the page
+      // setProducts(await getProducts(restoreToken()));
+    }
   }
 
   return (
