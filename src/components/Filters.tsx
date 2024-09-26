@@ -119,7 +119,7 @@ export function FilterDropdown({
       <div tabIndex={0} role="button" className="border-[1.5px] py-[10px] select-bordered w-full px-4 ">
         {name}
       </div>
-      <ul tabIndex={0} className="dropdown-content menu bg-base-100 rounded-box z-[1] w-fit p-2 shadow">
+      <ul tabIndex={0} className="dropdown-content menu bg-base-100 rounded-box z-[1] w-72 p-2 shadow">
         {options.map((option) => {
           return (
             <li key={option.id}>
