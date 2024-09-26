@@ -10,7 +10,15 @@ import { ConfirmPopup, LoadingSpinnerSmall } from "../admin-components";
 import { FilterDropdown } from "../../Filters";
 import { Size } from "../Sizes";
 
-export function CreateProductModal({ product, setProducts }: { product: Product; setProducts: React.Dispatch<React.SetStateAction<Product[]>> }) {
+export function CreateProductModal({
+  product,
+  setProducts,
+  setUpdate,
+}: {
+  product: Product;
+  setProducts: React.Dispatch<React.SetStateAction<Product[]>>;
+  setUpdate: React.Dispatch<React.SetStateAction<boolean>>;
+}) {
   const [categories, setCategories] = useState([]);
   const [colors, setColors] = useState([]);
   const [sizes, setSizes] = useState([]);
@@ -118,6 +126,7 @@ export function CreateProductModal({ product, setProducts }: { product: Product;
           colorId: color,
           sizes: selectedSizes.map((s) => s.id),
         });
+        setUpdate((prev) => !prev);
       } catch (err) {
         console.log(err);
       }
@@ -133,6 +142,7 @@ export function CreateProductModal({ product, setProducts }: { product: Product;
           colorId: color,
           sizes: selectedSizes.map((s) => s.id),
         });
+        setUpdate((prev) => !prev);
       } catch (err) {
         console.log(err);
       }
@@ -142,7 +152,7 @@ export function CreateProductModal({ product, setProducts }: { product: Product;
     const popup = document.getElementById("create_product_modal");
     if (popup) (popup as HTMLDialogElement).close();
     // setProducts(await getProducts(restoreToken()));
-    window.location.reload(); //refresh the page
+    // window.location.reload(); //refresh the page
     reset();
   }
 

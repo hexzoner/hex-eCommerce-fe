@@ -7,6 +7,8 @@ export default function Navbar() {
   const navLinkClass = ({ isActive }: { isActive: boolean }) => `btn btn-ghost  + ${isActive ? "underline underline-offset-4 text-info" : ""} `;
 
   const htmlElement = document.querySelector("html");
+  if (htmlElement) htmlElement.setAttribute("data-theme", "winter");
+
   if (htmlElement && !authLoading) {
     if (user && user.role == "admin") htmlElement.setAttribute("data-theme", "business");
     else htmlElement.setAttribute("data-theme", "winter");

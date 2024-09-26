@@ -4,6 +4,7 @@ import { restoreToken } from "../utils/storage";
 import { toast } from "react-toastify";
 import { useShop } from "../context";
 import LoadingSpinner from "./LoadingSpinner";
+import { useNavigate } from "react-router-dom";
 
 export default function Wishlist() {
   const { wishlist, setWishlist, shopLoading } = useShop();
@@ -45,14 +46,21 @@ export function WishlistCard({ item, setWishlist }: { item: any; setWishlist: an
       });
   }
 
+  const navigate = useNavigate();
+  function handleNavigate() {
+    navigate(`/product/${item.id}`);
+  }
+
   return (
     <div className="bg-white border border-gray-200 p-4 rounded-lg w-72">
       <p onClick={handleRemoveClick} className="text-right font-bold cursor-pointer">
         ✕
       </p>
-      <img src={item.image} alt={item.name} className=" h-36 w-72 object-cover px-4" />
+      <img onClick={handleNavigate} src={item.image} alt={item.name} className=" h-36 w-72 object-cover px-4 cursor-pointer" />
       <div className="grid grid-col gap-3">
-        <p className="text-lg font-semibold">{item.name}</p>
+        <p onClick={handleNavigate} className="text-lg font-semibold cursor-pointer hover:text-[#b04e2d]">
+          {item.name}
+        </p>
         <p className="text-lg font-semibold">${item.price}</p>
         <button className="btn btn-primary rounded-none mx-2">ADD TO CART</button>
       </div>

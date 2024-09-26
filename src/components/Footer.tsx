@@ -4,7 +4,7 @@ export default function Footer() {
       <footer className="max-w-screen-xl m-auto flex justify-around">
         <aside>
           <div className="text-lg">
-            E-Commerce by Serhii Tyshchenko.
+            Full-stack E-Commerce.
             <br />
             <p className="font-bold">Copyright © {new Date().getFullYear()}. All right reserved.</p>
           </div>

@@ -51,6 +51,7 @@ export default function Products() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedProduct, setSelectedProduct] = useState<Product>(emptyProduct);
+  const [update, setUpdate] = useState(false);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -68,7 +69,7 @@ export default function Products() {
       }
     };
     fetchProducts();
-  }, []);
+  }, [update]);
 
   const [sortOrder, setSortOrder] = useState("asc");
   const handleSortClick = (key: string) => {
@@ -90,13 +91,13 @@ export default function Products() {
 
   return (
     <div className="min-h-screen">
-      <div className="w-full flex max-w-6xl m-auto justify-center items-center mb-4 gap-4">
+      <div className="w-full flex m-auto justify-center items-center mb-4 gap-4">
         <p className="text-3xl my-6">Products</p>
         <button onClick={createProduct} className="btn btn-outline btn-sm">
           Create Product
         </button>
       </div>
-      <div className="overflow-x-auto rounded-md max-w-6xl m-auto">
+      <div className="overflow-x-auto rounded-md max-w-7xl m-auto">
         <table className="table rounded-md table-zebra table-sm w-full shadow-md mb-12">
           <thead className="text-sm bg-base-300">
             <tr>
@@ -241,7 +242,7 @@ export default function Products() {
         </table>
         {/* <Pagination page={page} setPage={setPage} totalPages={totalPages} perPage={perPage} setPerPage={setPerPage} totalResults={totalTasks} /> */}
         {/* <ProductModal product={selectedProduct} /> */}
-        <CreateProductModal product={selectedProduct} setProducts={setProducts} />
+        <CreateProductModal product={selectedProduct} setProducts={setProducts} setUpdate={setUpdate} />
       </div>
     </div>
   );

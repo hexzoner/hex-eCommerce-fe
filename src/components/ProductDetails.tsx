@@ -10,11 +10,14 @@ export default function ProductDetails() {
   const [product, setProduct] = useState<any>({});
   const [loading, setLoading] = useState(true);
   const { wishlist, setWishlist } = useShop();
+  const [selectedSize, setSelectedSize] = useState<any>({});
 
   useEffect(() => {
     getProductById(Number(id))
       .then((res) => {
         setProduct(res);
+        setSelectedSize(res.defaultSize);
+        // console.log(res);
       })
       .catch((err) => console.log(err))
       .finally(() => setLoading(false));
@@ -40,8 +43,38 @@ export default function ProductDetails() {
           <p>{product.color.name}</p>
         </div>
         <p>{product.description}</p>
+        <div className="font-semibold text-lg">
+          <span>Size:</span> <span className="ml-1 ">{selectedSize.name}</span>
+        </div>
+        <div className="flex flex-wrap gap-3 items-center">
+          {/* <p>Sizes: </p> */}
+          {product.sizes.map((size: any) => (
+            // <button
+            //   onClick={() => {
+            //     setSelectedSize(size);
+            //   }}
+            //   key={size.id}
+            //   className="btn btn-sm btn-outline py-0 px-5">
+            //   {size.name}
+            // </button>
+            <ProductSize size={size} setSelectedSize={setSelectedSize} selectedSize={selectedSize} key={size.id} />
+          ))}
+        </div>
         <button className="btn btn-primary">ADD TO CART</button>
       </div>
     </div>
+  );
+}
+
+function ProductSize({ size, setSelectedSize, selectedSize }: { size: any; setSelectedSize: any; selectedSize: any }) {
+  return (
+    <button
+      onClick={() => {
+        setSelectedSize(size);
+      }}
+      key={size.id}
+      className={`btn btn-sm py-0 px-5 ${selectedSize.id == size.id ? "btn-primary" : "btn-outline"}`}>
+      {size.name}
+    </button>
   );
 }
