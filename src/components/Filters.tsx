@@ -162,9 +162,9 @@ function MultiSelectLine({
 
   return (
     <div className="rounded-none">
-      <label className="cursor-pointer max-w-64">
+      <label className="cursor-pointer max-w-72 flex items-center">
         <input onChange={handleChange} checked={checked} type="checkbox" className="checkbox rounded-none bg-base-300 checkbox-xs" />
-        <span className="text-sm text-left w-full ml-2">{name}</span>
+        <div className="text-sm text-left w-full ml-2">{name}</div>
       </label>
     </div>
   );
