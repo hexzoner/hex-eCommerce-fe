@@ -35,8 +35,9 @@ export const createProduct = async (product: {
   description: string;
   price: number;
   categoryId: number;
-  image: string;
   colorId: number;
+  image: string;
+  sizes: number[];
 }) => {
   const response = await axios
     .post(
@@ -47,6 +48,8 @@ export const createProduct = async (product: {
         price: product.price,
         categoryId: product.categoryId,
         colorId: product.colorId,
+        image: product.image,
+        sizes: product.sizes,
       },
       {
         headers,
@@ -68,6 +71,7 @@ export const updateProduct = async (product: {
   id: number;
   image: string;
   colorId: number;
+  sizes: number[];
 }) => {
   const body = {
     name: product.name,
@@ -76,6 +80,7 @@ export const updateProduct = async (product: {
     categoryId: product.categoryId,
     image: product.image,
     colorId: product.colorId,
+    sizes: product.sizes,
   };
 
   const response = await axios

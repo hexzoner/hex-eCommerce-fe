@@ -21,7 +21,7 @@ export default function Filters({
 
   return (
     <div>
-      <div className="border-b-[1.5px] border-t-[1.5px] border-black flex items-start mb-2">
+      <div className="border-b-[1.5px] border-t-[1.5px] border-black flex items-start mb-2 gap-4 py-4">
         <FilterDropdown
           name="Category"
           options={categories}
@@ -79,7 +79,7 @@ function SelectedTag({
 }
 
 // Dropdown component for the filters with checkboxes.
-function FilterDropdown({
+export function FilterDropdown({
   name,
   options,
   setSelected,
@@ -90,7 +90,7 @@ function FilterDropdown({
   options: any[];
   setSelected: any;
   selected: any[];
-  selectedRemoved: any;
+  selectedRemoved?: any;
 }) {
   const [isHovered, setIsHovered] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -111,11 +111,15 @@ function FilterDropdown({
   };
 
   return (
-    <div className={`dropdown ${isHovered ? "dropdown-open" : ""}`} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} ref={dropdownRef}>
-      <div tabIndex={0} role="button" className="btn m-1 px-8">
+    <div
+      className={`dropdown  ${isHovered ? "dropdown-open" : ""}`}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      ref={dropdownRef}>
+      <div tabIndex={0} role="button" className="border-[1.5px] py-[10px] select-bordered w-full px-4 ">
         {name}
       </div>
-      <ul tabIndex={0} className="dropdown-content menu bg-base-100 rounded-box z-[1] w-64 p-2 shadow">
+      <ul tabIndex={0} className="dropdown-content menu bg-base-100 rounded-box z-[1] w-fit p-2 shadow">
         {options.map((option) => {
           return (
             <li key={option.id}>
@@ -146,12 +150,17 @@ function MultiSelectLine({
 
   // Check each time the selected filter removed outside of the dropdown and uncheck if needed.
   useEffect(() => {
+    // console.log(id);
     if (selected.find((x) => x.id === id)) setChecked(true);
     else setChecked(false);
   }, [selectedRemoved]);
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
-    if (e.target.checked) {
+    processCheck(e.target.checked);
+  }
+
+  function processCheck(checked: boolean) {
+    if (checked) {
       setSelected((prev: any) => [...prev, { id, name }]);
       setChecked(true);
     } else {
@@ -161,8 +170,8 @@ function MultiSelectLine({
   }
 
   return (
-    <div className="rounded-none">
-      <label className="cursor-pointer max-w-72 flex items-center">
+    <div className="rounded-none ">
+      <label className="max-w-72 flex items-center cursor-pointer">
         <input onChange={handleChange} checked={checked} type="checkbox" className="checkbox rounded-none bg-base-300 checkbox-xs" />
         <div className="text-sm text-left w-full ml-2">{name}</div>
       </label>

@@ -4,6 +4,7 @@ import LoadingSpinner from "../LoadingSpinner";
 import sortTables from "../../utils/sortTables";
 import { CreateProductModal } from "./admin-components";
 import { formatDateShort } from "../../utils/dateUtils";
+import { Size } from "./Sizes";
 
 export interface Product {
   id: number;
@@ -23,6 +24,7 @@ export interface Product {
   createdAt: string;
   image: string;
   wishlisted: boolean;
+  sizes: Size[];
 }
 
 export default function Products() {
@@ -44,6 +46,7 @@ export default function Products() {
     createdAt: "",
     image: "",
     wishlisted: false,
+    sizes: [],
   };
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
