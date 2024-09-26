@@ -27,6 +27,9 @@ export default function Navbar() {
               <NavLink to="admin/colors" className={navLinkClass}>
                 Colors
               </NavLink>
+              <NavLink to="admin/sizes" className={navLinkClass}>
+                Sizes
+              </NavLink>
               <NavLink to="admin/products" className={navLinkClass}>
                 Products
               </NavLink>

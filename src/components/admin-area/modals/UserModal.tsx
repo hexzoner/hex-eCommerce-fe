@@ -1,5 +1,5 @@
-import { User } from "./Users";
-import { formatDateFull } from "../../utils/dateUtils";
+import { User } from "../Users";
+import { formatDateFull } from "../../../utils/dateUtils";
 
 export default function UserModal({ user }: { user: User }) {
   return (

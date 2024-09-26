@@ -2,7 +2,7 @@ import { createBrowserRouter, createRoutesFromElements, Route, RouterProvider } 
 import "./App.css";
 import { MainLayout, ProtectedLayout, Authorize } from "./layouts/layouts";
 import { Home, About, NotFound, Login, Signup, ProductDetails, Cart, Profile, ForgotPassword, Unauthorized, Wishlist } from "./components/components";
-import { Dashboard, Categories, Orders, Users, Products, OrderDetails, Colors } from "./components/admin-area/admin-components";
+import { Dashboard, Categories, Orders, Users, Products, OrderDetails, Colors, Sizes } from "./components/admin-area/admin-components";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -23,6 +23,7 @@ const router = createBrowserRouter(
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="categories" element={<Categories />} />
           <Route path="colors" element={<Colors />} />
+          <Route path="sizes" element={<Sizes />} />
           <Route path="orders" element={<Orders />} />
           <Route path="users" element={<Users />} />
           <Route path="products" element={<Products />} />

@@ -1,6 +1,6 @@
-import { Product } from "./Products";
 import { useState } from "react";
-import { ConfirmPopup } from "./admin-components";
+import { Product } from "../Products";
+import { ConfirmPopup } from "../admin-components";
 
 export default function ProductModal({ product }: { product: Product }) {
   const [editMode, setEditMode] = useState(false);

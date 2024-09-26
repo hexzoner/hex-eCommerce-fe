@@ -1,21 +1,21 @@
-import { Color } from "./Colors";
+import { Category } from "../Categories";
 import { useState } from "react";
-import { updateColor, createColor, deleteColor, getColors } from "../../api/colors";
-import { restoreToken } from "../../utils/storage";
-import { ConfirmPopup } from "./admin-components";
+import { updateCategory, createCategory, getCategories, deleteCategory } from "../../../api/categories";
+import { restoreToken } from "../../../utils/storage";
+import { ConfirmPopup } from "../admin-components";
 
-interface ColorModalProps {
-  color: Color;
-  setSelectedColor: React.Dispatch<React.SetStateAction<Color>>;
-  setColors: React.Dispatch<React.SetStateAction<Color[]>>;
+interface CategoryModalProps {
+  category: Category;
+  setSelectedCategory: React.Dispatch<React.SetStateAction<Category>>;
+  setCategories: React.Dispatch<React.SetStateAction<Category[]>>;
 }
 
-export default function ColorModal({ color, setSelectedColor, setColors }: ColorModalProps) {
+export default function CategoryModal({ category, setSelectedCategory, setCategories }: CategoryModalProps) {
   const [editMode, setEditMode] = useState(false);
   const [loading, setLoading] = useState(false);
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
-    setSelectedColor({ ...color, name: e.target.value });
+    setSelectedCategory({ ...category, name: e.target.value });
   }
 
   function handleDelete(e: React.MouseEvent) {
@@ -32,10 +32,12 @@ export default function ColorModal({ color, setSelectedColor, setColors }: Color
   async function finishEdit(e: React.MouseEvent) {
     e.preventDefault();
     setLoading(true);
-    await updateColor(restoreToken(), color);
-    setColors((prev) => {
+    await updateCategory(restoreToken(), category);
+    setCategories((prev) => {
       return prev.map((c) => {
-        if (c.id === color.id) return color;
+        if (c.id === category.id) {
+          return category;
+        }
         return c;
       });
     });
@@ -44,17 +46,17 @@ export default function ColorModal({ color, setSelectedColor, setColors }: Color
   }
 
   async function handleConfirmDelete() {
-    await deleteColor(restoreToken(), color.id);
-    const deletePopup = document.getElementById("color_modal");
+    await deleteCategory(restoreToken(), category.id);
+    const deletePopup = document.getElementById("category_modal");
     if (deletePopup) (deletePopup as HTMLDialogElement).close();
-    setColors((prev) => prev.filter((x) => x.id != color.id));
+    setCategories((prev) => prev.filter((x) => x.id != category.id));
   }
 
   return (
     <>
-      <dialog id="color_modal" className="modal">
+      <dialog id="category_modal" className="modal">
         <div className="modal-box">
-          <p className="py-4">Id = {color.id}</p>
+          <p className="py-4">Id = {category.id}</p>
 
           {loading ? (
             <div className="min-h-[6rem]">
@@ -63,12 +65,12 @@ export default function ColorModal({ color, setSelectedColor, setColors }: Color
           ) : (
             <div className="max-w-96 m-auto ">
               {!editMode ? (
-                <h3 className="font-bold text-lg">{color.name}</h3>
+                <h3 className="font-bold text-lg">{category.name}</h3>
               ) : (
                 <div>
                   <input
                     onChange={handleChange}
-                    value={color.name}
+                    value={category.name}
                     type="text"
                     placeholder="Type here"
                     className="input input-bordered w-full max-w-xs"
@@ -97,7 +99,7 @@ export default function ColorModal({ color, setSelectedColor, setColors }: Color
           )}
         </div>
       </dialog>
-      <ConfirmPopup confirmText="Are you sure you want to delete this color?" deleteConfirmed={handleConfirmDelete} />
+      <ConfirmPopup confirmText="Are you sure you want to delete this category?" deleteConfirmed={handleConfirmDelete} />
     </>
   );
 }
@@ -106,40 +108,46 @@ export function LoadingSpinnerSmall() {
   return <span className="loading loading-dots loading-md"></span>;
 }
 
-export function CreateColorModal({ setColors }: { setColors: React.Dispatch<React.SetStateAction<Color[]>> }) {
+export function CreateCategoryModal({ setCategories }: { setCategories: React.Dispatch<React.SetStateAction<Category[]>> }) {
   const [loading, setLoading] = useState(false);
-  const [newColor, setNewColor] = useState<Color>({ id: 0, name: "" });
+  const [newCategory, setNewCategory] = useState<Category>({ id: 0, name: "" });
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
-    setNewColor({ ...newColor, name: e.target.value });
+    setNewCategory({ ...newCategory, name: e.target.value });
   }
 
   async function handleCreate(e: React.MouseEvent) {
     e.preventDefault();
-    if (newColor.name.length == 0) return;
+    if (newCategory.name.length == 0) return;
     setLoading(true);
-    await createColor(restoreToken(), newColor);
-    const colors = await getColors(restoreToken());
-    setColors(colors);
+    await createCategory(restoreToken(), newCategory);
+    const categories = await getCategories();
+    setCategories(categories);
     setLoading(false);
-    setNewColor({ id: 0, name: "" });
-    const colorModal = document.getElementById("create_color_modal");
-    if (colorModal) (colorModal as HTMLDialogElement).close();
+    setNewCategory({ id: 0, name: "" });
+    const categoryModal = document.getElementById("create_category_modal");
+    if (categoryModal) (categoryModal as HTMLDialogElement).close();
   }
 
   return (
     <>
-      <dialog id="create_color_modal" className="modal">
+      <dialog id="create_category_modal" className="modal">
         <div className="modal-box">
           <div className="max-w-96 m-auto text-left">
-            <h3 className="font-bold text-lg mb-4">Create Color</h3>
+            <h3 className="font-bold text-lg mb-4">Create Category</h3>
             {loading ? (
               <div className="text-center">
                 <LoadingSpinnerSmall />
               </div>
             ) : (
               <div>
-                <input onChange={handleChange} value={newColor.name} type="text" placeholder="Type here" className="input input-bordered w-full " />
+                <input
+                  onChange={handleChange}
+                  value={newCategory.name}
+                  type="text"
+                  placeholder="Type here"
+                  className="input input-bordered w-full "
+                />
               </div>
             )}
             <div className="modal-action">

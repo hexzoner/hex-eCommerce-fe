@@ -1,5 +1,5 @@
-import { Order } from "./Orders";
-import { formatDateFull } from "../../utils/dateUtils";
+import { Order } from "../Orders";
+import { formatDateFull } from "../../../utils/dateUtils";
 
 export default function OrderModal({ order }: { order: Order }) {
   return (

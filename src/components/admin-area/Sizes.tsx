@@ -1,49 +1,49 @@
-import { getColors } from "../../api/colors";
+import { getSizes } from "../../api/sizes";
 import { useState, useEffect } from "react";
 import LoadingSpinner from "../LoadingSpinner";
 import sortTables from "../../utils/sortTables";
-import { CreateColorModal, ColorModal } from "./admin-components";
+import { CreateSizeModal, SizeModal } from "./admin-components";
 
-export interface Color {
+export interface Size {
   id: number;
   name: string;
 }
 
-export default function Colors() {
-  const [colors, setColors] = useState<Color[]>([]);
+export default function Sizes() {
+  const [sizes, setSizes] = useState<Size[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedColor, setSelectedColor] = useState<Color>({
+  const [selectedSize, setSelectedSize] = useState<Size>({
     id: 0,
     name: "",
   });
 
   useEffect(() => {
-    const fetchColors = async () => {
+    const fetchSizes = async () => {
       setLoading(true);
       try {
-        const colors = await getColors();
+        const sizes = await getSizes();
         // console.log(users);
-        setColors(colors);
+        setSizes(sizes);
         setLoading(false);
       } catch (err) {
         console.log(err);
         setLoading(false);
       }
     };
-    fetchColors();
+    fetchSizes();
   }, []);
 
   const [sortOrder, setSortOrder] = useState("asc");
   const handleSortClick = (key: string) => {
     const newSortOrder = sortOrder === "asc" ? "desc" : "asc";
     setSortOrder(newSortOrder);
-    const sortedColors = sortTables(colors, key, newSortOrder);
-    setColors(sortedColors);
+    const sortedSizes = sortTables(sizes, key, newSortOrder);
+    setSizes(sortedSizes);
   };
 
-  function createColor() {
-    const colorModal = document.getElementById("create_color_modal");
-    if (colorModal) (colorModal as HTMLDialogElement).showModal();
+  function createSize() {
+    const sizeModal = document.getElementById("create_size_modal");
+    if (sizeModal) (sizeModal as HTMLDialogElement).showModal();
   }
 
   if (loading) return <LoadingSpinner />;
@@ -52,9 +52,9 @@ export default function Colors() {
   return (
     <div className="min-h-screen">
       <div className="w-full flex max-w-3xl m-auto justify-center mb-4 items-center gap-4">
-        <p className="text-3xl my-6">Colors </p>
-        <button onClick={createColor} className="btn btn-outline btn-sm">
-          Create Color
+        <p className="text-3xl my-6">Sizes </p>
+        <button onClick={createSize} className="btn btn-outline btn-sm">
+          Create Size
         </button>
       </div>
       <div className="overflow-x-auto rounded-md max-w-3xl m-auto">
@@ -96,18 +96,18 @@ export default function Colors() {
             </tr>
           </thead>
           <tbody>
-            {colors.map((color: Color) => {
+            {sizes.map((size: Size) => {
               return (
                 <tr
-                  key={color.id}
+                  key={size.id}
                   className="hover cursor-pointer"
                   onClick={() => {
-                    setSelectedColor(color);
-                    const colorModal = document.getElementById("color_modal");
-                    if (colorModal) (colorModal as HTMLDialogElement).showModal();
+                    setSelectedSize(size);
+                    const sizeModal = document.getElementById("size_modal");
+                    if (sizeModal) (sizeModal as HTMLDialogElement).showModal();
                   }}>
-                  <td className={borderMarkup}>{color.id}</td>
-                  <td className={borderMarkup}>{color.name}</td>
+                  <td className={borderMarkup}>{size.id}</td>
+                  <td className={borderMarkup}>{size.name}</td>
                 </tr>
               );
             })}
@@ -115,8 +115,8 @@ export default function Colors() {
         </table>
 
         {/* <Pagination page={page} setPage={setPage} totalPages={totalPages} perPage={perPage} setPerPage={setPerPage} totalResults={totalTasks} /> */}
-        <ColorModal color={selectedColor} setSelectedColor={setSelectedColor} setColors={setColors} />
-        <CreateColorModal setColors={setColors} />
+        <SizeModal size={selectedSize} setSelectedSize={setSelectedSize} setSizes={setSizes} />
+        <CreateSizeModal setSizes={setSizes} />
       </div>
     </div>
   );

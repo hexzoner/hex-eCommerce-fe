@@ -1,12 +1,11 @@
-import { Product } from "./Products";
+import { Product } from "../Products";
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { getCategories } from "../../api/categories";
-import { getColors } from "../../api/colors";
-import { createProduct, updateProduct, deleteProduct } from "../../api/products";
+import { getCategories } from "../../../api/categories";
+import { getColors } from "../../../api/colors";
+import { createProduct, updateProduct, deleteProduct } from "../../../api/products";
 // import { restoreToken } from "../../utils/storage";
-import { ConfirmPopup } from "./admin-components";
-import { LoadingSpinnerSmall } from "./CategoryModal";
+import { ConfirmPopup, LoadingSpinnerSmall } from "../admin-components";
 
 export function CreateProductModal({ product, setProducts }: { product: Product; setProducts: React.Dispatch<React.SetStateAction<Product[]>> }) {
   const [categories, setCategories] = useState([]);
