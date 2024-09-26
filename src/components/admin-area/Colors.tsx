@@ -1,9 +1,7 @@
 import { getColors } from "../../api/colors";
 import { useState, useEffect } from "react";
-import { restoreToken } from "../../utils/storage";
 import LoadingSpinner from "../LoadingSpinner";
 import sortTables from "../../utils/sortTables";
-// import { CategoryModal, CreateCategoryModal } from "./admin-components";
 import ColorModal from "./ColorModals";
 import { CreateColorModal } from "./ColorModals";
 
@@ -24,9 +22,7 @@ export default function Colors() {
     const fetchColors = async () => {
       setLoading(true);
       try {
-        const token = restoreToken();
-        if (!token) return;
-        const colors = await getColors(token);
+        const colors = await getColors();
         // console.log(users);
         setColors(colors);
         setLoading(false);
