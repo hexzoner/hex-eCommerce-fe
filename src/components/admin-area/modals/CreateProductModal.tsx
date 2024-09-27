@@ -41,6 +41,7 @@ export function CreateProductModal({
     image: string;
     color: number | string;
     defaultSize: number | string;
+    active: boolean;
   }>();
 
   useEffect(() => {
@@ -52,9 +53,9 @@ export function CreateProductModal({
       color: product.isEdit ? product.defaultColor.id : "",
       image: product.image,
       defaultSize: product.isEdit ? product.defaultSize.id : "",
+      active: product.isEdit ? product.active : true,
     });
 
-    // console.log(product);
     setSelectedSizes(product.isEdit ? product.sizes.map((s) => ({ id: s.id, name: s.name })) : []);
     setSelectedColors(product.isEdit ? product.colors.map((c) => ({ id: c.id, name: c.name })) : []);
   }, [product]);
@@ -117,6 +118,7 @@ export function CreateProductModal({
     color: number | string;
     image: string;
     defaultSize: number | string;
+    active: boolean;
   }) {
     // parsing the data to the correct type before sending it to the server
     const price = typeof data.price === "string" ? parseFloat(data.price) : data.price;
@@ -137,6 +139,7 @@ export function CreateProductModal({
           defaultColorId: color,
           sizes: selectedSizes.map((s) => s.id),
           defaultSize,
+          active: data.active === undefined ? false : data.active,
         });
         setUpdate((prev) => !prev);
         closing();
@@ -155,6 +158,7 @@ export function CreateProductModal({
           colors: selectedColors.map((c) => c.id),
           defaultColorId: color,
           sizes: selectedSizes.map((s) => s.id),
+          active: data.active === undefined ? false : data.active,
           defaultSize,
         });
         setUpdate((prev) => !prev);
@@ -234,7 +238,13 @@ export function CreateProductModal({
                       />
                       {errors.price && <p className="font-semibold text-error text-xs text-left ">{errors.price.message?.toString()}</p>}
                     </div>
+
+                    <div className="flex items-center gap-4">
+                      <p>Is Active?</p>
+                      <input type="checkbox" className="h-5 w-5 text-primary" {...register("active")} />
+                    </div>
                   </div>
+
                   <div className="w-1/2 flex flex-col gap-6">
                     <div>
                       <select

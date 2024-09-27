@@ -20,6 +20,8 @@ const sortTables = <T extends Record<string, any>>(table: T[], key: string, sort
       return sortOrder === "asc" ? (valueA as string).localeCompare(valueB as string) : (valueB as string).localeCompare(valueA as string);
     } else if (typeof valueA === "number" && typeof valueB === "number") {
       return sortOrder === "asc" ? valueA - valueB : valueB - valueA;
+    } else if (typeof valueA === "boolean" && typeof valueB === "boolean") {
+      return sortOrder === "asc" ? (valueA ? 1 : -1) - (valueB ? 1 : -1) : (valueB ? 1 : -1) - (valueA ? 1 : -1);
     }
 
     return 0;

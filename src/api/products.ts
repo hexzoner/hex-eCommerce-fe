@@ -44,6 +44,7 @@ export const createProduct = async (product: {
   sizes: number[];
   defaultSize: number;
   colors: number[];
+  active?: boolean;
 }) => {
   const response = await axios
     .post(
@@ -58,6 +59,7 @@ export const createProduct = async (product: {
         sizes: product.sizes,
         defaultSizeId: product.defaultSize,
         colors: product.colors,
+        active: product.active,
       },
       {
         headers,
@@ -85,6 +87,7 @@ export const updateProduct = async (product: {
   defaultColorId: number;
   sizes: number[];
   defaultSize: number;
+  active?: boolean;
 }) => {
   const body = {
     name: product.name,
@@ -96,6 +99,7 @@ export const updateProduct = async (product: {
     defaultColorId: product.defaultColorId,
     sizes: product.sizes,
     defaultSizeId: product.defaultSize,
+    active: product.active,
   };
 
   // console.log(body);

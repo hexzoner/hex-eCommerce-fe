@@ -28,7 +28,7 @@ export default function Home() {
       selectedColors.map((x) => x.id),
       selectedSizes.map((x) => x.id)
     )
-      .then((res) => setProducts(res))
+      .then((res) => setProducts(res.filter((x: any) => x.active == true)))
       .catch((err) => console.log(err))
       .finally(() => setLoading(false));
   }, [selectedCategories, selectedColors, selectedSizes]);
