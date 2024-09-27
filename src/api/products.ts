@@ -12,11 +12,12 @@ const headers = {
   Authorization: `Bearer ${restoreToken()}`,
 };
 
-export const getProducts = async (categories?: number[], colors?: number[]) => {
+export const getProducts = async (categories?: number[], colors?: number[], sizes?: number[]) => {
   ///products?category=1,2&color=2
   let url = `${baseURL}?`;
-  if (categories) url += `category=${categories.join(",")}&`;
-  if (colors) url += `color=${colors.join(",")}`;
+  if (categories && categories.length > 0) url += `category=${categories.join(",")}&`;
+  if (colors && colors.length > 0) url += `color=${colors.join(",")}`;
+  if (sizes && sizes.length > 0) url += `size=${sizes.join(",")}`;
 
   const response = await axios
     .get(url, {
@@ -26,7 +27,10 @@ export const getProducts = async (categories?: number[], colors?: number[]) => {
       //   console.log(res.data);
       return res.data;
     })
-    .catch((err) => console.log(err.data.message));
+    .catch((err) => {
+      toast.error(err.response.data.error);
+      console.log(err.response.data.error);
+    });
   return response;
 };
 
@@ -35,9 +39,11 @@ export const createProduct = async (product: {
   description: string;
   price: number;
   categoryId: number;
-  colorId: number;
+  defaultColorId: number;
   image: string;
   sizes: number[];
+  defaultSize: number;
+  colors: number[];
 }) => {
   const response = await axios
     .post(
@@ -47,9 +53,11 @@ export const createProduct = async (product: {
         description: product.description,
         price: product.price,
         categoryId: product.categoryId,
-        colorId: product.colorId,
+        defaultColorId: product.defaultColorId,
         image: product.image,
         sizes: product.sizes,
+        defaultSizeId: product.defaultSize,
+        colors: product.colors,
       },
       {
         headers,
@@ -59,7 +67,10 @@ export const createProduct = async (product: {
       //   console.log(res.data);
       return res.data;
     })
-    .catch((err) => console.log(err.data.message));
+    .catch((err) => {
+      toast.error(err.response.data.error);
+      console.log(err.response.data.error);
+    });
   return response;
 };
 
@@ -70,8 +81,10 @@ export const updateProduct = async (product: {
   categoryId: number;
   id: number;
   image: string;
-  colorId: number;
+  colors: number[];
+  defaultColorId: number;
   sizes: number[];
+  defaultSize: number;
 }) => {
   const body = {
     name: product.name,
@@ -79,9 +92,13 @@ export const updateProduct = async (product: {
     price: product.price,
     categoryId: product.categoryId,
     image: product.image,
-    colorId: product.colorId,
+    colors: product.colors,
+    defaultColorId: product.defaultColorId,
     sizes: product.sizes,
+    defaultSizeId: product.defaultSize,
   };
+
+  // console.log(body);
 
   const response = await axios
     .put(`${baseURL}/${product.id}`, body, {

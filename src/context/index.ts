@@ -39,6 +39,8 @@ interface ShopContextProps {
   setCategories: React.Dispatch<React.SetStateAction<any[]>>;
   colors: any[];
   setColors: React.Dispatch<React.SetStateAction<any[]>>;
+  sizes: any[];
+  setSizes: React.Dispatch<React.SetStateAction<any[]>>;
 }
 
 const ShopContext = createContext<ShopContextProps>({
@@ -50,6 +52,8 @@ const ShopContext = createContext<ShopContextProps>({
   setCategories: () => {},
   colors: [],
   setColors: () => {},
+  sizes: [],
+  setSizes: () => {},
 });
 
 const useShop = () => {

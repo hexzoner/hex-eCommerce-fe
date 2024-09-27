@@ -9,14 +9,18 @@ export default function Filters({
   setSelectedColors,
   selectedCategories,
   selectedColors,
+  selectedSizes,
+  setSelectedSizes,
 }: {
   setProducts: any;
   setSelectedCategories: any;
   setSelectedColors: any;
   selectedCategories: any[];
   selectedColors: any[];
+  selectedSizes: any[];
+  setSelectedSizes: any;
 }) {
-  const { categories, colors } = useShop();
+  const { categories, colors, sizes } = useShop();
   const [selectedRemoved, setSelectedRemoved] = useState(false);
 
   return (
@@ -28,8 +32,24 @@ export default function Filters({
           setSelected={setSelectedCategories}
           selected={selectedCategories}
           selectedRemoved={selectedRemoved}
+          width={20}
         />
-        <FilterDropdown name="Color" options={colors} setSelected={setSelectedColors} selected={selectedColors} selectedRemoved={selectedRemoved} />
+        <FilterDropdown
+          name="Color"
+          options={colors}
+          setSelected={setSelectedColors}
+          selected={selectedColors}
+          selectedRemoved={selectedRemoved}
+          width={30}
+        />
+        <FilterDropdown
+          name="Size"
+          options={sizes}
+          setSelected={setSelectedSizes}
+          selected={selectedSizes}
+          selectedRemoved={selectedRemoved}
+          width={40}
+        />
       </div>
       {/* Selected categories tags for the selected filters. */}
       {selectedCategories.map((x, index) => (
@@ -44,6 +64,10 @@ export default function Filters({
       {/* Selected color tags for the selected filters. */}
       {selectedColors.map((x, index) => (
         <SelectedTag key={index} obj={x} setSelected={setSelectedColors} selectedRemoved={selectedRemoved} setSelectedRemoved={setSelectedRemoved} />
+      ))}
+
+      {selectedSizes.map((x, index) => (
+        <SelectedTag key={index} obj={x} setSelected={setSelectedSizes} selectedRemoved={selectedRemoved} setSelectedRemoved={setSelectedRemoved} />
       ))}
     </div>
   );
@@ -85,12 +109,14 @@ export function FilterDropdown({
   setSelected,
   selected,
   selectedRemoved,
+  width,
 }: {
   name: string;
   options: any[];
   setSelected: any;
   selected: any[];
   selectedRemoved?: any;
+  width?: number;
 }) {
   const [isHovered, setIsHovered] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -110,16 +136,20 @@ export function FilterDropdown({
     }
   };
 
+  if (!width) width = 0;
+  const filterMarkup =
+    `dropdown-content menu bg-base-100 rounded-box z-[1] p-2 shadow max-h-72 ` + `${width > 0 ? "w-[" + width + "rem]" : "w-full"}`;
+
   return (
     <div
       className={`dropdown  ${isHovered ? "dropdown-open" : ""}`}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       ref={dropdownRef}>
-      <div tabIndex={0} role="button" className="border-[1.5px] py-[10px] select-bordered w-full px-4 ">
+      <div tabIndex={0} role="button" className="border-[1.5px] py-[10px] select-bordered w-full px-4">
         {name}
       </div>
-      <ul tabIndex={0} className="dropdown-content menu bg-base-100 rounded-box z-[1] w-72 p-2 shadow">
+      <ul tabIndex={0} className={filterMarkup}>
         {options.map((option) => {
           return (
             <li key={option.id}>

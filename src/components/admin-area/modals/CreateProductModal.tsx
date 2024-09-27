@@ -9,6 +9,8 @@ import { createProduct, updateProduct, deleteProduct } from "../../../api/produc
 import { ConfirmPopup, LoadingSpinnerSmall } from "../admin-components";
 import { FilterDropdown } from "../../Filters";
 import { Size } from "../Sizes";
+import { Color } from "../Colors";
+const dummyRug = "https://th.bing.com/th/id/OIP.MvnwHj_3a0ICmk72FNI5WQHaFR?rs=1&pid=ImgDetMain";
 
 export function CreateProductModal({
   product,
@@ -23,6 +25,7 @@ export function CreateProductModal({
   const [colors, setColors] = useState([]);
   const [sizes, setSizes] = useState([]);
   const [selectedSizes, setSelectedSizes] = useState<Size[]>([]);
+  const [selectedColors, setSelectedColors] = useState<Color[]>([]);
   const [loading, setLoading] = useState(false);
 
   const {
@@ -37,6 +40,7 @@ export function CreateProductModal({
     category: number | string;
     image: string;
     color: number | string;
+    defaultSize: number | string;
   }>();
 
   useEffect(() => {
@@ -45,11 +49,14 @@ export function CreateProductModal({
       description: product.description,
       price: product.isEdit ? product.price : "",
       category: product.isEdit ? product.category.id : "",
-      color: product.isEdit ? product.color.id : "",
+      color: product.isEdit ? product.defaultColor.id : "",
       image: product.image,
+      defaultSize: product.isEdit ? product.defaultSize.id : "",
     });
 
+    // console.log(product);
     setSelectedSizes(product.isEdit ? product.sizes.map((s) => ({ id: s.id, name: s.name })) : []);
+    setSelectedColors(product.isEdit ? product.colors.map((c) => ({ id: c.id, name: c.name })) : []);
   }, [product]);
 
   useEffect(() => {
@@ -109,10 +116,13 @@ export function CreateProductModal({
     category: number | string;
     color: number | string;
     image: string;
+    defaultSize: number | string;
   }) {
+    // parsing the data to the correct type before sending it to the server
     const price = typeof data.price === "string" ? parseFloat(data.price) : data.price;
     const category = typeof data.category === "string" ? parseInt(data.category) : data.category;
     const color = typeof data.color === "string" ? parseInt(data.color) : data.color;
+    const defaultSize = typeof data.defaultSize === "string" ? parseInt(data.defaultSize) : data.defaultSize;
     // console.log({ name: data.name, description: data.description, price, categoryId: category });
     setLoading(true);
     if (!product.isEdit) {
@@ -123,8 +133,10 @@ export function CreateProductModal({
           price,
           categoryId: category,
           image: data.image,
-          colorId: color,
+          colors: selectedColors.map((c) => c.id),
+          defaultColorId: color,
           sizes: selectedSizes.map((s) => s.id),
+          defaultSize,
         });
         setUpdate((prev) => !prev);
         closing();
@@ -140,8 +152,10 @@ export function CreateProductModal({
           categoryId: category,
           id: product.id,
           image: data.image,
-          colorId: color,
+          colors: selectedColors.map((c) => c.id),
+          defaultColorId: color,
           sizes: selectedSizes.map((s) => s.id),
+          defaultSize,
         });
         setUpdate((prev) => !prev);
         closing();
@@ -164,99 +178,107 @@ export function CreateProductModal({
   return (
     <>
       <dialog id="create_product_modal" className="modal">
-        <div className="modal-box w-full max-w-[70%]">
+        <div className="modal-box w-full max-w-[90%]">
           {!loading ? (
             <div className="m-auto text-left w-full">
               {product.isEdit ? <p className="mx-2 mb-4 text-lg">Editing product</p> : <p className="mx-2 mb-4 text-lg">Create new product</p>}
-              <form autoComplete="off" onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6">
+              <form autoComplete="off" onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-8">
                 <div className="flex gap-6">
-                  <div className="w-1/2 flex flex-col gap-6">
-                    <input
-                      type="text"
-                      className="input input-bordered w-full"
-                      placeholder="Enter a product name"
-                      autoComplete="off"
-                      {...register("name", {
-                        required: "Name is required",
-                      })}
-                    />
-                    {errors.name && (
-                      <p className="font-semibold text-error text-xs text-left top-[7.4rem] absolute">{errors.name.message?.toString()}</p>
-                    )}
-                    <textarea
-                      // type="text"
-                      className="input input-bordered w-full grow pt-1 resize-none h-48"
-                      placeholder="Enter a product description"
-                      autoComplete="off"
-                      {...register("description", {
-                        required: "Description is required",
-                      })}
-                    />
-                    {errors.description && (
-                      <p className="font-semibold text-error text-xs text-left top-[20.7rem] absolute">{errors.description.message?.toString()}</p>
-                    )}
-                    <input
-                      type="text"
-                      className="input input-bordered w-full "
-                      placeholder="Enter a product price"
-                      autoComplete="off"
-                      {...register("price", {
-                        required: "Price is required",
-                        pattern: {
-                          value: /^\d+(\.\d{1,2})?$/,
-                          message: "Price must be a valid number with up to two decimal places",
-                        },
-                        validate: (value) => {
-                          {
-                            const _v = typeof value === "string" ? parseFloat(value) : value;
-                            if (_v < 0) return "Price must be greater than 0";
-                            return true;
-                          }
-                        },
-                      })}
-                    />
-                    {errors.price && (
-                      <p className="font-semibold text-error text-xs text-left top-[25.3rem] absolute">{errors.price.message?.toString()}</p>
-                    )}
+                  <div className="w-1/2 flex flex-col gap-6 ">
+                    <div>
+                      <input
+                        type="text"
+                        className="input input-bordered w-full"
+                        placeholder="Enter a product name"
+                        autoComplete="off"
+                        {...register("name", {
+                          required: "Name is required",
+                        })}
+                      />
+                      {errors.name && <p className="font-semibold text-error text-xs text-left ">{errors.name.message?.toString()}</p>}
+                    </div>
+
+                    <div>
+                      <textarea
+                        // type="text"
+                        className="input input-bordered w-full pt-1 resize-none h-64"
+                        placeholder="Enter a product description"
+                        autoComplete="off"
+                        {...register("description", {
+                          required: "Description is required",
+                        })}
+                      />
+                      {errors.description && <p className="font-semibold text-error text-xs text-left ">{errors.description.message?.toString()}</p>}
+                    </div>
+
+                    <div>
+                      <input
+                        type="text"
+                        className="input input-bordered w-full "
+                        placeholder="Enter a product price"
+                        autoComplete="off"
+                        {...register("price", {
+                          required: "Price is required",
+                          pattern: {
+                            value: /^\d+(\.\d{1,2})?$/,
+                            message: "Price must be a valid number with up to two decimal places",
+                          },
+                          validate: (value) => {
+                            {
+                              const _v = typeof value === "string" ? parseFloat(value) : value;
+                              if (_v < 0) return "Price must be greater than 0";
+                              return true;
+                            }
+                          },
+                        })}
+                      />
+                      {errors.price && <p className="font-semibold text-error text-xs text-left ">{errors.price.message?.toString()}</p>}
+                    </div>
                   </div>
                   <div className="w-1/2 flex flex-col gap-6">
-                    <select
-                      className="select select-bordered w-full"
-                      {...register("category", {
-                        required: "Category is required",
-                      })}>
-                      <option value="">Select a category</option>
-                      {categories.map((category: any) => {
-                        return (
-                          <option key={category.id} value={category.id}>
-                            {category.name}
-                          </option>
-                        );
-                      })}
-                    </select>
-                    {errors.category && (
-                      <p className="text-error text-xs text-left top-[7.3rem] right-8 absolute font-semibold">
-                        {errors.category.message?.toString()}
-                      </p>
-                    )}
+                    <div>
+                      <select
+                        className="select select-bordered w-full"
+                        {...register("category", {
+                          required: "Category is required",
+                        })}>
+                        <option value="">Select a category</option>
+                        {categories.map((category: any) => {
+                          return (
+                            <option key={category.id} value={category.id}>
+                              {category.name}
+                            </option>
+                          );
+                        })}
+                      </select>
+                      {errors.category && <p className="text-error text-xs text-left right-8 font-semibold">{errors.category.message?.toString()}</p>}
+                    </div>
 
-                    <select
-                      className="select select-bordered w-full"
-                      {...register("color", {
-                        required: "Color is required",
-                      })}>
-                      <option value="">Select a color</option>
-                      {colors.map((color: any) => {
-                        return (
-                          <option key={color.id} value={color.id}>
-                            {color.name}
-                          </option>
-                        );
-                      })}
-                    </select>
-                    {errors.color && (
-                      <p className="text-error text-xs text-left top-[11.8rem] right-8 absolute font-semibold">{errors.color.message?.toString()}</p>
-                    )}
+                    <FilterDropdown
+                      name="Colors"
+                      options={colors}
+                      setSelected={setSelectedColors}
+                      selected={selectedColors}
+                      selectedRemoved={selectedColors}
+                    />
+
+                    <div>
+                      <select
+                        className="select select-bordered w-full"
+                        {...register("color", {
+                          required: "Color is required",
+                        })}>
+                        <option value="">Select a color</option>
+                        {selectedColors.map((color: any) => {
+                          return (
+                            <option key={color.id} value={color.id}>
+                              {color.name}
+                            </option>
+                          );
+                        })}
+                      </select>
+                      {errors.color && <p className="text-error text-xs text-left right-8 font-semibold">{errors.color.message?.toString()}</p>}
+                    </div>
 
                     <FilterDropdown
                       name="Sizes"
@@ -266,15 +288,43 @@ export function CreateProductModal({
                       selectedRemoved={selectedSizes}
                     />
 
-                    <input type="text" className="input input-bordered w-full " placeholder="Image URL" autoComplete="off" {...register("image")} />
-                    {errors.image && (
-                      <p className="font-semibold text-error text-xs text-left top-[7.4rem] absolute">{errors.image.message?.toString()}</p>
-                    )}
-                    {product.image?.length > 0 && (
-                      <div className="flex justify-center">
-                        <img src={product.image} alt="product" className="h-1/2" />
-                      </div>
-                    )}
+                    <div>
+                      <select
+                        className="select select-bordered w-full"
+                        {...register("defaultSize", {
+                          required: "Default size is required",
+                        })}>
+                        <option value="">Select a default size</option>
+                        {selectedSizes.length > 0 &&
+                          selectedSizes.map((size: any) => {
+                            return (
+                              <option key={size.id} value={size.id}>
+                                {size.name}
+                              </option>
+                            );
+                          })}
+                      </select>
+                      {errors.defaultSize && (
+                        <p className="text-error text-xs text-left right-8 font-semibold">{errors.defaultSize.message?.toString()}</p>
+                      )}
+                    </div>
+
+                    <div>
+                      <input
+                        type="text"
+                        className="input input-bordered w-full "
+                        placeholder="Image URL"
+                        autoComplete="off"
+                        {...register("image", {
+                          required: "Image is required",
+                        })}
+                      />
+                      {errors.image && <p className="font-semibold text-error text-xs text-left ">{errors.image.message?.toString()}</p>}
+                    </div>
+
+                    <div className="flex justify-center">
+                      <img src={product.image?.length > 0 ? product.image : dummyRug} alt="product" className="h-64" />
+                    </div>
                   </div>
                 </div>
 

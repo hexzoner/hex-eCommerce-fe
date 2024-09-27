@@ -5,6 +5,7 @@ import sortTables from "../../utils/sortTables";
 import { CreateProductModal } from "./admin-components";
 import { formatDateShort } from "../../utils/dateUtils";
 import { Size } from "./Sizes";
+import { Color } from "./Colors";
 
 export interface Product {
   id: number;
@@ -17,7 +18,7 @@ export interface Product {
     id: number;
     name: string;
   };
-  color: {
+  defaultColor: {
     id: number;
     name: string;
   };
@@ -25,6 +26,8 @@ export interface Product {
   image: string;
   wishlisted: boolean;
   sizes: Size[];
+  defaultSize: Size;
+  colors: Color[];
 }
 
 export default function Products() {
@@ -38,7 +41,7 @@ export default function Products() {
       id: 0,
       name: "",
     },
-    color: {
+    defaultColor: {
       id: 0,
       name: "",
     },
@@ -47,6 +50,11 @@ export default function Products() {
     image: "",
     wishlisted: false,
     sizes: [],
+    defaultSize: {
+      id: 0,
+      name: "",
+    },
+    colors: [],
   };
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
@@ -233,7 +241,7 @@ export default function Products() {
                   <td className={borderMarkup}>{product.description}</td>
                   <td className="w-1/6">€{product.price}</td>
                   <td className={borderMarkup}>{product.category.name}</td>
-                  <td className={borderMarkup}>{product.color.name}</td>
+                  <td className={borderMarkup}>{product.defaultColor.name}</td>
                   <td className="w-[12%]">{formatDateShort(product.createdAt)}</td>
                 </tr>
               );

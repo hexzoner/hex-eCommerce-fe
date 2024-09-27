@@ -5,6 +5,7 @@ import { ShopContext } from ".";
 import { useAuth } from "../context";
 import { getCategories } from "../api/categories";
 import { getColors } from "../api/colors";
+import { getSizes } from "../api/sizes";
 
 const ShopProvider = ({ children }: { children: ReactNode }) => {
   const { user, isAuthenticated } = useAuth();
@@ -12,6 +13,7 @@ const ShopProvider = ({ children }: { children: ReactNode }) => {
 
   const [categories, setCategories] = useState<any[]>([]);
   const [colors, setColors] = useState<any[]>([]);
+  const [sizes, setSizes] = useState<any[]>([]);
 
   const [shopLoading, setShopLoading] = useState(true);
 
@@ -27,6 +29,14 @@ const ShopProvider = ({ children }: { children: ReactNode }) => {
     getColors()
       .then((res) => {
         setColors(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+
+    getSizes()
+      .then((res) => {
+        setSizes(res);
       })
       .catch((err) => {
         console.log(err);
@@ -53,7 +63,8 @@ const ShopProvider = ({ children }: { children: ReactNode }) => {
   }, [user, isAuthenticated]);
 
   return (
-    <ShopContext.Provider value={{ wishlist, setWishlist, shopLoading, setShopLoading, categories, colors, setCategories, setColors }}>
+    <ShopContext.Provider
+      value={{ wishlist, setWishlist, shopLoading, setShopLoading, categories, colors, setCategories, setColors, sizes, setSizes }}>
       {children}
     </ShopContext.Provider>
   );

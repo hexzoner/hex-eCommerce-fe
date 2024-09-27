@@ -40,7 +40,7 @@ export default function ProductDetails() {
         <p className="text-xl">€{product.price}</p>
         <div className="flex gap-4 italic">
           <p>{product.category.name}</p>
-          <p>{product.color.name}</p>
+          <p>{product.defaultColor.name}</p>
         </div>
         <p>{product.description}</p>
         <div className="font-semibold text-lg">

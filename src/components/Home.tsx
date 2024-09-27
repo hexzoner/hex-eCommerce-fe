@@ -15,6 +15,7 @@ export default function Home() {
   const [products, setProducts] = useState<Product[]>([]);
   const [selectedCategories, setSelectedCategories] = useState<any[]>([]);
   const [selectedColors, setSelectedColors] = useState<any[]>([]);
+  const [selectedSizes, setSelectedSizes] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const { wishlist, setWishlist, shopLoading } = useShop();
 
@@ -24,12 +25,13 @@ export default function Home() {
     // console.log("Filters - fetching products");
     getProducts(
       selectedCategories.map((x) => x.id),
-      selectedColors.map((x) => x.id)
+      selectedColors.map((x) => x.id),
+      selectedSizes.map((x) => x.id)
     )
       .then((res) => setProducts(res))
       .catch((err) => console.log(err))
       .finally(() => setLoading(false));
-  }, [selectedCategories, selectedColors]);
+  }, [selectedCategories, selectedColors, selectedSizes]);
 
   return (
     <div className={mainMakrupColors + " min-h-screen max-w-[80rem] m-auto "}>
@@ -42,6 +44,8 @@ export default function Home() {
           setProducts={setProducts}
           setSelectedCategories={setSelectedCategories}
           setSelectedColors={setSelectedColors}
+          selectedSizes={selectedSizes}
+          setSelectedSizes={setSelectedSizes}
         />
       </div>
       <section className="my-8 ">
@@ -88,7 +92,7 @@ export const ProductCard = ({ product, wishlist, setWishlist }: { product: Produ
         <p className="text-sm text-justify ">{truncateText(product.description, 128)}</p>
         <div className="card-actions justify-end">
           <div className="badge badge-outline">{product.category.name}</div>
-          <div className="badge badge-outline">{product.color.name}</div>
+          <div className="badge badge-outline">{product.defaultColor.name}</div>
         </div>
       </div>
     </div>

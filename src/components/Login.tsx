@@ -6,6 +6,7 @@ import { loginApiCall } from "../api/auth";
 // import { toast } from "react-toastify";
 import { useAuth } from "../context";
 import { storeToken } from "../utils/storage";
+// import { toast } from "react-toastify";
 // import { mainMakrupColors } from "./Home";
 
 export default function Login() {
@@ -31,6 +32,7 @@ export default function Login() {
       else navigate("/");
     } catch (err) {
       setIsLoading(false);
+      // toast.error("Login failed");
     }
   }
 
