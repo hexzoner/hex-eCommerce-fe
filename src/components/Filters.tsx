@@ -32,7 +32,7 @@ export default function Filters({
           setSelected={setSelectedCategories}
           selected={selectedCategories}
           selectedRemoved={selectedRemoved}
-          width={20}
+          width={1}
         />
         <FilterDropdown
           name="Color"
@@ -40,7 +40,7 @@ export default function Filters({
           setSelected={setSelectedColors}
           selected={selectedColors}
           selectedRemoved={selectedRemoved}
-          width={30}
+          width={2}
         />
         <FilterDropdown
           name="Size"
@@ -48,7 +48,7 @@ export default function Filters({
           setSelected={setSelectedSizes}
           selected={selectedSizes}
           selectedRemoved={selectedRemoved}
-          width={40}
+          width={3}
         />
       </div>
       {/* Selected categories tags for the selected filters. */}
@@ -137,8 +137,11 @@ export function FilterDropdown({
   };
 
   if (!width) width = 0;
-  const filterMarkup =
-    `dropdown-content menu bg-base-100 rounded-box z-[1] p-2 shadow max-h-72 ` + `${width > 0 ? "w-[" + width + "rem]" : "w-full"}`;
+  let filterMarkup = "w-full";
+
+  if (width === 1) filterMarkup = "w-48";
+  else if (width === 2) filterMarkup = "w-[25rem]";
+  else if (width === 3) filterMarkup = "w-[40rem]";
 
   return (
     <div
@@ -149,7 +152,7 @@ export function FilterDropdown({
       <div tabIndex={0} role="button" className="border-[1.5px] py-[10px] select-bordered w-full px-4">
         {name}
       </div>
-      <ul tabIndex={0} className={filterMarkup}>
+      <ul tabIndex={0} className={`dropdown-content menu bg-base-100 rounded-box z-[1] p-2 shadow max-h-72 ` + filterMarkup}>
         {options.map((option) => {
           return (
             <li key={option.id}>
