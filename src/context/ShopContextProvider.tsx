@@ -6,6 +6,7 @@ import { useAuth } from "../context";
 import { getCategories } from "../api/categories";
 import { getColors } from "../api/colors";
 import { getSizes } from "../api/sizes";
+import { getCart } from "../api/cart";
 
 const ShopProvider = ({ children }: { children: ReactNode }) => {
   const { user, isAuthenticated } = useAuth();
@@ -14,6 +15,7 @@ const ShopProvider = ({ children }: { children: ReactNode }) => {
   const [categories, setCategories] = useState<any[]>([]);
   const [colors, setColors] = useState<any[]>([]);
   const [sizes, setSizes] = useState<any[]>([]);
+  const [cart, setCart] = useState<any>({ products: [], total: 0 });
 
   const [shopLoading, setShopLoading] = useState(true);
 
@@ -51,6 +53,14 @@ const ShopProvider = ({ children }: { children: ReactNode }) => {
     }
     if (user.role === "admin") return;
 
+    getCart()
+      .then((res) => {
+        setCart(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+
     getWishlist(restoreToken())
       .then((res) => {
         setWishlist(res);
@@ -64,7 +74,7 @@ const ShopProvider = ({ children }: { children: ReactNode }) => {
 
   return (
     <ShopContext.Provider
-      value={{ wishlist, setWishlist, shopLoading, setShopLoading, categories, colors, setCategories, setColors, sizes, setSizes }}>
+      value={{ cart, setCart, wishlist, setWishlist, shopLoading, setShopLoading, categories, colors, setCategories, setColors, sizes, setSizes }}>
       {children}
     </ShopContext.Provider>
   );

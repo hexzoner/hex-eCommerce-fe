@@ -4,12 +4,14 @@ import { useState, useEffect } from "react";
 import LoadingSpinner from "./LoadingSpinner";
 import { FavIcon } from "./Home";
 import { useShop } from "../context";
+import { updateCart } from "../api/cart";
+import { toast } from "react-toastify";
 
 export default function ProductDetails() {
   const { id } = useParams<{ id: string }>();
   const [product, setProduct] = useState<any>({});
   const [loading, setLoading] = useState(true);
-  const { wishlist, setWishlist } = useShop();
+  const { wishlist, setWishlist, setCart, cart } = useShop();
   const [selectedSize, setSelectedSize] = useState<any>({});
   const [selectedColor, setSelectedColor] = useState<any>({});
 
@@ -29,12 +31,34 @@ export default function ProductDetails() {
     window.scrollTo(0, 0);
   }, []);
 
+  function handleAddToCart() {
+    const productInCart = cart.products.find((p: any) => p.id === product.id);
+
+    let _quantity = 1;
+    if (productInCart) _quantity = productInCart.cartProduct.quantity + 1;
+
+    updateCart({
+      productId: product.id,
+      quantity: _quantity,
+      // sizeId: selectedSize.id,
+      // colorId: selectedColor.id,
+    })
+      .then((res) => {
+        // console.log(res);
+        setCart(res);
+        toast.success("Product added to cart");
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+
   if (loading) return <LoadingSpinner />;
 
   return (
     <div className="min-h-screen flex gap-0 items-start mt-16 text-left max-w-[80rem] m-auto">
       <img className="w-1/2" src={product.image} alt="Product image" />
-      <div className="flex flex-col  w-1/2 px-16 min-h-[55vh] justify-between">
+      <div className="flex flex-col  w-1/2 px-16 min-h-[55vh] justify-between ">
         <div className="flex justify-between items-center">
           <p className="text-3xl font-semibold">{product.name}</p>
           <FavIcon product={product} wishlist={wishlist} setWishlist={setWishlist} />
@@ -60,7 +84,9 @@ export default function ProductDetails() {
             ))}
           </div>
         )}
-        <button className="btn btn-primary">ADD TO CART</button>
+        <button onClick={handleAddToCart} className="btn btn-primary mt-2">
+          ADD TO CART
+        </button>
       </div>
     </div>
   );
