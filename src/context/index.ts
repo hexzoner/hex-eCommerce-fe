@@ -46,6 +46,7 @@ interface ShopContextProps {
     total: number;
   };
   setCart: React.Dispatch<React.SetStateAction<any>>;
+  addToCart: (product: any, quantity: number, size: number, color: number) => void;
 }
 
 const ShopContext = createContext<ShopContextProps>({
@@ -64,6 +65,7 @@ const ShopContext = createContext<ShopContextProps>({
     total: 0,
   },
   setCart: () => {},
+  addToCart: () => {},
 });
 
 const useShop = () => {

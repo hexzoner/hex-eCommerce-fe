@@ -4,14 +4,14 @@ import { useState, useEffect } from "react";
 import LoadingSpinner from "./LoadingSpinner";
 import { FavIcon } from "./Home";
 import { useShop } from "../context";
-import { updateCart } from "../api/cart";
-import { toast } from "react-toastify";
+// import { updateCart } from "../api/cart";
+// import { toast } from "react-toastify";
 
 export default function ProductDetails() {
   const { id } = useParams<{ id: string }>();
   const [product, setProduct] = useState<any>({});
   const [loading, setLoading] = useState(true);
-  const { wishlist, setWishlist, setCart, cart } = useShop();
+  const { wishlist, setWishlist, addToCart } = useShop();
   const [selectedSize, setSelectedSize] = useState<any>({});
   const [selectedColor, setSelectedColor] = useState<any>({});
 
@@ -32,25 +32,26 @@ export default function ProductDetails() {
   }, []);
 
   function handleAddToCart() {
-    const productInCart = cart.products.find((p: any) => p.id === product.id);
+    addToCart(product, 1, selectedSize.id, selectedColor.id);
+    // const productInCart = cart.products.find((p: any) => p.id === product.id);
 
-    let _quantity = 1;
-    if (productInCart) _quantity = productInCart.cartProduct.quantity + 1;
+    // let _quantity = 1;
+    // if (productInCart) _quantity = productInCart.cartProduct.quantity + 1;
 
-    updateCart({
-      productId: product.id,
-      quantity: _quantity,
-      // sizeId: selectedSize.id,
-      // colorId: selectedColor.id,
-    })
-      .then((res) => {
-        // console.log(res);
-        setCart(res);
-        toast.success("Product added to cart");
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    // updateCart({
+    //   productId: product.id,
+    //   quantity: _quantity,
+    //   size: selectedSize.id,
+    //   color: selectedColor.id,
+    // })
+    //   .then((res) => {
+    //     // console.log(res);
+    //     setCart(res);
+    //     toast.success("Product added to cart");
+    //   })
+    //   .catch((err) => {
+    //     console.log(err);
+    //   });
   }
 
   if (loading) return <LoadingSpinner />;

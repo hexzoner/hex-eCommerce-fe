@@ -24,7 +24,7 @@ export const getCart = async () => {
   return response;
 };
 
-export const updateCart = async (data: { productId: number; quantity: number }) => {
+export const updateCart = async (data: { productId: number; quantity: number; color?: number; size?: number }) => {
   const token = restoreToken();
   if (!token) return;
   const response = await axios
@@ -36,8 +36,8 @@ export const updateCart = async (data: { productId: number; quantity: number }) 
     })
     .then((res) => res.data)
     .catch((err) => {
-      console.log(err.data.message);
-      toast.error(err.data.message);
+      console.log(err.response.data.message);
+      toast.error(err.response.data.message);
     });
   return response;
 };

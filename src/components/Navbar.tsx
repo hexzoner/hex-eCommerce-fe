@@ -131,7 +131,7 @@ export const CartIcon = ({
     total: number;
   };
 }) => {
-  if (!cart.products) return <></>;
+  if (!cart || !cart.products) return <></>;
 
   return (
     <div className="dropdown dropdown-end ">

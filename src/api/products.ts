@@ -70,8 +70,8 @@ export const createProduct = async (product: {
       return res.data;
     })
     .catch((err) => {
-      toast.error(err.response.data.error);
-      console.log(err.response.data.error);
+      toast.error(err.response.data.message);
+      console.log(err.response.data.message);
     });
   return response;
 };
@@ -113,8 +113,8 @@ export const updateProduct = async (product: {
       return res.data;
     })
     .catch((err) => {
-      toast.error(err.response.data.error);
-      console.log(err.response.data.error);
+      toast.error(err.response.data.message);
+      console.log(err.response.data.message);
     });
   return response;
 };

@@ -7,7 +7,7 @@ import LoadingSpinner from "./LoadingSpinner";
 import { useNavigate } from "react-router-dom";
 
 export default function Wishlist() {
-  const { wishlist, setWishlist, shopLoading } = useShop();
+  const { wishlist, setWishlist, shopLoading, addToCart } = useShop();
   if (shopLoading) return <LoadingSpinner />;
 
   return (
@@ -20,7 +20,7 @@ export default function Wishlist() {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mt-4 max-w-[75rem] m-auto ">
               {wishlist.map((item) => (
-                <WishlistCard key={item.id} item={item} setWishlist={setWishlist} />
+                <WishlistCard key={item.id} item={item} setWishlist={setWishlist} addToCart={addToCart} />
               ))}
             </div>
           )}
@@ -30,7 +30,7 @@ export default function Wishlist() {
   );
 }
 
-export function WishlistCard({ item, setWishlist }: { item: any; setWishlist: any }) {
+export function WishlistCard({ item, setWishlist, addToCart }: { item: any; setWishlist: any; addToCart: any }) {
   function handleRemoveClick() {
     const token = restoreToken();
     if (!token) return;
@@ -51,6 +51,10 @@ export function WishlistCard({ item, setWishlist }: { item: any; setWishlist: an
     navigate(`/product/${item.id}`);
   }
 
+  function handleAddToCart() {
+    addToCart(item, 1, item.defaultSizeId, item.defaultColorId);
+  }
+
   return (
     <div className="bg-white border border-gray-200 p-4 rounded-lg w-72">
       <p onClick={handleRemoveClick} className="text-right font-bold cursor-pointer">
@@ -62,7 +66,9 @@ export function WishlistCard({ item, setWishlist }: { item: any; setWishlist: an
           {item.name}
         </p>
         <p className="text-lg font-semibold">${item.price}</p>
-        <button className="btn btn-primary rounded-none mx-2">ADD TO CART</button>
+        <button onClick={handleAddToCart} className="btn btn-primary rounded-none mx-2">
+          ADD TO CART
+        </button>
       </div>
     </div>
   );

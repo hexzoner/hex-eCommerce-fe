@@ -2,10 +2,13 @@ import { useNavigate } from "react-router-dom";
 import { useShop } from "../context";
 import { updateCart } from "../api/cart";
 import { toast } from "react-toastify";
+import LoadingSpinner from "./LoadingSpinner";
 
 export default function Cart() {
-  const { cart, setCart } = useShop();
+  const { cart, setCart, colors, shopLoading } = useShop();
   const navigate = useNavigate();
+
+  if (shopLoading) return <LoadingSpinner />;
 
   return (
     <div className="min-h-screen max-w-[70rem] m-auto">
@@ -15,7 +18,7 @@ export default function Cart() {
           <div className="flex flex-col gap-4 items-center justify-between ">
             <p className="text-3xl">Total: €{cart.total}</p>
             {cart.products.map((product: any) => (
-              <CartProduct key={product.id} product={product} setCart={setCart} />
+              <CartProduct key={product.id} product={product} setCart={setCart} colors={colors} />
             ))}
             <button className="btn btn-primary btn-lg">Checkout</button>
           </div>
@@ -32,10 +35,10 @@ export default function Cart() {
   );
 }
 
-export const CartProduct = ({ product, setCart }: { product: any; setCart: any }) => {
+export const CartProduct = ({ product, setCart, colors }: { product: any; setCart: any; colors: any }) => {
   // console.log(product);
   function handleDelete() {
-    updateCart({ productId: product.id, quantity: 0 })
+    updateCart({ productId: product.id, quantity: 0, color: product.cartProduct.color, size: product.cartProduct.size })
       .then((res) => {
         // console.log(res);
         toast.success("Product removed from cart");
@@ -46,6 +49,9 @@ export const CartProduct = ({ product, setCart }: { product: any; setCart: any }
       });
   }
 
+  const colorName = colors.find((x: any) => x.id == product.cartProduct.color).name;
+  const sizeName = product.sizes.find((x: any) => x.id == product.cartProduct.size).name;
+
   return (
     <div>
       <div className="flex gap-4 items-center w-full">
@@ -53,8 +59,8 @@ export const CartProduct = ({ product, setCart }: { product: any; setCart: any }
         <div className="flex justify-between w-full">
           <div className="flex flex-col gap-2 text-left w-1/3 ">
             <p className="font-semibold text-lg">{product.name}</p>
-            <p className="text-sm">Size: {product.defaultSize.name}</p>
-            <p className="text-sm">Color: {product.defaultColor.name}</p>
+            <p className="text-sm">Size: {sizeName}</p>
+            <p className="text-sm">Color: {colorName}</p>
           </div>
           <div className="text-left w-2/3 text-sm flex flex-col ">
             <p>{product.description}</p>
