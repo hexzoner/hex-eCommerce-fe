@@ -25,14 +25,8 @@ export default function Navbar() {
               <NavLink to="admin/dashboard" className={navLinkClass}>
                 Dashboard
               </NavLink>
-              <NavLink to="admin/categories" className={navLinkClass}>
-                Categories
-              </NavLink>
-              <NavLink to="admin/colors" className={navLinkClass}>
-                Colors
-              </NavLink>
-              <NavLink to="admin/sizes" className={navLinkClass}>
-                Sizes
+              <NavLink to="admin/taxonomy" className={navLinkClass}>
+                Taxonomy
               </NavLink>
               <NavLink to="admin/products" className={navLinkClass}>
                 Products

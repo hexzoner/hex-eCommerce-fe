@@ -272,6 +272,14 @@ export function CreateProductModal({
                       selectedRemoved={selectedColors}
                     />
 
+                    <FilterDropdown
+                      name="Sizes"
+                      options={sizes}
+                      setSelected={setSelectedSizes}
+                      selected={selectedSizes}
+                      selectedRemoved={selectedSizes}
+                    />
+
                     <div>
                       <select
                         className="select select-bordered w-full"
@@ -289,14 +297,6 @@ export function CreateProductModal({
                       </select>
                       {errors.color && <p className="text-error text-xs text-left right-8 font-semibold">{errors.color.message?.toString()}</p>}
                     </div>
-
-                    <FilterDropdown
-                      name="Sizes"
-                      options={sizes}
-                      setSelected={setSelectedSizes}
-                      selected={selectedSizes}
-                      selectedRemoved={selectedSizes}
-                    />
 
                     <div>
                       <select

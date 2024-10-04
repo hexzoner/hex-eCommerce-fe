@@ -1,6 +1,6 @@
 import { createBrowserRouter, createRoutesFromElements, Route, RouterProvider } from "react-router-dom";
 import "./App.css";
-import { MainLayout, ProtectedLayout, Authorize } from "./layouts/layouts";
+import { MainLayout, ProtectedLayout, Authorize, TaxonomyLayout } from "./layouts/layouts";
 import { Home, About, NotFound, Login, Signup, ProductDetails, Cart, Profile, ForgotPassword, Unauthorized, Wishlist } from "./components/components";
 import { Dashboard, Categories, Orders, Users, Products, OrderDetails, Colors, Sizes } from "./components/admin-area/admin-components";
 
@@ -28,6 +28,11 @@ const router = createBrowserRouter(
           <Route path="users" element={<Users />} />
           <Route path="products" element={<Products />} />
           <Route path="order-details" element={<OrderDetails />} />
+          <Route path="taxonomy" element={<TaxonomyLayout />}>
+            <Route index element={<Categories />} path="categories" />
+            <Route path="colors" element={<Colors />} />
+            <Route path="sizes" element={<Sizes />} />
+          </Route>
         </Route>
       </Route>
 

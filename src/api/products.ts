@@ -16,9 +16,10 @@ export const getProducts = async (categories?: number[], colors?: number[], size
   ///products?category=1,2&color=2
   let url = `${baseURL}?`;
   if (categories && categories.length > 0) url += `category=${categories.join(",")}&`;
-  if (colors && colors.length > 0) url += `color=${colors.join(",")}`;
-  if (sizes && sizes.length > 0) url += `size=${sizes.join(",")}`;
+  if (colors && colors.length > 0) url += `color=${colors.join(",")}&`;
+  if (sizes && sizes.length > 0) url += `size=${sizes.join(",")}&`;
 
+  // console.log(url);
   const response = await axios
     .get(url, {
       headers,

@@ -32,7 +32,7 @@ export default function Filters({
           setSelected={setSelectedCategories}
           selected={selectedCategories}
           selectedRemoved={selectedRemoved}
-          width={1}
+          width={2}
         />
         <FilterDropdown
           name="Color"
