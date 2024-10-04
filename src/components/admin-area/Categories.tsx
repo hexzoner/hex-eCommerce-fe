@@ -1,6 +1,6 @@
 import { getCategories } from "../../api/categories";
 import { useState, useEffect } from "react";
-import { restoreToken } from "../../utils/storage";
+// import { restoreToken } from "../../utils/storage";
 import LoadingSpinner from "../LoadingSpinner";
 import sortTables from "../../utils/sortTables";
 import { CategoryModal, CreateCategoryModal } from "./admin-components";
@@ -22,9 +22,9 @@ export default function Categories() {
     const fetchCategories = async () => {
       setLoading(true);
       try {
-        const token = restoreToken();
-        if (!token) return;
-        const categories = await getCategories(token);
+        // const token = restoreToken();
+        // if (!token) return;
+        const categories = await getCategories();
         // console.log(users);
         setCategories(categories);
         setLoading(false);
