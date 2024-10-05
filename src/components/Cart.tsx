@@ -15,7 +15,7 @@ export default function Cart() {
       <p className="text-left text-2xl mt-12 font-semibold">Shopping Cart</p>
       <div className="flex flex-col gap-4  min-h-[75vh] m-auto">
         {cart && cart.products.length > 0 ? (
-          <div className="flex flex-col gap-4 items-center justify-between ">
+          <div className="flex flex-col gap-6 items-center justify-between ">
             <p className="text-3xl">Total: €{cart.total}</p>
             {cart.products.map((product: any) => (
               <CartProduct key={product.id} product={product} setCart={setCart} colors={colors} />
@@ -53,8 +53,8 @@ export const CartProduct = ({ product, setCart, colors }: { product: any; setCar
   const sizeName = product.sizes.find((x: any) => x.id == product.cartProduct.size).name;
 
   return (
-    <div>
-      <div className="flex gap-4 items-center w-full">
+    <div className="w-full">
+      <div className="flex gap-4 items-center">
         <img src={product.image} alt="Product" className="w-1/6" />
         <div className="flex justify-between w-full">
           <div className="flex flex-col gap-2 text-left w-1/3 ">
