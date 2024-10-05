@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 import LoadingSpinner from "./LoadingSpinner";
 
 export default function Cart() {
-  const { cart, setCart, colors, shopLoading } = useShop();
+  const { cart, setCart, shopLoading } = useShop();
   const navigate = useNavigate();
 
   if (shopLoading) return <LoadingSpinner />;
@@ -17,10 +17,10 @@ export default function Cart() {
         {cart && cart.products.length > 0 ? (
           <div className="flex flex-col gap-6 items-center justify-between ">
             <p className="text-3xl">Total: €{cart.total}</p>
-            {cart.products.map((product: any) => (
-              <CartProduct key={product.id} product={product} setCart={setCart} colors={colors} />
+            {cart.products.map((item: any, index: number) => (
+              <CartProduct key={index} item={item} setCart={setCart} />
             ))}
-            <button className="btn btn-primary btn-lg">Checkout</button>
+            <button className="btn btn-primary btn-lg mb-12">Checkout</button>
           </div>
         ) : (
           <>
@@ -35,10 +35,11 @@ export default function Cart() {
   );
 }
 
-export const CartProduct = ({ product, setCart, colors }: { product: any; setCart: any; colors: any }) => {
-  // console.log(product);
+export const CartProduct = ({ item, setCart }: { item: any; setCart: any }) => {
+  // console.log(item);
   function handleDelete() {
-    updateCart({ productId: product.id, quantity: 0, color: product.cartProduct.color, size: product.cartProduct.size })
+    console.log({ productId: item.product.id, quantity: 0, color: item.color.id, size: item.size.id });
+    updateCart({ productId: item.product.id, quantity: 0, color: item.color.id, size: item.size.id })
       .then((res) => {
         // console.log(res);
         toast.success("Product removed from cart");
@@ -49,25 +50,25 @@ export const CartProduct = ({ product, setCart, colors }: { product: any; setCar
       });
   }
 
-  const colorName = colors.find((x: any) => x.id == product.cartProduct.color).name;
-  const sizeName = product.sizes.find((x: any) => x.id == product.cartProduct.size).name;
+  // const colorName = colors.find((x: any) => x.id == item.color.id).name;
+  // const sizeName = item.sizes.find((x: any) => x.id == item.product.size).name;
 
   return (
     <div className="w-full">
       <div className="flex gap-4 items-center">
-        <img src={product.image} alt="Product" className="w-1/6" />
+        <img src={item.product.image} alt="Product" className="w-1/6" />
         <div className="flex justify-between w-full">
           <div className="flex flex-col gap-2 text-left w-1/3 ">
-            <p className="font-semibold text-lg">{product.name}</p>
-            <p className="text-sm">Size: {sizeName}</p>
-            <p className="text-sm">Color: {colorName}</p>
+            <p className="font-semibold text-lg">{item.product.name}</p>
+            <p className="text-sm">Size: {item.size.name}</p>
+            <p className="text-sm">Color: {item.color.name}</p>
           </div>
           <div className="text-left w-2/3 text-sm flex flex-col ">
-            <p>{product.description}</p>
+            <p>{item.product.description}</p>
           </div>
           <div className="w-1/4">
-            {product.cartProduct.quantity > 1 && <span className="text-lg">{product.cartProduct.quantity} x </span>}
-            <span className="font-semibold text-xl">€{product.price}</span>
+            {item.quantity > 1 && <span className="text-lg">{item.quantity} x </span>}
+            <span className="font-semibold text-xl">€{item.product.price}</span>
           </div>
         </div>
       </div>

@@ -16,15 +16,19 @@ export const getCart = async () => {
         Authorization: `Bearer ${token}`,
       },
     })
-    .then((res) => res.data)
+    .then((res) => {
+      // console.log(res.data);
+      return res.data;
+    })
     .catch((err) => {
-      console.log(err.data.message);
-      toast.error(err.data.message);
+      console.log(err.response.data.message);
+      toast.error(err.response.data.message);
     });
   return response;
 };
 
-export const updateCart = async (data: { productId: number; quantity: number; color?: number; size?: number }) => {
+export const updateCart = async (data: { productId: number; quantity: number; color: number; size: number }) => {
+  // console.log(data);
   const token = restoreToken();
   if (!token) return;
   const response = await axios
