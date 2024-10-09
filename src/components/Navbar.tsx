@@ -11,10 +11,10 @@ export default function Navbar() {
   const htmlElement = document.querySelector("html");
   if (htmlElement) htmlElement.setAttribute("data-theme", "winter");
 
-  if (htmlElement && !authLoading) {
-    if (user && user.role == "admin") htmlElement.setAttribute("data-theme", "business");
-    else htmlElement.setAttribute("data-theme", "winter");
-  }
+  // if (htmlElement && !authLoading) {
+  //   if (user && user.role == "admin") htmlElement.setAttribute("data-theme", "business");
+  //   else htmlElement.setAttribute("data-theme", "winter");
+  // }
 
   return (
     <div className="bg-[#1f3041] text-white">

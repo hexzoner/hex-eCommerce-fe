@@ -1,4 +1,5 @@
 import axios from "axios";
+import { toast } from "react-toastify";
 
 const API_URL = import.meta.env.VITE_API_URL;
 if (!API_URL) throw new Error("API URL is required, are you missing a .env file?");
@@ -17,7 +18,10 @@ export const getWishlist = async (token: string) => {
       //   console.log(res.data);
       return res.data;
     })
-    .catch((err) => console.log(err.data.message));
+    .catch((err) => {
+      console.log(err.response.data.message);
+      toast.error(err.response.data.message);
+    });
   return response;
 };
 
@@ -38,7 +42,10 @@ export const addToWishlist = async (token: string, productId: number) => {
       //   console.log(res.data);
       return res.data;
     })
-    .catch((err) => console.log(err.data.message));
+    .catch((err) => {
+      console.log(err.response.data.message);
+      toast.error(err.response.data.message);
+    });
   return response;
 };
 
@@ -55,6 +62,9 @@ export const removeFromWishlist = async (token: string, productId: number) => {
       //   console.log(res.data);
       return res.data;
     })
-    .catch((err) => console.log(err.data.message));
+    .catch((err) => {
+      console.log(err.response.data.message);
+      toast.error(err.response.data.message);
+    });
   return response;
 };

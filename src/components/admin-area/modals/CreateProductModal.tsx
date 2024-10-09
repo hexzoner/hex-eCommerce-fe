@@ -32,6 +32,7 @@ export function CreateProductModal({
     register,
     handleSubmit,
     formState: { errors },
+    watch,
     reset,
   } = useForm<{
     name: string;
@@ -43,6 +44,8 @@ export function CreateProductModal({
     defaultSize: number | string;
     active: boolean;
   }>();
+
+  const imageInput = watch("image");
 
   useEffect(() => {
     reset({
@@ -333,7 +336,11 @@ export function CreateProductModal({
                     </div>
 
                     <div className="flex justify-center">
-                      <img src={product.image?.length > 0 ? product.image : dummyRug} alt="product" className="h-64" />
+                      <img
+                        src={product.image?.length > 0 ? product.image : imageInput && imageInput.length > 0 ? imageInput : dummyRug}
+                        alt="product"
+                        className="h-64"
+                      />
                     </div>
                   </div>
                 </div>
@@ -341,10 +348,10 @@ export function CreateProductModal({
                 <div className="flex w-full justify-evenly">
                   {product.isEdit ? (
                     <>
-                      <button onClick={handleDelete} className="btn btn-error w-1/3">
+                      <button onClick={handleDelete} className="btn btn-error w-1/3 rounded-none">
                         Delete
                       </button>
-                      <button type="submit" className="btn btn-success w-1/3">
+                      <button type="submit" className="btn btn-success w-1/3  rounded-none">
                         Update
                       </button>
                       <button
@@ -354,13 +361,13 @@ export function CreateProductModal({
                           if (createProductModal) (createProductModal as HTMLDialogElement).close();
                         }}
                         type="button"
-                        className="btn w-1/3">
+                        className="btn w-1/3 rounded-none">
                         Close
                       </button>
                     </>
                   ) : (
                     <>
-                      <button type="submit" className="btn btn-primary px-8 w-1/2">
+                      <button type="submit" className="btn btn-primary px-8 w-1/2 rounded-none">
                         Submit
                       </button>
                       <button
@@ -370,7 +377,7 @@ export function CreateProductModal({
                           if (createProductModal) (createProductModal as HTMLDialogElement).close();
                         }}
                         type="button"
-                        className="btn w-1/2">
+                        className="btn w-1/2 rounded-none">
                         Close
                       </button>
                     </>
