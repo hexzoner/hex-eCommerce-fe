@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 import { useShop } from "../context";
 import LoadingSpinner from "./LoadingSpinner";
 import { useNavigate } from "react-router-dom";
+import { calculatePriceRange } from "../utils/miscUtils";
 
 export default function Wishlist() {
   const { wishlist, setWishlist, shopLoading, addToCart, cartLoading } = useShop();
@@ -56,7 +57,7 @@ export function WishlistCard({ item, setWishlist, addToCart, cartLoading }: { it
   }
 
   return (
-    <div className="bg-white border border-gray-200 p-4 rounded-lg w-72">
+    <div className="bg-white border border-gray-200 p-4 rounded-lg w-72 m-auto">
       <p onClick={handleRemoveClick} className="text-right font-bold cursor-pointer">
         ✕
       </p>
@@ -65,7 +66,7 @@ export function WishlistCard({ item, setWishlist, addToCart, cartLoading }: { it
         <p onClick={handleNavigate} className="text-lg font-semibold cursor-pointer hover:text-[#b04e2d]">
           {item.name}
         </p>
-        <p className="text-lg font-semibold">${item.price}</p>
+        <p className="text-lg font-semibold">{calculatePriceRange(item)}</p>
         <button onClick={handleAddToCart} className="btn btn-primary rounded-none mx-2" disabled={cartLoading}>
           ADD TO CART
         </button>

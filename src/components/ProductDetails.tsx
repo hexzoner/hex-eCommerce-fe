@@ -44,9 +44,9 @@ export default function ProductDetails() {
   }
 
   return (
-    <div className="min-h-screen flex gap-0 items-start mt-16 text-left max-w-[80rem] m-auto">
-      <img className="w-1/2" src={product.image} alt="Product image" />
-      <div className="flex flex-col  w-1/2 px-16 min-h-[55vh] justify-between ">
+    <div className="min-h-screen flex-col lg:flex-row flex gap-0 items-start mt-16 text-left max-w-[80rem] m-auto">
+      <img className="w-full lg:w-1/2 px-24 lg:px-0" src={product.image} alt="Product image" />
+      <div className="flex flex-col w-full lg:w-1/2 px-4 lg:px-16 min-h-[55vh] justify-between gap-4 pb-6">
         <div className="flex justify-between items-center">
           <p className="text-3xl font-semibold">{product.name}</p>
           <FavIcon product={product} wishlist={wishlist} setWishlist={setWishlist} />
