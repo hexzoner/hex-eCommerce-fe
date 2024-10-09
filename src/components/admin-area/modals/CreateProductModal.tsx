@@ -10,6 +10,7 @@ import { ConfirmPopup, LoadingSpinnerSmall } from "../admin-components";
 import { FilterDropdown } from "../../Filters";
 import { Size } from "../Sizes";
 import { Color } from "../Colors";
+import Editor from "react-simple-wysiwyg";
 const dummyRug = "https://th.bing.com/th/id/OIP.MvnwHj_3a0ICmk72FNI5WQHaFR?rs=1&pid=ImgDetMain";
 
 export function CreateProductModal({
@@ -27,6 +28,7 @@ export function CreateProductModal({
   const [selectedSizes, setSelectedSizes] = useState<Size[]>([]);
   const [selectedColors, setSelectedColors] = useState<Color[]>([]);
   const [loading, setLoading] = useState(false);
+  const [html, setHtml] = useState(""); // Local state for the WYSIWYG editor
 
   const {
     register,
@@ -34,6 +36,8 @@ export function CreateProductModal({
     formState: { errors },
     watch,
     reset,
+    setValue,
+    // getValues,
   } = useForm<{
     name: string;
     description: string;
@@ -61,6 +65,7 @@ export function CreateProductModal({
 
     setSelectedSizes(product.isEdit ? product.sizes.map((s) => ({ id: s.id, name: s.name })) : []);
     setSelectedColors(product.isEdit ? product.colors.map((c) => ({ id: c.id, name: c.name })) : []);
+    setHtml(product.description);
   }, [product]);
 
   useEffect(() => {
@@ -123,6 +128,7 @@ export function CreateProductModal({
     defaultSize: number | string;
     active: boolean;
   }) {
+    // console.log(data);
     // parsing the data to the correct type before sending it to the server
     const price = typeof data.price === "string" ? parseFloat(data.price) : data.price;
     const category = typeof data.category === "string" ? parseInt(data.category) : data.category;
@@ -182,6 +188,11 @@ export function CreateProductModal({
     }
   }
 
+  function onChange(e: any) {
+    setHtml(e.target.value);
+    setValue("description", e.target.value); // Update the react-hook-form description field
+  }
+
   return (
     <>
       <dialog id="create_product_modal" className="modal">
@@ -206,7 +217,7 @@ export function CreateProductModal({
                     </div>
 
                     <div>
-                      <textarea
+                      {/* <textarea
                         // type="text"
                         className="input input-bordered w-full pt-1 resize-none h-64"
                         placeholder="Enter a product description"
@@ -215,7 +226,13 @@ export function CreateProductModal({
                           required: "Description is required",
                         })}
                       />
-                      {errors.description && <p className="font-semibold text-error text-xs text-left ">{errors.description.message?.toString()}</p>}
+                      {errors.description && <p className="font-semibold text-error text-xs text-left ">{errors.description.message?.toString()}</p>} */}
+                    </div>
+
+                    <div className="prose min-h-64">
+                      {/* <label className="block text-sm font-medium text-gray-700">Description</label> */}
+                      <Editor value={html} onChange={onChange} className="input input-bordered w-full pt-1 min-h-64" />
+                      {errors.description && <p className="font-semibold text-error text-xs text-left">{errors.description.message?.toString()}</p>}
                     </div>
 
                     <div>

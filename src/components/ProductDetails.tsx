@@ -55,7 +55,7 @@ export default function ProductDetails() {
         <div className="flex gap-4 italic">
           <p>{product.category.name}</p>
         </div>
-        <p>{product.description}</p>
+        <div className="prose" dangerouslySetInnerHTML={{ __html: product.description }}></div>
         <div className="font-semibold text-lg">
           <span>Size:</span> <span className="ml-1 ">{selectedSize.name}</span>
         </div>

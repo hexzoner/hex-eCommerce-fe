@@ -3,7 +3,7 @@ import { getProducts } from "../api/products";
 import { useEffect, useState } from "react";
 // import LoadingSpinner from "./LoadingSpinner";
 import { Product } from "./admin-area/Products";
-import { truncateText } from "../utils/sortTables";
+// import { truncateText } from "../utils/sortTables";
 import { addToWishlist, removeFromWishlist } from "../api/wishlist";
 import { restoreToken } from "../utils/storage";
 import { toast } from "react-toastify";
@@ -90,7 +90,7 @@ export const ProductCard = ({ product, wishlist, setWishlist }: { product: Produ
           <FavIcon product={product} wishlist={wishlist} setWishlist={setWishlist} />
         </h2>
         {calculatePriceRange(product)}
-        <p className="text-sm text-justify ">{truncateText(product.description, 128)}</p>
+        {/* <p className="text-sm text-justify ">{truncateText(product.description, 128)}</p> */}
         <div className="card-actions justify-end">
           <div className="badge badge-outline">{product.category.name}</div>
           <div className="badge badge-outline">{product.defaultColor.name}</div>
