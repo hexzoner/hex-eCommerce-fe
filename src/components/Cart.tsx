@@ -38,7 +38,7 @@ export default function Cart() {
 export const CartProduct = ({ item, setCart }: { item: any; setCart: any }) => {
   // console.log(item);
   function handleDelete() {
-    console.log({ productId: item.product.id, quantity: 0, color: item.color.id, size: item.size.id });
+    // console.log({ productId: item.product.id, quantity: 0, color: item.color.id, size: item.size.id });
     updateCart({ productId: item.product.id, quantity: 0, color: item.color.id, size: item.size.id })
       .then((res) => {
         // console.log(res);
@@ -50,8 +50,31 @@ export const CartProduct = ({ item, setCart }: { item: any; setCart: any }) => {
       });
   }
 
+  function handeIncrease() {
+    handleUpdateCart(1);
+  }
+
+  function handleDecrease() {
+    if (item.quantity === 1) handleDelete();
+    else handleUpdateCart(-1);
+  }
+
+  function handleUpdateCart(quantity: number) {
+    updateCart({ productId: item.product.id, quantity: quantity, color: item.color.id, size: item.size.id })
+      .then((res) => {
+        setCart(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
   // const colorName = colors.find((x: any) => x.id == item.color.id).name;
   // const sizeName = item.sizes.find((x: any) => x.id == item.product.size).name;
+
+  const navigate = useNavigate();
+  function handleClick() {
+    navigate(`/product/${item.product.id}`);
+  }
 
   return (
     <div className="w-full">
@@ -59,16 +82,28 @@ export const CartProduct = ({ item, setCart }: { item: any; setCart: any }) => {
         <img src={item.product.image} alt="Product" className="w-1/6" />
         <div className="flex justify-between w-full">
           <div className="flex flex-col gap-2 text-left w-1/3 ">
-            <p className="font-semibold text-lg">{item.product.name}</p>
+            <p onClick={handleClick} className="font-semibold text-lg cursor-pointer hover:text-[#b04e2d]">
+              {item.product.name}
+            </p>
             <p className="text-sm">Size: {item.size.name}</p>
             <p className="text-sm">Color: {item.color.name}</p>
           </div>
           <div className="text-left w-2/3 text-sm flex flex-col ">
             <p>{item.product.description}</p>
           </div>
-          <div className="w-1/4">
-            {item.quantity > 1 && <span className="text-lg">{item.quantity} x </span>}
+          <div className="w-1/4 flex flex-col items-center">
+            {/* {
+              item.quantity > 1 && <span className="text-lg">{item.quantity} x </span>} */}
             <span className="font-semibold text-xl">€{item.product.price}</span>
+            <div className="flex items-center gap-1">
+              <button onClick={handeIncrease} className="btn btn-sm text-xl">
+                +
+              </button>
+              <p className="input input-sm input-bordered">{item.quantity}</p>
+              <button onClick={handleDecrease} className="btn btn-sm text-xl">
+                -
+              </button>
+            </div>
           </div>
         </div>
       </div>

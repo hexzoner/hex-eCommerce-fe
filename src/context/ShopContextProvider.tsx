@@ -19,6 +19,7 @@ const ShopProvider = ({ children }: { children: ReactNode }) => {
   const [cart, setCart] = useState<any>({ products: [], total: 0 });
 
   const [shopLoading, setShopLoading] = useState(true);
+  const [cartLoading, setCartLoading] = useState(false);
 
   function addToCart(product: any, quantity: number, size: number, color: number) {
     // if (!cart) return;
@@ -27,6 +28,7 @@ const ShopProvider = ({ children }: { children: ReactNode }) => {
     let _quantity = quantity;
     if (productInCart) _quantity = productInCart.cartProduct.quantity + quantity;
 
+    setCartLoading(true);
     updateCart({
       productId: product.id,
       quantity: _quantity,
@@ -39,7 +41,8 @@ const ShopProvider = ({ children }: { children: ReactNode }) => {
       })
       .catch((err) => {
         console.log(err);
-      });
+      })
+      .finally(() => setCartLoading(false));
   }
 
   useEffect(() => {
@@ -113,6 +116,7 @@ const ShopProvider = ({ children }: { children: ReactNode }) => {
         setColors,
         sizes,
         setSizes,
+        cartLoading,
       }}>
       {children}
     </ShopContext.Provider>

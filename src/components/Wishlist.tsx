@@ -7,7 +7,7 @@ import LoadingSpinner from "./LoadingSpinner";
 import { useNavigate } from "react-router-dom";
 
 export default function Wishlist() {
-  const { wishlist, setWishlist, shopLoading, addToCart } = useShop();
+  const { wishlist, setWishlist, shopLoading, addToCart, cartLoading } = useShop();
   if (shopLoading) return <LoadingSpinner />;
 
   return (
@@ -20,7 +20,7 @@ export default function Wishlist() {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mt-4 max-w-[75rem] m-auto ">
               {wishlist.map((item) => (
-                <WishlistCard key={item.id} item={item} setWishlist={setWishlist} addToCart={addToCart} />
+                <WishlistCard key={item.id} item={item} setWishlist={setWishlist} addToCart={addToCart} cartLoading={cartLoading} />
               ))}
             </div>
           )}
@@ -30,7 +30,7 @@ export default function Wishlist() {
   );
 }
 
-export function WishlistCard({ item, setWishlist, addToCart }: { item: any; setWishlist: any; addToCart: any }) {
+export function WishlistCard({ item, setWishlist, addToCart, cartLoading }: { item: any; setWishlist: any; addToCart: any; cartLoading: boolean }) {
   function handleRemoveClick() {
     const token = restoreToken();
     if (!token) return;
@@ -66,7 +66,7 @@ export function WishlistCard({ item, setWishlist, addToCart }: { item: any; setW
           {item.name}
         </p>
         <p className="text-lg font-semibold">${item.price}</p>
-        <button onClick={handleAddToCart} className="btn btn-primary rounded-none mx-2">
+        <button onClick={handleAddToCart} className="btn btn-primary rounded-none mx-2" disabled={cartLoading}>
           ADD TO CART
         </button>
       </div>

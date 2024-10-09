@@ -11,7 +11,7 @@ export default function ProductDetails() {
   const { id } = useParams<{ id: string }>();
   const [product, setProduct] = useState<any>({});
   const [loading, setLoading] = useState(true);
-  const { wishlist, setWishlist, addToCart } = useShop();
+  const { wishlist, setWishlist, addToCart, cartLoading } = useShop();
   const [selectedSize, setSelectedSize] = useState<any>({});
   const [selectedColor, setSelectedColor] = useState<any>({});
 
@@ -85,8 +85,12 @@ export default function ProductDetails() {
             ))}
           </div>
         )}
-        <button onClick={handleAddToCart} className="btn btn-primary mt-2">
-          ADD TO CART
+        <button
+          onClick={handleAddToCart}
+          className={`btn btn-primary mt-2 ${cartLoading ? "btn-disabled" : ""}`}
+          // disabled={cartLoading}
+        >
+          {cartLoading ? "ADDING TO CART..." : "ADD TO CART"}
         </button>
       </div>
     </div>
