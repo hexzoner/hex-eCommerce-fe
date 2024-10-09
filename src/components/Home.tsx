@@ -10,6 +10,7 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { useShop } from "../context";
 import { Filters } from "../components/components";
+import { calculatePriceRange } from "../utils/miscUtils";
 
 export default function Home() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -88,7 +89,7 @@ export const ProductCard = ({ product, wishlist, setWishlist }: { product: Produ
           {/* <div className="badge badge-secondary"></div> */}
           <FavIcon product={product} wishlist={wishlist} setWishlist={setWishlist} />
         </h2>
-        €{product.price}
+        {calculatePriceRange(product)}
         <p className="text-sm text-justify ">{truncateText(product.description, 128)}</p>
         <div className="card-actions justify-end">
           <div className="badge badge-outline">{product.category.name}</div>
@@ -114,7 +115,10 @@ export function FavIcon({ product, wishlist, setWishlist }: { product: Product; 
 
   function handleAddtoWishlist() {
     const token = restoreToken();
-    if (!token) return;
+    if (!token) {
+      toast.error("Please login to add products to wishlist");
+      return;
+    }
 
     if (favorited) {
       removeFromWishlist(token, product.id)

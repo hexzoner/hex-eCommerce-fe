@@ -11,7 +11,7 @@ export default function ProductDetails() {
   const { id } = useParams<{ id: string }>();
   const [product, setProduct] = useState<any>({});
   const [loading, setLoading] = useState(true);
-  const { wishlist, setWishlist, addToCart } = useShop();
+  const { wishlist, setWishlist, addToCart, cartLoading } = useShop();
   const [selectedSize, setSelectedSize] = useState<any>({});
   const [selectedColor, setSelectedColor] = useState<any>({});
 
@@ -33,38 +33,25 @@ export default function ProductDetails() {
 
   function handleAddToCart() {
     addToCart(product, 1, selectedSize.id, selectedColor.id);
-    // const productInCart = cart.products.find((p: any) => p.id === product.id);
-
-    // let _quantity = 1;
-    // if (productInCart) _quantity = productInCart.cartProduct.quantity + 1;
-
-    // updateCart({
-    //   productId: product.id,
-    //   quantity: _quantity,
-    //   size: selectedSize.id,
-    //   color: selectedColor.id,
-    // })
-    //   .then((res) => {
-    //     // console.log(res);
-    //     setCart(res);
-    //     toast.success("Product added to cart");
-    //   })
-    //   .catch((err) => {
-    //     console.log(err);
-    //   });
   }
 
   if (loading) return <LoadingSpinner />;
 
+  function calcPrice() {
+    const heightWidth = selectedSize.name.split("x");
+    if (heightWidth.length == 2) return (product.price * (parseInt(heightWidth[0]) * parseInt(heightWidth[1]))).toFixed(2);
+    else return product.price;
+  }
+
   return (
-    <div className="min-h-screen flex gap-0 items-start mt-16 text-left max-w-[80rem] m-auto">
-      <img className="w-1/2" src={product.image} alt="Product image" />
-      <div className="flex flex-col  w-1/2 px-16 min-h-[55vh] justify-between ">
+    <div className="min-h-screen flex-col lg:flex-row flex gap-0 items-start mt-16 text-left max-w-[80rem] m-auto">
+      <img className="w-full lg:w-1/2 px-24 lg:px-0" src={product.image} alt="Product image" />
+      <div className="flex flex-col w-full lg:w-1/2 px-4 lg:px-16 min-h-[55vh] justify-between gap-4 pb-6">
         <div className="flex justify-between items-center">
           <p className="text-3xl font-semibold">{product.name}</p>
           <FavIcon product={product} wishlist={wishlist} setWishlist={setWishlist} />
         </div>
-        <p className="text-xl">€{product.price}</p>
+        <p className="text-xl">€{calcPrice()}</p>
         <div className="flex gap-4 italic">
           <p>{product.category.name}</p>
         </div>
@@ -85,8 +72,12 @@ export default function ProductDetails() {
             ))}
           </div>
         )}
-        <button onClick={handleAddToCart} className="btn btn-primary mt-2">
-          ADD TO CART
+        <button
+          onClick={handleAddToCart}
+          className={`btn btn-primary mt-2 ${cartLoading ? "btn-disabled" : ""}`}
+          // disabled={cartLoading}
+        >
+          {cartLoading ? "ADDING TO CART..." : "ADD TO CART"}
         </button>
       </div>
     </div>
