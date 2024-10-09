@@ -1,11 +1,11 @@
 import { useNavigate } from "react-router-dom";
 import { useShop } from "../context";
-import { updateCart } from "../api/cart";
 import { toast } from "react-toastify";
+import { updateCart } from "../api/cart";
 import LoadingSpinner from "./LoadingSpinner";
 
 export default function Cart() {
-  const { cart, setCart, shopLoading } = useShop();
+  const { cart, setCart, shopLoading, updateCartQuantity, cartLoading } = useShop();
   const navigate = useNavigate();
 
   if (shopLoading) return <LoadingSpinner />;
@@ -14,11 +14,11 @@ export default function Cart() {
     <div className="min-h-screen max-w-[70rem] m-auto">
       <p className="text-left text-2xl mt-12 font-semibold">Shopping Cart</p>
       <div className="flex flex-col gap-4  min-h-[75vh] m-auto">
-        {cart && cart.products.length > 0 ? (
+        {cart.products.length > 0 ? (
           <div className="flex flex-col gap-6 items-center justify-between ">
             <p className="text-3xl">Total: €{cart.total}</p>
             {cart.products.map((item: any, index: number) => (
-              <CartProduct key={index} item={item} setCart={setCart} />
+              <CartProduct key={index} item={item} setCart={setCart} updateCartQuantity={updateCartQuantity} cartLoading={cartLoading} />
             ))}
             <button className="btn btn-primary btn-lg mb-12">Checkout</button>
           </div>
@@ -35,10 +35,19 @@ export default function Cart() {
   );
 }
 
-export const CartProduct = ({ item, setCart }: { item: any; setCart: any }) => {
+export const CartProduct = ({
+  item,
+  setCart,
+  updateCartQuantity,
+  cartLoading,
+}: {
+  item: any;
+  setCart: any;
+  updateCartQuantity: any;
+  cartLoading: any;
+}) => {
   // console.log(item);
   function handleDelete() {
-    // console.log({ productId: item.product.id, quantity: 0, color: item.color.id, size: item.size.id });
     updateCart({ productId: item.product.id, quantity: 0, color: item.color.id, size: item.size.id })
       .then((res) => {
         // console.log(res);
@@ -60,13 +69,7 @@ export const CartProduct = ({ item, setCart }: { item: any; setCart: any }) => {
   }
 
   function handleUpdateCart(quantity: number) {
-    updateCart({ productId: item.product.id, quantity: quantity, color: item.color.id, size: item.size.id })
-      .then((res) => {
-        setCart(res);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    updateCartQuantity(item.product.id, quantity, item.color.id, item.size.id);
   }
   // const colorName = colors.find((x: any) => x.id == item.color.id).name;
   // const sizeName = item.sizes.find((x: any) => x.id == item.product.size).name;
@@ -96,11 +99,11 @@ export const CartProduct = ({ item, setCart }: { item: any; setCart: any }) => {
               item.quantity > 1 && <span className="text-lg">{item.quantity} x </span>} */}
             <span className="font-semibold text-xl">€{item.product.price}</span>
             <div className="flex items-center gap-1">
-              <button onClick={handeIncrease} className="btn btn-sm text-xl">
+              <button onClick={handeIncrease} className="btn btn-sm text-xl" disabled={cartLoading}>
                 +
               </button>
               <p className="input input-sm input-bordered">{item.quantity}</p>
-              <button onClick={handleDecrease} className="btn btn-sm text-xl">
+              <button disabled={cartLoading} onClick={handleDecrease} className="btn btn-sm text-xl">
                 -
               </button>
             </div>

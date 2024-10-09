@@ -23,6 +23,10 @@ const ShopProvider = ({ children }: { children: ReactNode }) => {
 
   function addToCart(product: any, quantity: number, size: number, color: number) {
     // if (!cart) return;
+    if (!user || !isAuthenticated) {
+      toast.error("Please login to add products to cart");
+      return;
+    }
     const productInCart = cart.products.find((p: any) => p.id === product.id);
 
     let _quantity = quantity;
@@ -38,6 +42,23 @@ const ShopProvider = ({ children }: { children: ReactNode }) => {
       .then((res) => {
         setCart(res);
         toast.success("Product added to cart");
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+      .finally(() => setCartLoading(false));
+  }
+
+  function updateCartQuantity(productId: number, quantity: number, color: number, size: number) {
+    setCartLoading(true);
+    updateCart({
+      productId: productId,
+      quantity: quantity,
+      color: color,
+      size: size,
+    })
+      .then((res) => {
+        setCart(res);
       })
       .catch((err) => {
         console.log(err);
@@ -78,7 +99,7 @@ const ShopProvider = ({ children }: { children: ReactNode }) => {
       return;
     }
     if (user.role === "admin") return;
-
+    setShopLoading(true);
     getCart()
       .then((res) => {
         setCart(res);
@@ -117,6 +138,7 @@ const ShopProvider = ({ children }: { children: ReactNode }) => {
         sizes,
         setSizes,
         cartLoading,
+        updateCartQuantity,
       }}>
       {children}
     </ShopContext.Provider>

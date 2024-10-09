@@ -33,28 +33,15 @@ export default function ProductDetails() {
 
   function handleAddToCart() {
     addToCart(product, 1, selectedSize.id, selectedColor.id);
-    // const productInCart = cart.products.find((p: any) => p.id === product.id);
-
-    // let _quantity = 1;
-    // if (productInCart) _quantity = productInCart.cartProduct.quantity + 1;
-
-    // updateCart({
-    //   productId: product.id,
-    //   quantity: _quantity,
-    //   size: selectedSize.id,
-    //   color: selectedColor.id,
-    // })
-    //   .then((res) => {
-    //     // console.log(res);
-    //     setCart(res);
-    //     toast.success("Product added to cart");
-    //   })
-    //   .catch((err) => {
-    //     console.log(err);
-    //   });
   }
 
   if (loading) return <LoadingSpinner />;
+
+  function calcPrice() {
+    const heightWidth = selectedSize.name.split("x");
+    if (heightWidth.length == 2) return (product.price * (parseInt(heightWidth[0]) * parseInt(heightWidth[1]))).toFixed(2);
+    else return product.price;
+  }
 
   return (
     <div className="min-h-screen flex gap-0 items-start mt-16 text-left max-w-[80rem] m-auto">
@@ -64,7 +51,7 @@ export default function ProductDetails() {
           <p className="text-3xl font-semibold">{product.name}</p>
           <FavIcon product={product} wishlist={wishlist} setWishlist={setWishlist} />
         </div>
-        <p className="text-xl">€{product.price}</p>
+        <p className="text-xl">€{calcPrice()}</p>
         <div className="flex gap-4 italic">
           <p>{product.category.name}</p>
         </div>

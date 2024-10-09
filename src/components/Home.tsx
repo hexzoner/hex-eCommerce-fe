@@ -74,6 +74,22 @@ export const ProductCard = ({ product, wishlist, setWishlist }: { product: Produ
     navigate(`/product/${product.id}`);
   }
 
+  //Calculate price range based on the price per square meter and min and max sizes.
+  function calculatePrice() {
+    let minPrice = 0;
+    let maxPrice = 0;
+
+    const sizesInSquareMeters = product.sizes.map((size) => {
+      const heightWidth = size.name.split("x");
+      const squareMeters = parseInt(heightWidth[0]) * parseInt(heightWidth[1]);
+      return squareMeters;
+    });
+    minPrice = Math.min(...sizesInSquareMeters) * product.price;
+    maxPrice = Math.max(...sizesInSquareMeters) * product.price;
+
+    return "€" + minPrice.toFixed(0) + " - " + "€" + maxPrice.toFixed(0);
+  }
+
   return (
     <div className="card bg-base-100 w-72 mx-auto">
       <figure>
@@ -88,7 +104,7 @@ export const ProductCard = ({ product, wishlist, setWishlist }: { product: Produ
           {/* <div className="badge badge-secondary"></div> */}
           <FavIcon product={product} wishlist={wishlist} setWishlist={setWishlist} />
         </h2>
-        €{product.price}
+        {calculatePrice()}
         <p className="text-sm text-justify ">{truncateText(product.description, 128)}</p>
         <div className="card-actions justify-end">
           <div className="badge badge-outline">{product.category.name}</div>
@@ -114,7 +130,10 @@ export function FavIcon({ product, wishlist, setWishlist }: { product: Product; 
 
   function handleAddtoWishlist() {
     const token = restoreToken();
-    if (!token) return;
+    if (!token) {
+      toast.error("Please login to add products to wishlist");
+      return;
+    }
 
     if (favorited) {
       removeFromWishlist(token, product.id)
