@@ -35,7 +35,7 @@ export const getProducts = async (categories?: number[], colors?: number[], size
   return response;
 };
 
-export const createProduct = async (product: {
+interface ProductProps {
   name: string;
   description: string;
   price: number;
@@ -45,8 +45,14 @@ export const createProduct = async (product: {
   sizes: number[];
   defaultSize: number;
   colors: number[];
+  details: string;
+  notes: string;
+  instructions: string;
   active?: boolean;
-}) => {
+  id?: number;
+}
+
+export const createProduct = async (product: ProductProps) => {
   const response = await axios
     .post(
       `${baseURL}`,
@@ -60,6 +66,9 @@ export const createProduct = async (product: {
         sizes: product.sizes,
         defaultSizeId: product.defaultSize,
         colors: product.colors,
+        details: product.details,
+        notes: product.notes,
+        instructions: product.instructions,
         active: product.active,
       },
       {
@@ -77,19 +86,7 @@ export const createProduct = async (product: {
   return response;
 };
 
-export const updateProduct = async (product: {
-  name: string;
-  description: string;
-  price: number;
-  categoryId: number;
-  id: number;
-  image: string;
-  colors: number[];
-  defaultColorId: number;
-  sizes: number[];
-  defaultSize: number;
-  active?: boolean;
-}) => {
+export const updateProduct = async (product: ProductProps) => {
   const body = {
     name: product.name,
     description: product.description,
@@ -101,9 +98,13 @@ export const updateProduct = async (product: {
     sizes: product.sizes,
     defaultSizeId: product.defaultSize,
     active: product.active,
+    details: product.details,
+    notes: product.notes,
+    instructions: product.instructions,
   };
 
   // console.log(body);
+  // console.log(product.id);
 
   const response = await axios
     .put(`${baseURL}/${product.id}`, body, {
