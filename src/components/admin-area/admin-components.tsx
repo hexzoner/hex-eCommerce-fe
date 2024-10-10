@@ -18,6 +18,7 @@ import ColorModal from "./modals/ColorModals";
 import { CreateSizeModal } from "./modals/SizeModals";
 import SizeModal from "./modals/SizeModals";
 import Sizes from "./Sizes";
+import Reviews from "../../pages/admin/reviews";
 
 export {
   Categories,
@@ -40,4 +41,5 @@ export {
   SizeModal,
   CreateSizeModal,
   Sizes,
+  Reviews,
 };

@@ -61,7 +61,7 @@ export default function Users() {
 
   return (
     <div className="min-h-screen">
-      <p className="text-3xl my-6">Users [{selectedUser?.id}]</p>
+      <p className="text-3xl my-6">Users</p>
 
       <div className="overflow-x-auto rounded-md max-w-6xl m-auto">
         <table className="table rounded-md table-zebra table-sm w-full shadow-md mb-12">
