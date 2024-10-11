@@ -1,18 +1,32 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Review } from "./reviews";
 import { formatDateFull } from "../../utils/dateUtils";
 import { useForm } from "react-hook-form";
 import { createReview, updateReview, deleteReview } from "../../api/reviews";
 import { iCreateReviewAPI } from "../../api/reviews";
 import { ConfirmPopup } from "../../components/admin-area/admin-components";
+import { Product } from "../../components/admin-area/Products";
 // import LoadingSpinner from "../../components/LoadingSpinner";
 
-const AddEditReviewPopup = ({ selectedReview, resetReview, setReviews }: { selectedReview: Review; resetReview: any; setReviews: any }) => {
+const AddEditReviewPopup = ({
+  selectedReview,
+  resetReview,
+  setReviews,
+  products,
+}: {
+  selectedReview: Review;
+  resetReview: any;
+  setReviews: any;
+  products: any[];
+}) => {
   if (!selectedReview) return <></>;
 
   const creatingNewReview = selectedReview.createdAt == "";
   const [editMode, setEditMode] = useState(selectedReview.createdAt == "" ? false : true);
   const [loading, setLoading] = useState(false);
+  const [filteredProducts, setFilteredProducts] = useState<Product[]>(products);
+  const [isOpen, setIsOpen] = useState(true);
+  const [filterInput, setFilterInput] = useState("");
 
   const {
     register,
@@ -20,7 +34,7 @@ const AddEditReviewPopup = ({ selectedReview, resetReview, setReviews }: { selec
     formState: { errors },
     //watch,
     reset,
-    //   setValue,
+    setValue,
     // getValues,
   } = useForm<{
     author: string;
@@ -39,10 +53,38 @@ const AddEditReviewPopup = ({ selectedReview, resetReview, setReviews }: { selec
       review: selectedReview.review,
       rating: selectedReview.rating,
       date: selectedReview.date ? new Date(selectedReview.date).toISOString().slice(0, 10) : "",
-      product: selectedReview.product.name,
+      product: selectedReview.product.id.toString(),
       image: selectedReview.image,
     });
+    setFilterInput(selectedReview.product.name);
+    setFilteredProducts(products);
     // resetReview();
+  }
+
+  // Close dropdown when clicked outside
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  const handleClickOutside = (e: any) => {
+    if (e.target.id == "search") {
+      setIsOpen(true);
+      return;
+    }
+    if (e.target.parentElement?.parentElement?.parentElement?.id != "productLabel" && isOpen) {
+      //   console.log(e.target.parentElement?.parentElement?.parentElement);
+      setIsOpen(false);
+    }
+  };
+
+  function handleProductInputChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const value = e.target.value;
+    const filtered = products.filter((p: Product) => p.name.toLowerCase().includes(value.toLowerCase()));
+    setFilterInput(value);
+    setFilteredProducts(filtered);
   }
 
   useEffect(() => {
@@ -53,16 +95,13 @@ const AddEditReviewPopup = ({ selectedReview, resetReview, setReviews }: { selec
     setEditMode(true);
   }
 
-  //   function handleSave() {
-  //     setEditMode(false);
-  //   }
-
   function handleClose() {
     const modal = document.getElementById("editReview_modal");
     if (modal) (modal as HTMLDialogElement).close();
     resetForm();
     resetReview();
     setEditMode(false);
+    setFilterInput("");
   }
 
   function handleDelete(e: React.MouseEvent) {
@@ -89,7 +128,7 @@ const AddEditReviewPopup = ({ selectedReview, resetReview, setReviews }: { selec
       title: data.title,
       review: data.review,
       image: data.image,
-      productId: 1,
+      productId: data.product,
       date: data.date,
     };
     if (creatingNewReview) {
@@ -137,16 +176,35 @@ const AddEditReviewPopup = ({ selectedReview, resetReview, setReviews }: { selec
             <div>
               {editMode || creatingNewReview ? (
                 <form autoComplete="off" onSubmit={handleSubmit(onSubmit)}>
-                  <label className="input input-bordered flex items-center gap-2 rounded-none ">
+                  <label id="productLabel" className="input input-bordered flex items-center gap-2 rounded-none mt-4">
                     Product:
-                    <input type="text" className="grow rounded-none" placeholder="Enter product here" {...register("product", { required: true })} />
+                    <input
+                      onChange={handleProductInputChange}
+                      value={filterInput}
+                      autoComplete="off"
+                      id="search"
+                      type="text"
+                      className="grow rounded-none"
+                      placeholder="Enter product here"
+                      //   {...register("product", { required: true })}
+                    />
+                    <FilterResults
+                      setValue={setValue}
+                      setIsOpen={setIsOpen}
+                      filterResults={filteredProducts}
+                      filterInput={filterInput}
+                      isOpen={isOpen}
+                      setFilterInput={setFilterInput}
+                    />
                   </label>
-                  {errors.product && <p className="text-red-500">{errors.product.message?.toString()}</p>}
+                  <input className="opacity-0 input-xs pointer-events-none" type="text" {...register("product", { required: true })} />
+                  {errors.product && <p className="text-error">{errors.product.message?.toString()}</p>}
+
                   <label className="input input-bordered flex items-center gap-2 rounded-none ">
                     Author:
                     <input type="text" className="grow rounded-none" placeholder="Enter name here" {...register("author", { required: true })} />
                   </label>
-                  {errors.author && <p className="text-red-500">{errors.author.message?.toString()}</p>}
+                  {errors.author && <p className="text-error">{errors.author.message?.toString()}</p>}
                   <label className="input input-bordered flex items-center gap-2 rounded-none">
                     Rating:
                     <input
@@ -160,7 +218,7 @@ const AddEditReviewPopup = ({ selectedReview, resetReview, setReviews }: { selec
                       })}
                     />
                   </label>
-                  {errors.rating && <span className="text-red-500">{errors.rating.message?.toString()}</span>}
+                  {errors.rating && <span className="text-error">{errors.rating.message?.toString()}</span>}
                   <label className="input input-bordered flex items-center gap-2 rounded-none">
                     Title:
                     <input
@@ -170,7 +228,7 @@ const AddEditReviewPopup = ({ selectedReview, resetReview, setReviews }: { selec
                       {...register("title", { required: true })}
                     />
                   </label>
-                  {errors.title && <span className="text-red-500">{errors.title.message?.toString()}</span>}
+                  {errors.title && <span className="text-error">{errors.title.message?.toString()}</span>}
                   <label className="flex items-center gap-2 textarea textarea-bordered resize-none rounded-none">
                     Review:
                     <textarea
@@ -179,7 +237,7 @@ const AddEditReviewPopup = ({ selectedReview, resetReview, setReviews }: { selec
                       {...register("review", { required: true })}
                     />
                   </label>
-                  {errors.review && <span className="text-red-500">{errors.review.message?.toString()}</span>}
+                  {errors.review && <span className="text-error">{errors.review.message?.toString()}</span>}
                   <label className="input input-bordered flex items-center gap-2 rounded-none">
                     Image:
                     <input
@@ -189,12 +247,12 @@ const AddEditReviewPopup = ({ selectedReview, resetReview, setReviews }: { selec
                       {...register("image", { required: false })}
                     />
                   </label>
-                  {errors.image && <span className="text-red-500">{errors.image.message?.toString()}</span>}
+                  {errors.image && <span className="text-error">{errors.image.message?.toString()}</span>}
                   <label className="input input-bordered flex items-center gap-2 rounded-none">
                     Date:
                     <input type="date" className="grow rounded-none ml-4" {...register("date", { required: true })} />
                   </label>
-                  {errors.date && <span className="text-red-500">{errors.date.message?.toString()}</span>}
+                  {errors.date && <span className="text-error">{errors.date.message?.toString()}</span>}
                   <>
                     <button type="submit" className="btn btn-success btn-sm rounded-none mt-4">
                       Save
@@ -262,3 +320,44 @@ function CloseButton({ handleClose }: { handleClose: any }) {
     </button>
   );
 }
+
+const FilterResults = ({
+  filterResults,
+  isOpen,
+  setFilterInput,
+  setIsOpen,
+  setValue,
+}: {
+  filterResults: Product[];
+  filterInput: string;
+  isOpen: boolean;
+  setFilterInput: any;
+  setIsOpen: any;
+  setValue: any;
+}) => {
+  const dropdownRef = useRef(null);
+  if (!filterResults) return;
+  //   if (filterInput.length < 1 || filterResults.length == 0) return;
+
+  function handleClick(e: any) {
+    const input = e.target.innerText;
+    // console.log(e.target.id);
+    setFilterInput(input);
+    setIsOpen(false);
+    setValue("product", e.target.id);
+  }
+
+  return (
+    <div id="dropdown" ref={dropdownRef} className={`dropdown absolute mt-10 ${isOpen && "dropdown-open"} `}>
+      <ul tabIndex={0} className="overflow-y-auto max-h-96 dropdown-content menu-vertical bg-base-200 rounded-none z-[1] w-96 p-2 shadow gap-2">
+        {filterResults.map((p) => {
+          return (
+            <li id={p.id.toString()} onClick={handleClick} className="w-full hover:cursor-pointer hover:bg-base-100 p-2 rounded-none" key={p.id}>
+              {p.name}
+            </li>
+          );
+        })}
+      </ul>
+    </div>
+  );
+};

@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import sortTables from "../../utils/sortTables";
 import { getReviews } from "../../api/reviews";
+import { getProducts } from "../../api/products";
 import { toast } from "react-toastify";
 import LoadingSpinner from "../../components/LoadingSpinner";
 import { formatDateFull } from "../../utils/dateUtils";
@@ -39,6 +40,7 @@ export default function Reviews() {
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedReview, setSelectedReview] = useState(emptyReview);
+  const [products, setProducts] = useState([]);
 
   useEffect(() => {
     getReviews()
@@ -51,7 +53,17 @@ export default function Reviews() {
         toast.error(err.response.data.message);
       })
       .finally(() => {
-        setLoading(false);
+        getProducts()
+          .then((res) => {
+            setProducts(res);
+          })
+          .catch((err) => {
+            console.log(err);
+            toast.error(err.response.data.message);
+          })
+          .finally(() => {
+            setLoading(false);
+          });
       });
   }, []);
 
@@ -89,7 +101,23 @@ export default function Reviews() {
               <th className="font-bold">
                 <div className="flex gap-1 items-center">
                   <span>ID</span>
-                  <button title="SortById" className="hover:cursor-pointer" onClick={() => handleSortClick("id")}>
+                  <button title="Sort" className="hover:cursor-pointer" onClick={() => handleSortClick("id")}>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth="1.5"
+                      stroke="currentColor"
+                      className="size-6">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 15 12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9" />
+                    </svg>
+                  </button>
+                </div>
+              </th>
+              <th className="font-bold">
+                <div className="flex gap-1 items-center">
+                  <span>Product</span>
+                  <button title="Sort" className="hover:cursor-pointer" onClick={() => handleSortClick("product.name")}>
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"
@@ -178,6 +206,9 @@ export default function Reviews() {
                 className="cursor-pointer hover"
                 key={review.id}>
                 <td>{review.id}</td>
+                <td>
+                  {review.product.name} [{review.product.id}]
+                </td>
                 <td>{review.author}</td>
                 <td>{review.title}</td>
                 <td>{review.review}</td>
@@ -187,7 +218,7 @@ export default function Reviews() {
           </tbody>
         </table>
       </div>
-      <AddEditReviewPopup selectedReview={selectedReview} resetReview={resetReview} setReviews={setReviews} />
+      <AddEditReviewPopup selectedReview={selectedReview} resetReview={resetReview} setReviews={setReviews} products={products} />
     </div>
   );
 }
