@@ -29,6 +29,9 @@ export interface Product {
   defaultSize: Size;
   colors: Color[];
   active: boolean;
+  details: string;
+  notes: string;
+  instructions: string;
 }
 
 export default function Products() {
@@ -57,6 +60,9 @@ export default function Products() {
     },
     colors: [],
     active: false,
+    details: "",
+    notes: "",
+    instructions: "",
   };
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);

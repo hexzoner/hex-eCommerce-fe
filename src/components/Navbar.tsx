@@ -37,6 +37,9 @@ export default function Navbar() {
               <NavLink to="admin/users" className={navLinkClass}>
                 Users
               </NavLink>
+              <NavLink to="admin/reviews" className={navLinkClass}>
+                Reviews
+              </NavLink>
             </>
           ) : (
             <>

@@ -99,12 +99,12 @@ export const CartProduct = ({
               item.quantity > 1 && <span className="text-lg">{item.quantity} x </span>} */}
             <span className="font-semibold text-xl">€{item.product.price}</span>
             <div className="flex items-center gap-1">
-              <button onClick={handeIncrease} className="btn btn-sm text-xl" disabled={cartLoading}>
-                +
-              </button>
-              <p className="input input-sm input-bordered">{item.quantity}</p>
               <button disabled={cartLoading} onClick={handleDecrease} className="btn btn-sm text-xl">
                 -
+              </button>
+              <p className="input input-sm input-bordered">{item.quantity}</p>
+              <button onClick={handeIncrease} className="btn btn-sm text-xl" disabled={cartLoading}>
+                +
               </button>
             </div>
           </div>
