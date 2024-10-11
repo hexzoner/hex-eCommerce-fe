@@ -4,11 +4,12 @@ import { getReviews } from "../../api/reviews";
 import { toast } from "react-toastify";
 import LoadingSpinner from "../../components/LoadingSpinner";
 import { formatDateFull } from "../../utils/dateUtils";
+import AddEditReviewPopup from "./AddEditReviewPopup";
 
 export interface Review {
   title: string;
   review: string;
-  rating: number;
+  rating: string;
   author: string;
   image: string;
   createdAt: string;
@@ -17,13 +18,15 @@ export interface Review {
     name: string;
   };
   date: string;
+  id: number;
 }
 
 export default function Reviews() {
   const emptyReview = {
+    id: 0,
     title: "",
     review: "",
-    rating: 0,
+    rating: "",
     author: "",
     image: "",
     createdAt: "",
@@ -40,7 +43,7 @@ export default function Reviews() {
   useEffect(() => {
     getReviews()
       .then((res) => {
-        setReviews(sortTables(res, "id", "asc"));
+        setReviews(sortTables(res, "id", "desc"));
         // console.log(res);
       })
       .catch((err) => {
@@ -184,97 +187,7 @@ export default function Reviews() {
           </tbody>
         </table>
       </div>
-      <AddEditReviewPopup selectedReview={selectedReview} resetReview={resetReview} />
+      <AddEditReviewPopup selectedReview={selectedReview} resetReview={resetReview} setReviews={setReviews} />
     </div>
   );
 }
-
-const AddEditReviewPopup = ({ selectedReview, resetReview }: { selectedReview: Review; resetReview: any }) => {
-  if (!selectedReview) return <></>;
-
-  const creatingNewReview = selectedReview.createdAt == "";
-  const [editMode, setEditMode] = useState(selectedReview.createdAt == "" ? false : true);
-
-  function handleEdit() {
-    setEditMode(true);
-  }
-  function handleDelete() {}
-  function handleSave() {
-    setEditMode(false);
-  }
-
-  return (
-    <>
-      <dialog id="editReview_modal" className="modal">
-        <div className="modal-box text-left">
-          <h3 className="font-bold text-lg">{editMode ? "Edit Review" : creatingNewReview ? "Add Review" : "Review Info"}</h3>
-
-          <p className="py-2">
-            Product Id: {selectedReview.product.name} [id = {selectedReview.product.id}]
-          </p>
-          {editMode || creatingNewReview ? (
-            <>
-              <label className="input input-bordered flex items-center gap-2">
-                Author
-                <input type="text" className="grow" placeholder="Enter name here" />
-              </label>
-              <label className="input input-bordered flex items-center gap-2">
-                Rating
-                <input type="text" className="grow" placeholder="Rating from 0 to 5" />
-              </label>
-              <label className="input input-bordered flex items-center gap-2">
-                Title
-                <input type="text" className="grow" placeholder="Enter title here.." />
-              </label>
-              <label className="input input-bordered flex items-center gap-2">
-                Review
-                <input type="text" className="grow" placeholder="Enter review here.." />
-              </label>
-              <label className="input input-bordered flex items-center gap-2">
-                Date
-                <input type="date" className="grow" />
-              </label>
-            </>
-          ) : (
-            <>
-              <p className="py-2">Rating: {selectedReview.rating} / 5</p>
-              <p className="py-2">Title: {selectedReview.title}</p>
-              <p className="py-2">Review: {selectedReview.review}</p>
-              <p className="py-2">Author: {selectedReview.author}</p>
-              <p className="py-2">Date: {formatDateFull(selectedReview.date)}</p>
-            </>
-          )}
-
-          <div className="flex py-4">
-            {editMode || creatingNewReview ? (
-              <>
-                <button onClick={handleSave} className="btn btn-success btn-sm rounded-none">
-                  Save
-                </button>
-              </>
-            ) : (
-              <>
-                <button onClick={handleEdit} className="btn btn-warning btn-sm rounded-none">
-                  Edit
-                </button>
-                <button onClick={handleDelete} className="btn btn-error btn-sm rounded-none">
-                  Delete
-                </button>
-              </>
-            )}
-            <form method="dialog">
-              <button
-                onClick={() => {
-                  resetReview();
-                  setEditMode(false);
-                }}
-                className="btn btn-sm rounded-none">
-                Close
-              </button>
-            </form>
-          </div>
-        </div>
-      </dialog>
-    </>
-  );
-};

@@ -10,6 +10,16 @@ const headers = {
   Authorization: `Bearer ${restoreToken()}`,
 };
 
+export interface iCreateReviewAPI {
+  author: string;
+  rating: string;
+  title: string;
+  review: string;
+  image: string;
+  productId: number;
+  date: string;
+}
+
 export const getReviews = async () => {
   const response = await axios
     .get(`${baseURL}`, {
@@ -22,6 +32,54 @@ export const getReviews = async () => {
     .catch((err) => {
       console.log(err.response.data.message);
       toast.error(err.response.data.message);
+    });
+  return response;
+};
+
+export const createReview = async (data: iCreateReviewAPI) => {
+  const response = await axios
+    .post(`${baseURL}`, data, {
+      headers,
+    })
+    .then((res) => {
+      toast.success("Review created successfully");
+      return res.data;
+    })
+    .catch((err) => {
+      console.log(err);
+      toast.error(err.response.data.error);
+    });
+  return response;
+};
+
+export const updateReview = async (data: iCreateReviewAPI, id: number) => {
+  const response = await axios
+    .put(`${baseURL}/${id}`, data, {
+      headers,
+    })
+    .then((res) => {
+      toast.success("Review updated successfully");
+      return res.data;
+    })
+    .catch((err) => {
+      console.log(err);
+      toast.error(err.response.data.error);
+    });
+  return response;
+};
+
+export const deleteReview = async (id: number) => {
+  const response = await axios
+    .delete(`${baseURL}/${id}`, {
+      headers,
+    })
+    .then((res) => {
+      toast.success("Review deleted successfully");
+      return res.data;
+    })
+    .catch((err) => {
+      console.log(err);
+      toast.error(err.response.data.error);
     });
   return response;
 };
