@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from "react";
-import { Review } from "./reviews";
+import { Review } from "./Reviews";
 import { formatDateFull } from "../../utils/dateUtils";
 import { useForm } from "react-hook-form";
 import { createReview, updateReview, deleteReview } from "../../api/reviews";
