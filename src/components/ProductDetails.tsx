@@ -9,7 +9,6 @@ import { getReviews } from "../api/reviews";
 // import { toast } from "react-toastify";
 import { formatDateShort } from "../utils/dateUtils";
 import { Rating } from "react-simple-star-rating";
-import NotFound from "./NotFound";
 
 export default function ProductDetails() {
   const { id } = useParams<{ id: string }>();
@@ -22,12 +21,16 @@ export default function ProductDetails() {
   const [page, setPage] = useState(1);
   const [perPage, setPerPage] = useState(5);
   const [sort, setSort] = useState("desc");
-  const [totalPages, setTotalPages] = useState(1);
+  // const [totalPages, setTotalPages] = useState(1);
   const [totalReviews, setTotalReviews] = useState(0);
   const [averateRating, setAverageRating] = useState(0);
   const [responseStatus, setResponseStatus] = useState(200);
 
   useEffect(() => {
+    setPage(1);
+    setPerPage(5);
+    setSort("desc");
+
     getProductById(Number(id))
       .then((res) => {
         setProduct(res);
@@ -40,7 +43,7 @@ export default function ProductDetails() {
         } else {
           getReviews(page, perPage, sort, Number(id)).then((res) => {
             setProductReviews(res.reviews);
-            setTotalPages(res.totalPages);
+            // setTotalPages(res.totalPages);
             setTotalReviews(res.totalReviews);
             setAverageRating(res.averageRating);
             setLoading(false);
