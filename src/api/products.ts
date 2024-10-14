@@ -146,6 +146,6 @@ export const getProductById = async (id: number) => {
       // console.log(res.data);
       return res.data;
     })
-    .catch((err) => console.log(err.data.message));
+    .catch((err) => console.log(err.response.data.message));
   return response;
 };

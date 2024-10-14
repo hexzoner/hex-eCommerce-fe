@@ -45,7 +45,7 @@ export default function Reviews() {
   useEffect(() => {
     getReviews()
       .then((res) => {
-        setReviews(sortTables(res, "id", "desc"));
+        setReviews(sortTables(res.reviews, "id", "desc"));
         // console.log(res);
       })
       .catch((err) => {
