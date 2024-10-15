@@ -49,7 +49,7 @@ export default function ProductBrowser() {
   }, [selectedCategories, selectedColors, selectedSizes, page, perPage]);
 
   return (
-    <div className={mainMakrupColors + " min-h-screen max-w-[80rem] m-auto "}>
+    <div className={mainMakrupColors + " min-h-screen max-w-[80rem] m-auto py-6"}>
       <p className="text-2xl text-left mt-8 font-semibold px-5">Our collection of handmade rugs</p>
       <p className="text-base text-left mt-4 px-5">Discover our collection, handmade of eco-friendly wool material</p>
       <div className="px-5 my-6">

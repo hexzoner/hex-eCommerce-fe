@@ -14,6 +14,9 @@ import {
   Unauthorized,
   Wishlist,
   ProductBrowser,
+  RugSizes,
+  RugTypes,
+  Sales,
 } from "./components/components";
 import { Dashboard, Categories, Orders, Users, Products, OrderDetails, Colors, Sizes, Reviews } from "./components/admin-area/admin-components";
 
@@ -26,6 +29,9 @@ const router = createBrowserRouter(
       <Route path="signup" element={<Signup />} />
       <Route path="forgot-password" element={<ForgotPassword />} />
       <Route path="products" element={<ProductBrowser />} />
+      <Route path="rug-sizes" element={<RugSizes />} />
+      <Route path="rug-types" element={<RugTypes />} />
+      <Route path="sales" element={<Sales />} />
       <Route path="product/:id" element={<ProductDetails />} />
 
       <Route element={<ProtectedLayout />}>

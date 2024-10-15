@@ -1,9 +1,10 @@
 import { Product } from "../../components/admin-area/Products";
-import Slider from "react-slick";
+
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { useState } from "react";
 import "../../css/carousel.css";
+import Slider from "react-slick";
 
 const LatestArrivalsCarousel = ({ products }: { products: Product[] }) => {
   // State to track the current slide
@@ -37,7 +38,7 @@ const LatestArrivalsCarousel = ({ products }: { products: Product[] }) => {
     slidesToShow: totalSlides, // Adjust to show 5 items at a time (center + sides)
     slidesToScroll: 1,
     centerMode: true, // Enables center item
-    centerPadding: "0", // No padding around the center item
+    centerPadding: "0px", // No padding around the center item
     arrows: true, // Show arrows for navigation
     nextArrow: <NextArrow />,
     prevArrow: <PrevArrow />,
