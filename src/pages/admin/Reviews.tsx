@@ -4,8 +4,9 @@ import { getReviews } from "../../api/reviews";
 import { getProducts } from "../../api/products";
 import { toast } from "react-toastify";
 import LoadingSpinner from "../../components/LoadingSpinner";
-import { formatDateFull } from "../../utils/dateUtils";
+import { formatDateShort } from "../../utils/dateUtils";
 import AddEditReviewPopup from "./AddEditReviewPopup";
+import Pagination from "../../components/Pagination";
 
 export interface Review {
   title: string;
@@ -41,29 +42,43 @@ export default function Reviews() {
   const [loading, setLoading] = useState(true);
   const [selectedReview, setSelectedReview] = useState(emptyReview);
   const [products, setProducts] = useState([]);
+  const [loadingProducts, setLoadingProducts] = useState(true);
+
+  // Pagination
+  const [page, setPage] = useState(1);
+  const [perPage, setPerPage] = useState(10);
+  // const [sort, setSort] = useState("desc");
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalReviews, setTotalReviews] = useState(0);
 
   useEffect(() => {
-    getReviews()
+    getReviews(page, perPage)
       .then((res) => {
-        setReviews(sortTables(res.reviews, "id", "desc"));
         // console.log(res);
+        setReviews(sortTables(res.reviews, "id", "desc"));
+        setTotalPages(res.totalPages);
+        setTotalReviews(res.totalReviews);
       })
       .catch((err) => {
         console.log(err);
         toast.error(err.response.data.message);
       })
       .finally(() => {
-        getProducts()
-          .then((res) => {
-            setProducts(res);
-          })
-          .catch((err) => {
-            console.log(err);
-            toast.error(err.response.data.message);
-          })
-          .finally(() => {
-            setLoading(false);
-          });
+        setLoading(false);
+      });
+  }, [page, perPage]);
+
+  useEffect(() => {
+    getProducts()
+      .then((res) => {
+        setProducts(res.results);
+      })
+      .catch((err) => {
+        console.log(err);
+        toast.error(err.response.data.message);
+      })
+      .finally(() => {
+        setLoadingProducts(false);
       });
   }, []);
 
@@ -84,7 +99,7 @@ export default function Reviews() {
     setSelectedReview(emptyReview);
   }
 
-  if (loading) return <LoadingSpinner />;
+  if (loading || loadingProducts) return <LoadingSpinner />;
 
   return (
     <div className="min-h-screen ">
@@ -212,11 +227,20 @@ export default function Reviews() {
                 <td>{review.author}</td>
                 <td>{review.title}</td>
                 <td>{review.review}</td>
-                <td>{formatDateFull(review.date)}</td>
+                <td>{formatDateShort(review.date)}</td>
               </tr>
             ))}
           </tbody>
         </table>
+        <Pagination
+          page={page}
+          setPage={setPage}
+          totalPages={totalPages}
+          perPage={perPage}
+          setPerPage={setPerPage}
+          totalResults={totalReviews}
+          options={[10, 25, 50]}
+        />
       </div>
       <AddEditReviewPopup selectedReview={selectedReview} resetReview={resetReview} setReviews={setReviews} products={products} />
     </div>

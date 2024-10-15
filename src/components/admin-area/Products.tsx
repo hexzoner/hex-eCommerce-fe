@@ -72,7 +72,7 @@ export default function Products() {
 
   // Pagination
   const [page, setPage] = useState(1);
-  const [perPage, setPerPage] = useState(8);
+  const [perPage, setPerPage] = useState(10);
   // const [sort, setSort] = useState("desc");
   const [totalPages, setTotalPages] = useState(1);
   const [totalProducts, setTotalProducts] = useState(0);
