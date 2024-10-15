@@ -5,6 +5,7 @@ import LoadingSpinner from "./LoadingSpinner";
 import { FavIcon } from "./Home";
 import { useShop } from "../context";
 import { getReviews } from "../api/reviews";
+import Pagination from "./Pagination";
 // import { updateCart } from "../api/cart";
 // import { toast } from "react-toastify";
 import { formatDateShort } from "../utils/dateUtils";
@@ -14,6 +15,7 @@ export default function ProductDetails() {
   const { id } = useParams<{ id: string }>();
   const [product, setProduct] = useState<any>({});
   const [loading, setLoading] = useState(true);
+  const [loadingReviews, setLoadingReviews] = useState(true);
   const { wishlist, setWishlist, addToCart, cartLoading } = useShop();
   const [selectedSize, setSelectedSize] = useState<any>({});
   const [selectedColor, setSelectedColor] = useState<any>({});
@@ -21,16 +23,20 @@ export default function ProductDetails() {
   const [page, setPage] = useState(1);
   const [perPage, setPerPage] = useState(5);
   const [sort, setSort] = useState("desc");
-  // const [totalPages, setTotalPages] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
   const [totalReviews, setTotalReviews] = useState(0);
   const [averateRating, setAverageRating] = useState(0);
   const [responseStatus, setResponseStatus] = useState(200);
 
-  useEffect(() => {
-    setPage(1);
-    setPerPage(5);
-    setSort("desc");
+  function setReviewsData(res: any) {
+    setProductReviews(res.reviews);
+    setTotalPages(res.totalPages);
+    setTotalReviews(res.totalReviews);
+    setAverageRating(res.averageRating);
+  }
 
+  useEffect(() => {
+    setSort("desc");
     getProductById(Number(id))
       .then((res) => {
         setProduct(res);
@@ -40,14 +46,6 @@ export default function ProductDetails() {
         if (res.status && res.status == 404) {
           setResponseStatus(res.status);
           return;
-        } else {
-          getReviews(page, perPage, sort, Number(id)).then((res) => {
-            setProductReviews(res.reviews);
-            // setTotalPages(res.totalPages);
-            setTotalReviews(res.totalReviews);
-            setAverageRating(res.averageRating);
-            setLoading(false);
-          });
         }
       })
       .catch((err) => {
@@ -60,6 +58,21 @@ export default function ProductDetails() {
   }, [id]);
 
   useEffect(() => {
+    setLoadingReviews(true);
+    getReviews(page, perPage, sort, Number(id))
+      .then((res) => {
+        setReviewsData(res);
+      })
+      .catch((err) => {
+        console.log("Error fetching product reviews");
+        console.log(err);
+      })
+      .finally(() => {
+        setLoadingReviews(false);
+      });
+  }, [page, perPage, sort]);
+
+  useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
@@ -67,7 +80,7 @@ export default function ProductDetails() {
     addToCart(product, 1, selectedSize.id, selectedColor.id);
   }
 
-  if (loading) return <LoadingSpinner />;
+  if (loading || loadingReviews) return <LoadingSpinner />;
   if (responseStatus == 404) return <div className="min-h-screen text-3xl flex flex-col items-center justify-center">Product not found</div>;
 
   function calcPrice() {
@@ -145,15 +158,18 @@ export default function ProductDetails() {
       </div>
 
       <section className="bg-[#fcfaf5] w-full text-center ">
-        <div className="max-w-[40rem] m-auto py-24 border-b-[2.5px] border-black border-opacity-15 mb-4">
+        <div className="max-w-[40rem] m-auto py-20 border-b-[2.5px] border-black border-opacity-15 mb-4">
           <p className="font-semibold text-2xl">Customer Reviews</p>
           <p className="">{totalReviews} Reviews</p>
           <Ratings rating={averateRating} size={size.large} />
         </div>
-        <div className="text-left flex flex-col gap-0 max-w-[40rem] m-auto mb-24">
+        <div className="text-left flex flex-col gap-0 max-w-[40rem] m-auto ">
           {productReviews.map((review: any) => (
             <ReviewCard key={review.id} review={review} />
           ))}
+        </div>
+        <div className="mb-20 max-w-[40rem] m-auto">
+          <Pagination page={page} setPage={setPage} perPage={perPage} setPerPage={setPerPage} totalResults={totalReviews} totalPages={totalPages} />
         </div>
       </section>
     </div>

@@ -11,6 +11,7 @@ import { useNavigate } from "react-router-dom";
 import { useShop } from "../context";
 import { Filters } from "../components/components";
 import { calculatePriceRange } from "../utils/miscUtils";
+import Pagination from "./Pagination";
 
 export default function Home() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -20,6 +21,13 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const { wishlist, setWishlist, shopLoading } = useShop();
 
+  // Pagination
+  const [page, setPage] = useState(1);
+  const [perPage, setPerPage] = useState(8);
+  // const [sort, setSort] = useState("desc");
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalProducts, setTotalProducts] = useState(0);
+
   useEffect(() => {
     // if (shopLoading) return;
     setLoading(true);
@@ -27,12 +35,18 @@ export default function Home() {
     getProducts(
       selectedCategories.map((x) => x.id),
       selectedColors.map((x) => x.id),
-      selectedSizes.map((x) => x.id)
+      selectedSizes.map((x) => x.id),
+      page,
+      perPage
     )
-      .then((res) => setProducts(res.filter((x: any) => x.active == true)))
+      .then((res) => {
+        setProducts(res.results.filter((x: any) => x.active == true));
+        setTotalPages(res.totalPages);
+        setTotalProducts(res.totalResults);
+      })
       .catch((err) => console.log(err))
       .finally(() => setLoading(false));
-  }, [selectedCategories, selectedColors, selectedSizes]);
+  }, [selectedCategories, selectedColors, selectedSizes, page, perPage]);
 
   return (
     <div className={mainMakrupColors + " min-h-screen max-w-[80rem] m-auto "}>
@@ -64,6 +78,15 @@ export default function Home() {
             {products.length === 0 && <p className="text-center text-xl mt-24">No products found</p>}
           </>
         )}
+        <Pagination
+          page={page}
+          setPage={setPage}
+          perPage={perPage}
+          setPerPage={setPerPage}
+          totalPages={totalPages}
+          totalResults={totalProducts}
+          options={[8, 16, 24]}
+        />
       </section>
     </div>
   );

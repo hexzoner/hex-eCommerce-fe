@@ -181,7 +181,7 @@ export default function Reviews() {
               <th className="font-bold">
                 <div className="flex gap-1 items-center">
                   <span>Date</span>
-                  <button title="SortByEmail" className="hover:cursor-pointer" onClick={() => handleSortClick("createdAt")}>
+                  <button title="SortByEmail" className="hover:cursor-pointer" onClick={() => handleSortClick("date")}>
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"
@@ -212,7 +212,7 @@ export default function Reviews() {
                 <td>{review.author}</td>
                 <td>{review.title}</td>
                 <td>{review.review}</td>
-                <td>{formatDateFull(review.createdAt)}</td>
+                <td>{formatDateFull(review.date)}</td>
               </tr>
             ))}
           </tbody>
