@@ -26,21 +26,23 @@ const Pagination = ({
 
   return (
     <div className="flex justify-between my-4">
-      <div className="flex items-center gap-2">
-        <select
-          title="perPage"
-          onChange={handlePerPageChange}
-          value={perPage}
-          className="text-center py-1 text-sm gradientselect w-20 bg-base-200 rounded">
-          {options.map((option) => (
-            <option key={option} className="bg-base-200 text-sm" value={option}>
-              {`1-${option}`}
-            </option>
-          ))}
-        </select>
-        <p className="text-sm">of</p>
-        <p className="text-sm">{totalResults}</p>
-      </div>
+      {totalResults > 0 && (
+        <div className="flex items-center gap-2">
+          <select
+            title="perPage"
+            onChange={handlePerPageChange}
+            value={perPage}
+            className="text-center py-1 text-sm gradientselect w-20 bg-base-200 rounded">
+            {options.map((option) => (
+              <option key={option} className="bg-base-200 text-sm" value={option}>
+                {`1-${option}`}
+              </option>
+            ))}
+          </select>
+          <p className="text-sm">of</p>
+          <p className="text-sm">{totalResults}</p>
+        </div>
+      )}
 
       <div className="join">
         {page > 1 && (
