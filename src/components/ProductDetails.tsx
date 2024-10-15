@@ -2,7 +2,7 @@ import { useParams } from "react-router-dom";
 import { getProductById } from "../api/products";
 import { useState, useEffect } from "react";
 import LoadingSpinner from "./LoadingSpinner";
-import { FavIcon } from "./Home";
+import { FavIcon } from "../pages/user/ProductBrowser";
 import { useShop } from "../context";
 import { getReviews } from "../api/reviews";
 import Pagination from "./Pagination";

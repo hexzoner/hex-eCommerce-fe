@@ -1,189 +1,58 @@
-export const mainMakrupColors = "bg-white text-[#363636]";
 import { getProducts } from "../api/products";
-import { useEffect, useState } from "react";
-// import LoadingSpinner from "./LoadingSpinner";
+import { useState, useEffect } from "react";
 import { Product } from "./admin-area/Products";
-// import { truncateText } from "../utils/sortTables";
-import { addToWishlist, removeFromWishlist } from "../api/wishlist";
-import { restoreToken } from "../utils/storage";
-import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
-import { useShop } from "../context";
-import { Filters } from "../components/components";
-import { calculatePriceRange } from "../utils/miscUtils";
-import Pagination from "./Pagination";
+import LatestArrivalsCarousel from "../pages/user/LatestArrivalsCarousel";
 
 export default function Home() {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [selectedCategories, setSelectedCategories] = useState<any[]>([]);
-  const [selectedColors, setSelectedColors] = useState<any[]>([]);
-  const [selectedSizes, setSelectedSizes] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const { wishlist, setWishlist, shopLoading } = useShop();
-
-  // Pagination
-  const [page, setPage] = useState(1);
-  const [perPage, setPerPage] = useState(8);
-  // const [sort, setSort] = useState("desc");
-  const [totalPages, setTotalPages] = useState(1);
-  const [totalProducts, setTotalProducts] = useState(0);
+  const [products, setProducts] = useState<Product[]>([]);
 
   useEffect(() => {
-    // if (shopLoading) return;
-    setLoading(true);
-    // console.log("Filters - fetching products");
-    getProducts(
-      selectedCategories.map((x) => x.id),
-      selectedColors.map((x) => x.id),
-      selectedSizes.map((x) => x.id),
-      page,
-      perPage
-    )
+    getProducts([], [], [], 1, 5)
       .then((res) => {
-        setProducts(res.results.filter((x: any) => x.active == true));
-        setTotalPages(res.totalPages);
-        setTotalProducts(res.totalResults);
+        setProducts(res.results);
       })
       .catch((err) => console.log(err))
       .finally(() => setLoading(false));
-  }, [selectedCategories, selectedColors, selectedSizes, page, perPage]);
+  }, []);
 
   return (
-    <div className={mainMakrupColors + " min-h-screen max-w-[80rem] m-auto "}>
-      <p className="text-2xl text-left mt-8 font-semibold px-5">Our collection of handmade rugs</p>
-      <p className="text-base text-left mt-4 px-5">Discover our collection, handmade of eco-friendly wool material</p>
-      <div className="px-5 my-6">
-        <Filters
-          selectedColors={selectedColors}
-          selectedCategories={selectedCategories}
-          setProducts={setProducts}
-          setSelectedCategories={setSelectedCategories}
-          setSelectedColors={setSelectedColors}
-          selectedSizes={selectedSizes}
-          setSelectedSizes={setSelectedSizes}
-        />
-      </div>
-      <section className="my-8 ">
-        {loading || shopLoading ? (
-          <div className="flex flex-col justify-center items-center min-h-[50vh]">
-            <span className="loading loading-spinner loading-lg"></span>
+    <div className="min-h-screen bg-[#eff2f6]">
+      {/* Hero section */}
+      <section className="max-w-[1115px] m-auto py-24">
+        <div className="flex h-[521px] justify-center gap-4  text-black">
+          <div className="hero-1-background rounded-2xl w-2/3 flex flex-col justify-evenly ">
+            <p className="font-semibold text-5xl w-fit mx-auto text-outline rounded-xl py-2 px-12">Where Heritage Meets Home</p>
+            <p className="font-semibold text-xl py-2 px-4 w-fit mx-auto text-outline  rounded-xl">
+              Lorem ipsum dolor sit amet consectetur adipiscing elit Ut et.
+            </p>
+            <button className="btn btn-neutral rounded-none max-w-[194px] mx-auto btn-lg px-12">Shop All</button>
           </div>
-        ) : (
-          <>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2">
-              {products.map((product) => {
-                return <ProductCard key={product.id} product={product} wishlist={wishlist} setWishlist={setWishlist} />;
-              })}
+          <div className="flex flex-col w-1/3 justify-between font-normal text-xl">
+            <div className="hero-2-background h-[251px] gap-4 rounded-xl text-center flex flex-col justify-between py-4">
+              <p></p>
+              <p className="bg-white w-fit mx-auto px-6 rounded-md py-2">Wool Rugs</p>
             </div>
-            {products.length === 0 && <p className="text-center text-xl mt-24">No products found</p>}
-          </>
-        )}
-        <Pagination
-          page={page}
-          setPage={setPage}
-          perPage={perPage}
-          setPerPage={setPerPage}
-          totalPages={totalPages}
-          totalResults={totalProducts}
-          options={[8, 16, 24]}
-        />
+            <div className="hero-3-background h-[251px] gap-4 rounded-xl text-center flex flex-col justify-between py-4">
+              <p></p>
+              <p className="bg-white w-fit mx-auto px-6 rounded-md py-2">New Arrivals</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Our Latest Arrivals */}
+      <section className="bg-white h-[673.65px] mb-12">
+        <div>
+          <p className="font-semibold text-4xl pt-20"> Our Latest Arrivals</p>
+        </div>
+
+        <div className="mt-20">
+          <LatestArrivalsCarousel products={products} />
+        </div>
+
+        <button className="h-[50px] w-[194px] font-semibold text-[22px]">SEE ALL</button>
       </section>
     </div>
-  );
-}
-
-export const ProductCard = ({ product, wishlist, setWishlist }: { product: Product; wishlist: any; setWishlist: any }) => {
-  const navigate = useNavigate();
-  function handleClick() {
-    navigate(`/product/${product.id}`);
-  }
-
-  return (
-    <div className="card bg-base-100 w-72 mx-auto">
-      <figure>
-        <img onClick={handleClick} className="w-72 h-48 object-cover  cursor-pointer" src={product.image} alt="Rug Image" />
-      </figure>
-      <div className="card-body">
-        <h2 className="text-xl font-bold text-center flex items-center justify-between ">
-          <div className="opacity-0">+</div>
-          <div onClick={handleClick} className="cursor-pointer hover:text-[#b04e2d]">
-            {product.name}
-          </div>
-          {/* <div className="badge badge-secondary"></div> */}
-          <FavIcon product={product} wishlist={wishlist} setWishlist={setWishlist} />
-        </h2>
-        {calculatePriceRange(product)}
-        {/* <p className="text-sm text-justify ">{truncateText(product.description, 128)}</p> */}
-        <div className="card-actions justify-end">
-          <div className="badge badge-outline">{product.category.name}</div>
-          <div className="badge badge-outline">{product.defaultColor.name}</div>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-export function FavIcon({ product, wishlist, setWishlist }: { product: Product; wishlist: any; setWishlist?: any }) {
-  function isInWishlist() {
-    if (!wishlist) return false;
-    const wishlistToArray = Object.values(wishlist);
-    return wishlistToArray.some((item: any) => item.id === product.id);
-  }
-
-  const [favorited, setFavorited] = useState(isInWishlist());
-
-  useEffect(() => {
-    setFavorited(isInWishlist());
-  }, [wishlist]);
-
-  function handleAddtoWishlist() {
-    const token = restoreToken();
-    if (!token) {
-      toast.error("Please login to add products to wishlist");
-      return;
-    }
-
-    if (favorited) {
-      removeFromWishlist(token, product.id)
-        .then((res) => {
-          setWishlist((prev: any) => prev.filter((i: any) => i.id !== product.id));
-          toast.success(res.message);
-          setFavorited(false);
-        })
-        .catch((err) => {
-          console.log(err);
-          toast.error(err.message);
-        });
-    } else {
-      addToWishlist(token, product.id)
-        .then((res) => {
-          setWishlist((prev: any) => [...prev, product]);
-          toast.success(res.message);
-          setFavorited(true);
-        })
-        .catch((err) => {
-          console.log(err);
-          toast.error(err.message);
-        });
-    }
-  }
-
-  return (
-    <svg
-      onClick={handleAddtoWishlist}
-      className="size-4 stroke-black hover:cursor-pointer hover:animate-pulse"
-      width="22"
-      height="19"
-      viewBox="0 0 22 19"
-      fill={favorited ? "black" : "none"}
-      xmlns="http://www.w3.org/2000/svg">
-      <path
-        d="M10.9981 17.6694L2.51765 9.99133C-2.09133 5.38446 4.68385 -3.46071 10.9981 3.69527C17.3124 -3.46071 24.057 5.41518 19.4787 9.99133L10.9981 17.6694Z"
-        // stroke="current"
-        strokeWidth="1"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
   );
 }

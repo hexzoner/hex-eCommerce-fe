@@ -1,7 +1,20 @@
 import { createBrowserRouter, createRoutesFromElements, Route, RouterProvider } from "react-router-dom";
-import "./App.css";
+import "./css/App.css";
 import { MainLayout, ProtectedLayout, Authorize, TaxonomyLayout } from "./layouts/layouts";
-import { Home, About, NotFound, Login, Signup, ProductDetails, Cart, Profile, ForgotPassword, Unauthorized, Wishlist } from "./components/components";
+import {
+  Home,
+  About,
+  NotFound,
+  Login,
+  Signup,
+  ProductDetails,
+  Cart,
+  Profile,
+  ForgotPassword,
+  Unauthorized,
+  Wishlist,
+  ProductBrowser,
+} from "./components/components";
 import { Dashboard, Categories, Orders, Users, Products, OrderDetails, Colors, Sizes, Reviews } from "./components/admin-area/admin-components";
 
 const router = createBrowserRouter(
@@ -12,6 +25,7 @@ const router = createBrowserRouter(
       <Route path="login" element={<Login />} />
       <Route path="signup" element={<Signup />} />
       <Route path="forgot-password" element={<ForgotPassword />} />
+      <Route path="products" element={<ProductBrowser />} />
       <Route path="product/:id" element={<ProductDetails />} />
 
       <Route element={<ProtectedLayout />}>

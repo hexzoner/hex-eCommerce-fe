@@ -1,0 +1,62 @@
+#root {
+  margin: 0 auto;
+  text-align: center;
+}
+
+@font-face {
+  font-family: "Sofia Pro";
+  src: url("/assets/sofia-pro-font/Sofia Pro Regular Az.otf") format("opentype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+.text-outline-sm {
+  text-shadow: -0.5px -0.5px 0 #fff, 0.5px -0.5px 0 #fff, -0.5px 0.5px 0 #fff, 0.5px 0.5px 0 #fff;
+}
+.text-outline {
+  color: #000;
+  text-shadow: #fff 0px 0px 3px, #fff 0px 0px 3px, #fff 0px 0px 3px, #fff 0px 0px 3px, #fff 0px 0px 3px, #fff 0px 0px 3px;
+  -webkit-font-smoothing: antialiased;
+}
+
+.login-background {
+  background-image: url("/assets/hd_rug_01.jpg");
+  background-size: cover;
+  background-position: center;
+}
+
+.hero-1-background {
+  background-image: url("/assets/hero_1.jpeg");
+  background-size: cover;
+  background-position: center;
+}
+
+.hero-2-background {
+  background-image: url("/assets/hero_2.jpeg");
+  background-size: cover;
+  background-position: center;
+}
+
+.hero-3-background {
+  background-image: url("/assets/hero_3.jpg");
+  background-size: cover;
+  background-position: center;
+}
+
+.rsw-ce ul {
+  list-style: disc;
+  padding-left: 2em;
+}
+
+.rsw-ce ol {
+  list-style: decimal;
+  padding-left: 2em;
+}
+
+.star-svg {
+  display: inline-block !important;
+}
+
+/* .slick-list {
+  overflow: visible !important;
+} */
