@@ -2,11 +2,11 @@ import { NavLink } from "react-router-dom";
 import { Outlet } from "react-router-dom";
 
 const TaxonomyLayout = () => {
-  const navLinkClass = ({ isActive }: { isActive: boolean }) => `btn btn-ghost  + ${isActive ? "underline underline-offset-4 text-info" : ""} `;
+  const navLinkClass = ({ isActive }: { isActive: boolean }) => `btn btn-ghost  + ${isActive ? `underline underline-offset-4 text-[#b63c3e]` : ""} `;
   return (
     <div className="min-h-screen">
       <div className="flex w-full">
-        <ul className="menu bg-base-200 rounded-box w-56 min-h-screen">
+        <ul className="menu bg-base-200 rounded-none w-56 min-h-screen">
           <li>
             <NavLink to="categories" className={navLinkClass}>
               Categories

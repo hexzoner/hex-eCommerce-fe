@@ -1,17 +1,17 @@
 import "../../../css/carousel.css";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import { Product } from "../../../components/admin-area/Products";
+
 import { useState } from "react";
 import Slider from "react-slick";
 import { useNavigate } from "react-router-dom";
 
-const LatestArrivalsCarousel = ({ products }: { products: Product[] }) => {
+const LatestArrivalsCarousel = ({ products }: { products: any[] }) => {
   // State to track the current slide
   const [current, setCurrent] = useState(0);
   const navigate = useNavigate();
   // Number of total slides
-  const totalSlides = 5; // Adjust based on your data
+  const totalSlides = products.length;
 
   const settings = {
     dots: false, // Disable dots navigation
@@ -71,18 +71,23 @@ const LatestArrivalsCarousel = ({ products }: { products: Product[] }) => {
   return (
     <div className="max-w-screen-xl m-auto slider-container px-0">
       <Slider {...settings}>
-        {products.map((product, index) => (
-          <div key={product.id} className="relative cursor-pointer">
-            <div className={`transition-transform duration-300 ${getScale(index)} overflow-visible`}>
-              <img
-                onClick={() => navigate(`/product/${product.id}`)}
-                src={product.image}
-                alt={`Product ${product.id}`}
-                className="w-full h-96 object-cover rounded-lg"
-              />
+        {products.map((product, index) => {
+          // Getting the last element of the link to use as the product ID
+          const productId = product.link.split("/").pop();
+
+          return (
+            <div key={product.id} className="relative cursor-pointer">
+              <div className={`transition-transform duration-300 ${getScale(index)} overflow-visible`}>
+                <img
+                  onClick={() => navigate(`/product/${productId}`)}
+                  src={product.image}
+                  alt={`Product ${productId}`}
+                  className="w-full h-96 object-cover rounded-lg"
+                />
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </Slider>
     </div>
   );

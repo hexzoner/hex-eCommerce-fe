@@ -19,6 +19,7 @@ import { CreateSizeModal } from "./modals/SizeModals";
 import SizeModal from "./modals/SizeModals";
 import Sizes from "./Sizes";
 import Reviews from "../../pages/admin/Reviews";
+import { HomeArrivals } from "../../pages/admin/HomeArrivals";
 
 export {
   Categories,
@@ -42,4 +43,5 @@ export {
   CreateSizeModal,
   Sizes,
   Reviews,
+  HomeArrivals,
 };

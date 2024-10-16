@@ -1,4 +1,5 @@
-import { getProducts } from "../api/products";
+// import { getProducts } from "../api/products";
+import { getLatestArrivals } from "../api/latest";
 import { getReviews } from "../api/reviews";
 import { useState, useEffect } from "react";
 import { Product } from "./admin-area/Products";
@@ -26,9 +27,9 @@ export default function Home() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    getProducts([], [], [], 1, 5)
+    getLatestArrivals()
       .then((res) => {
-        setProducts(res.results);
+        setProducts(res);
         getReviews()
           .then((res) => {
             setReviews(res.reviews);
