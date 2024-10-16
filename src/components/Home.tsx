@@ -7,6 +7,7 @@ import LatestArrivalsCarousel from "../pages/user/home-components/LatestArrivals
 import ReviewsCarousel from "../pages/user/home-components/ReviewsCarousel";
 import LoadingSpinner from "./LoadingSpinner";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 export const Rooms: string[] = ["Living Room", "Bedroom", "Dining Room", "Kitchen", "Hallway", "Balcony", "Bathroom"];
 
@@ -32,9 +33,9 @@ export default function Home() {
           .then((res) => {
             setReviews(res.reviews);
           })
-          .catch((err) => console.log(err));
+          .catch(() => toast.error("Oops! Something went wrong fetching reviews"));
       })
-      .catch((err) => console.log(err))
+      .catch(() => toast.error("Oops! Something went wrong fetching products"))
       .finally(() => setLoading(false));
   }, []);
 
