@@ -4,10 +4,12 @@ import "slick-carousel/slick/slick-theme.css";
 import { Product } from "../../../components/admin-area/Products";
 import { useState } from "react";
 import Slider from "react-slick";
+import { useNavigate } from "react-router-dom";
 
 const LatestArrivalsCarousel = ({ products }: { products: Product[] }) => {
   // State to track the current slide
   const [current, setCurrent] = useState(0);
+  const navigate = useNavigate();
   // Number of total slides
   const totalSlides = 5; // Adjust based on your data
 
@@ -72,7 +74,12 @@ const LatestArrivalsCarousel = ({ products }: { products: Product[] }) => {
         {products.map((product, index) => (
           <div key={product.id} className="relative cursor-pointer">
             <div className={`transition-transform duration-300 ${getScale(index)} overflow-visible`}>
-              <img src={product.image} alt={`Product ${product.id}`} className="w-full h-96 object-cover rounded-lg" />
+              <img
+                onClick={() => navigate(`/product/${product.id}`)}
+                src={product.image}
+                alt={`Product ${product.id}`}
+                className="w-full h-96 object-cover rounded-lg"
+              />
             </div>
           </div>
         ))}

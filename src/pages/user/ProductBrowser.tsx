@@ -20,6 +20,7 @@ export default function ProductBrowser() {
   const [selectedSizes, setSelectedSizes] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const { wishlist, setWishlist, shopLoading } = useShop();
+  const navigate = useNavigate();
 
   // Pagination
   const [page, setPage] = useState(1);
@@ -50,6 +51,16 @@ export default function ProductBrowser() {
 
   return (
     <div className={mainMakrupColors + " min-h-screen max-w-[80rem] m-auto py-6"}>
+      <div className="breadcrumbs text-sm text-blue-600 ">
+        <ul>
+          <li>
+            <a onClick={() => navigate("/")}>Home</a>
+          </li>
+          <li>
+            <p className="underline underline-offset-2">Rugs</p>
+          </li>
+        </ul>
+      </div>
       <p className="text-2xl text-left mt-8 font-semibold px-5">Our collection of handmade rugs</p>
       <p className="text-base text-left mt-4 px-5">Discover our collection, handmade of eco-friendly wool material</p>
       <div className="px-5 my-6">
