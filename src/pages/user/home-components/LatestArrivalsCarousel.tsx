@@ -26,6 +26,34 @@ const LatestArrivalsCarousel = ({ products }: { products: Product[] }) => {
       oldIndex = 0;
       setCurrent(newIndex);
     }, // Update current slide on change
+    responsive: [
+      {
+        breakpoint: 1024,
+        settings: {
+          slidesToShow: 1,
+          slidesToScroll: 1,
+          initialSlide: 1,
+          infinite: true,
+          dots: true,
+        },
+      },
+      {
+        breakpoint: 600,
+        settings: {
+          slidesToShow: 1,
+          slidesToScroll: 1,
+          initialSlide: 1,
+        },
+      },
+      {
+        breakpoint: 480,
+        settings: {
+          slidesToShow: 1,
+          slidesToScroll: 1,
+          initialSlide: 1,
+        },
+      },
+    ],
   };
 
   // Function to calculate the correct scaling factor
@@ -42,7 +70,7 @@ const LatestArrivalsCarousel = ({ products }: { products: Product[] }) => {
     <div className="max-w-screen-xl m-auto slider-container px-0">
       <Slider {...settings}>
         {products.map((product, index) => (
-          <div key={product.id} className="relative -mx-1">
+          <div key={product.id} className="relative cursor-pointer">
             <div className={`transition-transform duration-300 ${getScale(index)} overflow-visible`}>
               <img src={product.image} alt={`Product ${product.id}`} className="w-full h-96 object-cover rounded-lg" />
             </div>

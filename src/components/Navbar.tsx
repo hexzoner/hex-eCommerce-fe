@@ -33,7 +33,7 @@ export default function Navbar() {
         </div>
       </div>
       <div className="navbar max-w-screen-xl m-auto font-normal text-lg">
-        <div className="flex-1">
+        <div className="flex-1 flex-wrap">
           <NavLink to="/" className="text-2xl mr-4">
             <Logo fill={"black"} />
           </NavLink>
@@ -96,7 +96,7 @@ export default function Navbar() {
                 </NavLink>
               </div>
             ) : (
-              <div className="flex gap-1 text-sm">
+              <div className="flex gap-1 text-sm flex-wrap">
                 {/* <span className="italic">Logged as: </span>
                 <span className="text-info mr-3">{user?.email}</span> */}
 

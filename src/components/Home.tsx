@@ -44,15 +44,15 @@ export default function Home() {
     <div className={"min-h-screen " + homeMainBG}>
       {/* Hero section */}
       <section className="max-w-[1115px] m-auto py-20">
-        <div className="flex h-[521px] justify-center gap-4  text-black">
-          <div className="hero-1-background rounded-2xl w-2/3 flex flex-col justify-evenly ">
+        <div className="flex flex-wrap md:flex-nowrap md:h-[521px] justify-center gap-4  text-black">
+          <div className="hero-1-background rounded-2xl w-full md:w-2/3 flex flex-col justify-evenly ">
             <p className="font-semibold text-5xl w-fit mx-auto text-outline rounded-xl py-2 px-12">Where Heritage Meets Home</p>
             <p className="font-semibold text-xl py-2 px-4 w-fit mx-auto text-outline  rounded-xl">
               Lorem ipsum dolor sit amet consectetur adipiscing elit Ut et.
             </p>
             <button className="btn btn-neutral rounded-none max-w-[194px] mx-auto btn-lg px-12">Shop All</button>
           </div>
-          <div className="flex flex-col w-1/3 justify-between font-normal text-xl">
+          <div className="flex flex-col gap-4 md:gap-0 w-full md:w-1/3 justify-between font-normal text-xl">
             <div className="hero-2-background h-[251px] gap-4 rounded-xl text-center flex flex-col justify-between py-4">
               <p></p>
               <p className="bg-white w-fit mx-auto px-6 rounded-md py-2">Wool Rugs</p>
@@ -81,14 +81,14 @@ export default function Home() {
       </section>
 
       {/* Rooms and Sizes section */}
-      <section className={"h-[523px] mb-12 " + homeMainBG}>
-        <div className="max-w-screen-lg m-auto gap-4 flex flex-col justify-between h-full">
+      <section className={"md:h-[523px] mb-12 px-4 md:px-0  " + homeMainBG}>
+        <div className="max-w-screen-lg m-auto gap-4 flex flex-col justify-between h-full ">
           <p className="font-semibold text-3xl max-w-96 m-auto">Find the perfect rug size for your room.</p>
           <p className="max-w-72 m-auto text-justify">Our rugs come in a variety of sizes to fit any room in your home.</p>
-          <div className="flex justify-between items-center gap-4">
+          <div className="flex justify-between items-center gap-4 flex-wrap md:flex-nowrap ">
             {Rooms.map((room, index) => {
               return (
-                <div key={index} className="flex flex-col justify-between gap-4 mt-4">
+                <div key={index} className="flex flex-col justify-between gap-4 mt-4 m-auto">
                   <img src="https://placehold.co/200x200/png" alt={room} />
                   <p className="font-bold text-sm cursor-pointer">{room + " >"}</p>
                   {/* <p className="font-normal text-xl">Shop Now</p> */}
@@ -102,8 +102,8 @@ export default function Home() {
 
       {/* Tips section */}
       <section className="bg-white text-left">
-        <div className="max-w-screen-xl m-auto flex gap-10 h-full pb-20">
-          <div className="w-1/2 flex flex-col justify-evenly h-full min-h-[572px] pb-20">
+        <div className="max-w-screen-xl m-auto flex gap-10 h-full pb-20 flex-wrap md:flex-nowrap px-4 md:px-0">
+          <div className="w-full md:w-1/2 flex flex-col justify-evenly h-full min-h-[572px] pb-20">
             <p className={headerMarkup}>Perfect samples, perfect choices! Try our rugs sample service</p>
             <p className={tipsText}>
               Explore your favorites at home, stress-free – that’s our promise. Along with free expert advice, you can order a sample of any product
@@ -111,7 +111,7 @@ export default function Home() {
             </p>
             <button className={outlineButtonClass}>This is how it works</button>
           </div>
-          <div className="w-1/2 flex flex-col justify-between h-full min-h-[572px] py-16">
+          <div className="w-full md:w-1/2 flex flex-col justify-between h-full min-h-[572px] py-16">
             <div className="flex items-center justify-between gap-2">
               <p className={numberMarkup + "  px-[26px]"}>1</p>
               <div>
@@ -145,10 +145,10 @@ export default function Home() {
       </section>
 
       {/* Featured Producer section */}
-      <section className={"h-[629px] mb-12 " + homeMainBG}>
-        <div className="max-w-[968.25px] m-auto">
-          <div className="flex justify-between pt-20 ">
-            <div className="flex flex-col gap-10 justify-start text-left max-w-[519px]">
+      <section className={"md:h-[629px] mb-12 " + homeMainBG}>
+        <div className="max-w-[968.25px] m-auto px-4 lg:px-0">
+          <div className="flex justify-between pt-20 flex-wrap md:flex-nowrap gap-6 md:gap-0">
+            <div className="flex flex-col gap-10 justify-start text-left max-w-[519px] m-auto">
               <p className={headerMarkup}>Meet Rajveer</p>
               <p className={tipsText}>
                 Rajveer Bhardwaj, founder of Kaarigari Creations, blends traditional Indian rug craftsmanship with modern design. His passion for
@@ -156,7 +156,7 @@ export default function Home() {
               </p>
               <button className={outlineButtonClass}>Meet our Producers</button>
             </div>
-            <div>
+            <div className="m-auto">
               <img className="h-[437px] w-[395px] rounded-[15px]" src="https://placehold.co/400x440" alt="Producer Image" />
             </div>
           </div>
