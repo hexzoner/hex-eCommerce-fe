@@ -16,6 +16,8 @@ function ReviewsCarousel({ reviews }: { reviews: Review[] }) {
     slidesToShow: 5,
     slidesToScroll: 5,
     arrows: true,
+    autoplaySpeed: 1000,
+    cssEase: "linear",
     nextArrow: <NextArrow />,
     prevArrow: <PrevArrow />,
     responsive: [
@@ -49,7 +51,7 @@ function ReviewsCarousel({ reviews }: { reviews: Review[] }) {
     <div className="slider-container">
       <Slider {...settings}>
         {reviews.map((review, index) => (
-          <div key={index} className="max-w-[208px] text-sm ml-6">
+          <div key={index} className="text-sm m-auto px-12 sm:px-3 xl:px-0 xl:max-w-[208px] xl:ml-6">
             <div className="flex flex-col justify-between min-h-[327.75px] bg-[#f6f6f6] px-6 py-8 border-[1.5px] border-black rounded-xl">
               <div>
                 <Rating initialValue={Number(review.rating)} size={20} readonly={true} className="my-1" />
