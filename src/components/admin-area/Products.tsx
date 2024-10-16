@@ -6,6 +6,7 @@ import { CreateProductModal } from "./admin-components";
 import { formatDateShort } from "../../utils/dateUtils";
 import { Size } from "./Sizes";
 import { Color } from "./Colors";
+import Pagination from "../Pagination";
 
 export interface Product {
   id: number;
@@ -69,15 +70,22 @@ export default function Products() {
   const [selectedProduct, setSelectedProduct] = useState<Product>(emptyProduct);
   const [update, setUpdate] = useState(false);
 
+  // Pagination
+  const [page, setPage] = useState(1);
+  const [perPage, setPerPage] = useState(10);
+  // const [sort, setSort] = useState("desc");
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalProducts, setTotalProducts] = useState(0);
+
   useEffect(() => {
     const fetchProducts = async () => {
       setLoading(true);
       try {
-        // const token = restoreToken();
-        // if (!token) return;
-        const products = await getProducts();
+        const products = await getProducts([], [], [], page, perPage);
         // console.log(products);
-        setProducts(sortTables(products, "id", "desc"));
+        setProducts(sortTables(products.results, "id", "desc"));
+        setTotalPages(products.totalPages);
+        setTotalProducts(products.totalResults);
         setLoading(false);
       } catch (err) {
         console.log(err);
@@ -85,7 +93,7 @@ export default function Products() {
       }
     };
     fetchProducts();
-  }, [update]);
+  }, [update, page, perPage]);
 
   const [sortOrder, setSortOrder] = useState("asc");
   const handleSortClick = (key: string) => {
@@ -113,8 +121,8 @@ export default function Products() {
           Create Product
         </button>
       </div>
-      <div className="overflow-x-auto rounded-md max-w-7xl m-auto">
-        <table className="table rounded-md table-zebra table-sm w-full shadow-md mb-12">
+      <div className="overflow-x-auto rounded-md max-w-7xl m-auto pb-4">
+        <table className="table rounded-md table-zebra table-sm w-full shadow-md ">
           <thead className="text-sm bg-base-300">
             <tr>
               <th className="font-bold">
@@ -273,7 +281,15 @@ export default function Products() {
             })}
           </tbody>
         </table>
-        {/* <Pagination page={page} setPage={setPage} totalPages={totalPages} perPage={perPage} setPerPage={setPerPage} totalResults={totalTasks} /> */}
+        <Pagination
+          page={page}
+          setPage={setPage}
+          totalPages={totalPages}
+          perPage={perPage}
+          setPerPage={setPerPage}
+          totalResults={totalProducts}
+          options={[10, 25, 50]}
+        />
         {/* <ProductModal product={selectedProduct} /> */}
         <CreateProductModal product={selectedProduct} setProducts={setProducts} setUpdate={setUpdate} />
       </div>

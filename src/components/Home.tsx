@@ -1,166 +1,181 @@
-export const mainMakrupColors = "bg-white text-[#363636]";
 import { getProducts } from "../api/products";
-import { useEffect, useState } from "react";
-// import LoadingSpinner from "./LoadingSpinner";
+import { getReviews } from "../api/reviews";
+import { useState, useEffect } from "react";
 import { Product } from "./admin-area/Products";
-// import { truncateText } from "../utils/sortTables";
-import { addToWishlist, removeFromWishlist } from "../api/wishlist";
-import { restoreToken } from "../utils/storage";
-import { toast } from "react-toastify";
+import { Review } from "../pages/admin/Reviews";
+import LatestArrivalsCarousel from "../pages/user/home-components/LatestArrivalsCarousel";
+import ReviewsCarousel from "../pages/user/home-components/ReviewsCarousel";
+import LoadingSpinner from "./LoadingSpinner";
 import { useNavigate } from "react-router-dom";
-import { useShop } from "../context";
-import { Filters } from "../components/components";
-import { calculatePriceRange } from "../utils/miscUtils";
+import { toast } from "react-toastify";
+
+export const Rooms: string[] = ["Living Room", "Bedroom", "Dining Room", "Kitchen", "Hallway", "Balcony", "Bathroom"];
 
 export default function Home() {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [selectedCategories, setSelectedCategories] = useState<any[]>([]);
-  const [selectedColors, setSelectedColors] = useState<any[]>([]);
-  const [selectedSizes, setSelectedSizes] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const { wishlist, setWishlist, shopLoading } = useShop();
+  const [products, setProducts] = useState<Product[]>([]);
+  const [reviews, setReviews] = useState<Review[]>([]);
+
+  const homeMainBG = "bg-[#eff2f6]";
+  const tipsSubHeader = "text-lg font-bold";
+  const tipsText = "text-lg font-medium";
+  const numberMarkup = "text-xl bg-[#CECECE] rounded-full py-4";
+  const neutralButtonClass = "btn btn-lg btn-neutral rounded-none max-w-sm m-auto mt-12";
+  const headerMarkup = "font-semibold text-4xl";
+  const outlineButtonClass = "btn btn-outline rounded-none w-fit btn-lg";
+  const navigate = useNavigate();
 
   useEffect(() => {
-    // if (shopLoading) return;
-    setLoading(true);
-    // console.log("Filters - fetching products");
-    getProducts(
-      selectedCategories.map((x) => x.id),
-      selectedColors.map((x) => x.id),
-      selectedSizes.map((x) => x.id)
-    )
-      .then((res) => setProducts(res.filter((x: any) => x.active == true)))
-      .catch((err) => console.log(err))
+    getProducts([], [], [], 1, 5)
+      .then((res) => {
+        setProducts(res.results);
+        getReviews()
+          .then((res) => {
+            setReviews(res.reviews);
+          })
+          .catch(() => toast.error("Oops! Something went wrong fetching reviews"));
+      })
+      .catch(() => toast.error("Oops! Something went wrong fetching products"))
       .finally(() => setLoading(false));
-  }, [selectedCategories, selectedColors, selectedSizes]);
+  }, []);
+
+  if (loading) return <LoadingSpinner />;
 
   return (
-    <div className={mainMakrupColors + " min-h-screen max-w-[80rem] m-auto "}>
-      <p className="text-2xl text-left mt-8 font-semibold px-5">Our collection of handmade rugs</p>
-      <p className="text-base text-left mt-4 px-5">Discover our collection, handmade of eco-friendly wool material</p>
-      <div className="px-5 my-6">
-        <Filters
-          selectedColors={selectedColors}
-          selectedCategories={selectedCategories}
-          setProducts={setProducts}
-          setSelectedCategories={setSelectedCategories}
-          setSelectedColors={setSelectedColors}
-          selectedSizes={selectedSizes}
-          setSelectedSizes={setSelectedSizes}
-        />
-      </div>
-      <section className="my-8 ">
-        {loading || shopLoading ? (
-          <div className="flex flex-col justify-center items-center min-h-[50vh]">
-            <span className="loading loading-spinner loading-lg"></span>
+    <div className={"min-h-screen " + homeMainBG}>
+      {/* Hero section */}
+      <section className="max-w-[1115px] m-auto py-20">
+        <div className="flex flex-wrap md:flex-nowrap md:h-[521px] justify-center gap-4  text-black">
+          <div className="hero-1-background rounded-2xl w-full md:w-2/3 flex flex-col justify-evenly ">
+            <p className="font-semibold text-5xl w-fit mx-auto text-outline rounded-xl py-2 px-12">Where Heritage Meets Home</p>
+            <p className="font-semibold text-xl py-2 px-4 w-fit mx-auto text-outline  rounded-xl">
+              Lorem ipsum dolor sit amet consectetur adipiscing elit Ut et.
+            </p>
+            <button onClick={() => navigate("/products")} className="btn btn-neutral rounded-none max-w-[194px] mx-auto btn-lg px-12">
+              Shop All
+            </button>
           </div>
-        ) : (
-          <>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2">
-              {products.map((product) => {
-                return <ProductCard key={product.id} product={product} wishlist={wishlist} setWishlist={setWishlist} />;
-              })}
+          <div className="flex flex-col gap-4 md:gap-0 w-full md:w-1/3 justify-between font-normal text-xl">
+            <div className="hero-2-background h-[251px] gap-4 rounded-xl text-center flex flex-col justify-between py-4">
+              <p></p>
+              <p className="bg-white w-fit mx-auto px-6 rounded-md py-2">Wool Rugs</p>
             </div>
-            {products.length === 0 && <p className="text-center text-xl mt-24">No products found</p>}
-          </>
-        )}
+            <div className="hero-3-background h-[251px] gap-4 rounded-xl text-center flex flex-col justify-between py-4">
+              <p></p>
+              <p className="bg-white w-fit mx-auto px-6 rounded-md py-2">New Arrivals</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Our Latest Arrivals */}
+      <section className="bg-white h-[673.65px] mb-12">
+        <div>
+          <p className="font-semibold text-4xl pt-20"> Our Latest Arrivals</p>
+        </div>
+
+        <div className="mt-20">
+          <LatestArrivalsCarousel products={products} />
+        </div>
+
+        <button onClick={() => navigate("/products")} className={"h-[50px] w-[194px] font-semibold text-[22px] "}>
+          SEE ALL
+        </button>
+      </section>
+
+      {/* Rooms and Sizes section */}
+      <section className={"md:h-[523px] mb-12 px-4 md:px-0  " + homeMainBG}>
+        <div className="max-w-screen-lg m-auto gap-4 flex flex-col justify-between h-full ">
+          <p className="font-semibold text-3xl max-w-96 m-auto">Find the perfect rug size for your room.</p>
+          <p className="max-w-72 m-auto text-justify">Our rugs come in a variety of sizes to fit any room in your home.</p>
+          <div className="flex justify-between items-center gap-4 flex-wrap md:flex-nowrap ">
+            {Rooms.map((room, index) => {
+              return (
+                <div key={index} className="flex flex-col justify-between gap-4 mt-4 m-auto">
+                  <img src="https://placehold.co/200x200/png" alt={room} />
+                  <p className="font-bold text-sm cursor-pointer">{room + " >"}</p>
+                  {/* <p className="font-normal text-xl">Shop Now</p> */}
+                </div>
+              );
+            })}
+          </div>
+          <button className={neutralButtonClass}>To Size Selection</button>
+        </div>
+      </section>
+
+      {/* Tips section */}
+      <section className="bg-white text-left">
+        <div className="max-w-screen-xl m-auto flex gap-10 h-full pb-20 flex-wrap md:flex-nowrap px-4 md:px-0">
+          <div className="w-full md:w-1/2 flex flex-col justify-evenly h-full min-h-[572px] pb-20">
+            <p className={headerMarkup}>Perfect samples, perfect choices! Try our rugs sample service</p>
+            <p className={tipsText}>
+              Explore your favorites at home, stress-free – that’s our promise. Along with free expert advice, you can order a sample of any product
+              in our shop. We pride ourselves on lightning-fast delivery, with our team processing your orders right away.
+            </p>
+            <button className={outlineButtonClass}>This is how it works</button>
+          </div>
+          <div className="w-full md:w-1/2 flex flex-col justify-between h-full min-h-[572px] py-16">
+            <div className="flex items-center justify-between gap-2">
+              <p className={numberMarkup + "  px-[26px]"}>1</p>
+              <div>
+                <p className={tipsSubHeader}>Explore Our Products</p>
+                <p className={tipsText}>Browse through our wide range of products and choose your favorites.</p>
+              </div>
+            </div>
+            <div className="flex items-center justify-between gap-2">
+              <p className={numberMarkup + "  px-[24px]"}>2</p>
+              <div>
+                <p className={tipsSubHeader}>Order Your Samples</p>
+                <p className={tipsText}>For each product, you can order a sample directly from our shop.</p>
+              </div>
+            </div>
+            <div className="flex items-center justify-between gap-2">
+              <p className={numberMarkup + "  px-[24px]"}>3</p>
+              <div>
+                <p className={tipsSubHeader}>Fast Processing</p>
+                <p className={tipsText}>Once you place your order, our sample department processes it immediately.</p>
+              </div>
+            </div>
+            <div className="flex items-center justify-between gap-2">
+              <p className={numberMarkup + "  px-[23px]"}>4</p>
+              <div>
+                <p className={tipsSubHeader}>Did you like the sample?</p>
+                <p className={tipsText}>Enjoy an special discount if you order the same rug as one of the samples you order.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Featured Producer section */}
+      <section className={"md:h-[629px] mb-12 " + homeMainBG}>
+        <div className="max-w-[968.25px] m-auto px-4 lg:px-0">
+          <div className="flex justify-between pt-20 flex-wrap md:flex-nowrap gap-6 md:gap-0">
+            <div className="flex flex-col gap-10 justify-start text-left max-w-[519px] m-auto">
+              <p className={headerMarkup}>Meet Rajveer</p>
+              <p className={tipsText}>
+                Rajveer Bhardwaj, founder of Kaarigari Creations, blends traditional Indian rug craftsmanship with modern design. His passion for
+                preserving heritage results in exquisite, handwoven rugs that celebrate India’s rich artistry.
+              </p>
+              <button className={outlineButtonClass}>Meet our Producers</button>
+            </div>
+            <div className="m-auto">
+              <img className="h-[437px] w-[395px] rounded-[15px]" src="https://placehold.co/400x440" alt="Producer Image" />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Reviews section */}
+      <section className="min-h-[721.75px] bg-white pt-20 text-left pb-28">
+        <div className="max-w-screen-xl m-auto flex flex-col justify-between ">
+          <p className={headerMarkup}>Here’s what our customers are saying…</p>
+          <div className="mt-12">
+            <ReviewsCarousel reviews={reviews} />
+          </div>
+          <button className="text-center text-base font-semibold mt-14 w-fit m-auto">SEE ALL REVIEWS</button>
+        </div>
       </section>
     </div>
-  );
-}
-
-export const ProductCard = ({ product, wishlist, setWishlist }: { product: Product; wishlist: any; setWishlist: any }) => {
-  const navigate = useNavigate();
-  function handleClick() {
-    navigate(`/product/${product.id}`);
-  }
-
-  return (
-    <div className="card bg-base-100 w-72 mx-auto">
-      <figure>
-        <img onClick={handleClick} className="w-72 h-48 object-cover  cursor-pointer" src={product.image} alt="Rug Image" />
-      </figure>
-      <div className="card-body">
-        <h2 className="text-xl font-bold text-center flex items-center justify-between ">
-          <div className="opacity-0">+</div>
-          <div onClick={handleClick} className="cursor-pointer hover:text-[#b04e2d]">
-            {product.name}
-          </div>
-          {/* <div className="badge badge-secondary"></div> */}
-          <FavIcon product={product} wishlist={wishlist} setWishlist={setWishlist} />
-        </h2>
-        {calculatePriceRange(product)}
-        {/* <p className="text-sm text-justify ">{truncateText(product.description, 128)}</p> */}
-        <div className="card-actions justify-end">
-          <div className="badge badge-outline">{product.category.name}</div>
-          <div className="badge badge-outline">{product.defaultColor.name}</div>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-export function FavIcon({ product, wishlist, setWishlist }: { product: Product; wishlist: any; setWishlist?: any }) {
-  function isInWishlist() {
-    if (!wishlist) return false;
-    const wishlistToArray = Object.values(wishlist);
-    return wishlistToArray.some((item: any) => item.id === product.id);
-  }
-
-  const [favorited, setFavorited] = useState(isInWishlist());
-
-  useEffect(() => {
-    setFavorited(isInWishlist());
-  }, [wishlist]);
-
-  function handleAddtoWishlist() {
-    const token = restoreToken();
-    if (!token) {
-      toast.error("Please login to add products to wishlist");
-      return;
-    }
-
-    if (favorited) {
-      removeFromWishlist(token, product.id)
-        .then((res) => {
-          setWishlist((prev: any) => prev.filter((i: any) => i.id !== product.id));
-          toast.success(res.message);
-          setFavorited(false);
-        })
-        .catch((err) => {
-          console.log(err);
-          toast.error(err.message);
-        });
-    } else {
-      addToWishlist(token, product.id)
-        .then((res) => {
-          setWishlist((prev: any) => [...prev, product]);
-          toast.success(res.message);
-          setFavorited(true);
-        })
-        .catch((err) => {
-          console.log(err);
-          toast.error(err.message);
-        });
-    }
-  }
-
-  return (
-    <svg
-      onClick={handleAddtoWishlist}
-      className="size-4 stroke-black hover:cursor-pointer hover:animate-pulse"
-      width="22"
-      height="19"
-      viewBox="0 0 22 19"
-      fill={favorited ? "black" : "none"}
-      xmlns="http://www.w3.org/2000/svg">
-      <path
-        d="M10.9981 17.6694L2.51765 9.99133C-2.09133 5.38446 4.68385 -3.46071 10.9981 3.69527C17.3124 -3.46071 24.057 5.41518 19.4787 9.99133L10.9981 17.6694Z"
-        // stroke="current"
-        strokeWidth="1"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
   );
 }

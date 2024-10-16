@@ -16,6 +16,10 @@ import ForgotPassword from "./ForgotPassword";
 import Unauthorized from "./Unauthorized";
 import Wishlist from "./Wishlist";
 import Filters from "./Filters";
+import ProductBrowser from "../pages/user/ProductBrowser";
+import RugSizes from "../pages/user/RugSizes";
+import RugTypes from "../pages/user/RugTypes";
+import Sales from "../pages/user/Sales";
 
 export {
   About,
@@ -36,4 +40,8 @@ export {
   Unauthorized,
   Wishlist,
   Filters,
+  ProductBrowser,
+  RugSizes,
+  RugTypes,
+  Sales,
 };

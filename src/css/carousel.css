@@ -1,0 +1,51 @@
+/* Ensure the carousel container and slick track allow overflow for scaling */
+/* .carousel-container {
+  overflow: visible !important;
+  position: relative;
+} */
+
+/* Override slick-carousel default padding and margin between slides */
+/* .slick-slide {
+  padding: 0 !important;
+} */
+
+/* .slick-track {
+  display: flex !important;
+  gap: 0px !important;
+} */
+
+/* Optional: Fine-tune the spacing between the cards using margin or negative margin
+/* .carousel-slide {
+  margin-left: -10px;
+  margin-right: -10px;
+} */
+*/
+
+/* Make sure images do not get cut off when scaling */
+.carousel-slide img {
+  overflow: visible !important;
+}
+
+/* Custom arrow styling */
+.custom-arrow {
+  position: absolute;
+  width: 44px;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  padding: 10px;
+  border-radius: 50%;
+  z-index: 10;
+  cursor: pointer;
+}
+
+/* Left arrow positioned on the left side */
+.left-arrow {
+  left: -30px; /* Adjust the positioning to fit inside the container */
+}
+
+/* Right arrow positioned on the right side */
+.right-arrow {
+  right: -30px; /* Adjust the positioning to fit inside the container */
+}
