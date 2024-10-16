@@ -1,4 +1,4 @@
 # React + TypeScript + Vite
-# TailwindCC + DaisyUI
+# Tailwind CSS + DaisyUI
 
 Frontend part of E-Commerce website
