@@ -102,9 +102,9 @@ export default function Navbar() {
 
                 {user.role === "user" && (
                   <>
-                    {/* <NavLink to="/wishlist" className={navLinkClass}>
+                    <NavLink to="/wishlist" className={navLinkClass}>
                       Wishlist
-                    </NavLink> */}
+                    </NavLink>
                     {/* <NavLink to="/cart" className={navLinkClass}>
                       Cart
                     </NavLink> */}
