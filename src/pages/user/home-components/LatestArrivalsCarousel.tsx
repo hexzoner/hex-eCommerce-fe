@@ -1,9 +1,8 @@
-import { Product } from "../../components/admin-area/Products";
-
+import "../../../css/carousel.css";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import { Product } from "../../../components/admin-area/Products";
 import { useState } from "react";
-import "../../css/carousel.css";
 import Slider from "react-slick";
 
 const LatestArrivalsCarousel = ({ products }: { products: Product[] }) => {
@@ -11,25 +10,6 @@ const LatestArrivalsCarousel = ({ products }: { products: Product[] }) => {
   const [current, setCurrent] = useState(0);
   // Number of total slides
   const totalSlides = 5; // Adjust based on your data
-
-  // Custom arrows for the carousel
-  const NextArrow = (props: any) => {
-    const { onClick } = props;
-    return (
-      <div className="custom-arrow right-arrow" onClick={onClick}>
-        &#10095; {/* Right arrow symbol */}
-      </div>
-    );
-  };
-
-  const PrevArrow = (props: any) => {
-    const { onClick } = props;
-    return (
-      <div className="custom-arrow left-arrow" onClick={onClick}>
-        &#10094; {/* Left arrow symbol */}
-      </div>
-    );
-  };
 
   const settings = {
     dots: false, // Disable dots navigation
@@ -69,6 +49,24 @@ const LatestArrivalsCarousel = ({ products }: { products: Product[] }) => {
           </div>
         ))}
       </Slider>
+    </div>
+  );
+};
+// Custom arrows for the carousel
+export const NextArrow = (props: any) => {
+  const { onClick } = props;
+  return (
+    <div className="custom-arrow right-arrow text-center" onClick={onClick}>
+      &#10095; {/* Right arrow symbol */}
+    </div>
+  );
+};
+
+export const PrevArrow = (props: any) => {
+  const { onClick } = props;
+  return (
+    <div className="custom-arrow left-arrow text-center" onClick={onClick}>
+      &#10094; {/* Left arrow symbol */}
     </div>
   );
 };

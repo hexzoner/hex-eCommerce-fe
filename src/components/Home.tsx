@@ -1,7 +1,10 @@
 import { getProducts } from "../api/products";
+import { getReviews } from "../api/reviews";
 import { useState, useEffect } from "react";
 import { Product } from "./admin-area/Products";
-import LatestArrivalsCarousel from "../pages/user/LatestArrivalsCarousel";
+import { Review } from "../pages/admin/Reviews";
+import LatestArrivalsCarousel from "../pages/user/home-components/LatestArrivalsCarousel";
+import ReviewsCarousel from "../pages/user/home-components/ReviewsCarousel";
 import LoadingSpinner from "./LoadingSpinner";
 import { useNavigate } from "react-router-dom";
 
@@ -10,16 +13,26 @@ export const Rooms: string[] = ["Living Room", "Bedroom", "Dining Room", "Kitche
 export default function Home() {
   const [loading, setLoading] = useState(true);
   const [products, setProducts] = useState<Product[]>([]);
+  const [reviews, setReviews] = useState<Review[]>([]);
+
   const homeMainBG = "bg-[#eff2f6]";
   const tipsSubHeader = "text-lg font-bold";
   const tipsText = "text-lg font-medium";
   const numberMarkup = "text-xl bg-[#CECECE] rounded-full py-4";
+  const neutralButtonClass = "btn btn-lg btn-neutral rounded-none max-w-sm m-auto mt-12";
+  const headerMarkup = "font-semibold text-4xl";
+  const outlineButtonClass = "btn btn-outline rounded-none w-fit btn-lg";
   const navigate = useNavigate();
 
   useEffect(() => {
     getProducts([], [], [], 1, 5)
       .then((res) => {
         setProducts(res.results);
+        getReviews()
+          .then((res) => {
+            setReviews(res.reviews);
+          })
+          .catch((err) => console.log(err));
       })
       .catch((err) => console.log(err))
       .finally(() => setLoading(false));
@@ -30,7 +43,7 @@ export default function Home() {
   return (
     <div className={"min-h-screen " + homeMainBG}>
       {/* Hero section */}
-      <section className="max-w-[1115px] m-auto py-24">
+      <section className="max-w-[1115px] m-auto py-20">
         <div className="flex h-[521px] justify-center gap-4  text-black">
           <div className="hero-1-background rounded-2xl w-2/3 flex flex-col justify-evenly ">
             <p className="font-semibold text-5xl w-fit mx-auto text-outline rounded-xl py-2 px-12">Where Heritage Meets Home</p>
@@ -83,7 +96,7 @@ export default function Home() {
               );
             })}
           </div>
-          <button className="btn btn-lg btn-neutral rounded-none max-w-sm m-auto mt-12">To Size Selection</button>
+          <button className={neutralButtonClass}>To Size Selection</button>
         </div>
       </section>
 
@@ -91,12 +104,12 @@ export default function Home() {
       <section className="bg-white text-left">
         <div className="max-w-screen-xl m-auto flex gap-10 h-full pb-20">
           <div className="w-1/2 flex flex-col justify-evenly h-full min-h-[572px] pb-20">
-            <p className="font-semibold text-4xl">Perfect samples, perfect choices! Try our rugs sample service</p>
+            <p className={headerMarkup}>Perfect samples, perfect choices! Try our rugs sample service</p>
             <p className={tipsText}>
               Explore your favorites at home, stress-free – that’s our promise. Along with free expert advice, you can order a sample of any product
               in our shop. We pride ourselves on lightning-fast delivery, with our team processing your orders right away.
             </p>
-            <button className="btn btn-outline rounded-none w-fit btn-lg">This is how it works</button>
+            <button className={outlineButtonClass}>This is how it works</button>
           </div>
           <div className="w-1/2 flex flex-col justify-between h-full min-h-[572px] py-16">
             <div className="flex items-center justify-between gap-2">
@@ -128,6 +141,36 @@ export default function Home() {
               </div>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* Featured Producer section */}
+      <section className={"h-[629px] mb-12 " + homeMainBG}>
+        <div className="max-w-[968.25px] m-auto">
+          <div className="flex justify-between pt-20 ">
+            <div className="flex flex-col gap-10 justify-start text-left max-w-[519px]">
+              <p className={headerMarkup}>Meet Rajveer</p>
+              <p className={tipsText}>
+                Rajveer Bhardwaj, founder of Kaarigari Creations, blends traditional Indian rug craftsmanship with modern design. His passion for
+                preserving heritage results in exquisite, handwoven rugs that celebrate India’s rich artistry.
+              </p>
+              <button className={outlineButtonClass}>Meet our Producers</button>
+            </div>
+            <div>
+              <img className="h-[437px] w-[395px] rounded-[15px]" src="https://placehold.co/400x440" alt="Producer Image" />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Reviews section */}
+      <section className="min-h-[721.75px] bg-white pt-20 text-left pb-28">
+        <div className="max-w-screen-xl m-auto flex flex-col justify-between ">
+          <p className={headerMarkup}>Here’s what our customers are saying…</p>
+          <div className="mt-12">
+            <ReviewsCarousel reviews={reviews} />
+          </div>
+          <button className="text-center text-base font-semibold mt-14 w-fit m-auto">SEE ALL REVIEWS</button>
         </div>
       </section>
     </div>

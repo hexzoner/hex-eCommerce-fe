@@ -1,24 +1,25 @@
 /* Ensure the carousel container and slick track allow overflow for scaling */
-.carousel-container {
+/* .carousel-container {
   overflow: visible !important;
   position: relative;
-}
+} */
 
 /* Override slick-carousel default padding and margin between slides */
-.slick-slide {
-  padding: 0 !important; /* Remove any default padding */
-}
+/* .slick-slide {
+  padding: 0 !important;
+} */
 
-.slick-track {
+/* .slick-track {
   display: flex !important;
-  gap: 0px !important; /* Remove any gap between slides */
-}
+  gap: 0px !important;
+} */
 
-/* Optional: Fine-tune the spacing between the cards using margin or negative margin */
-.carousel-slide {
-  margin-left: -10px; /* Adjust this value as needed */
-  margin-right: -10px; /* Adjust this value as needed */
-}
+/* Optional: Fine-tune the spacing between the cards using margin or negative margin
+/* .carousel-slide {
+  margin-left: -10px;
+  margin-right: -10px;
+} */
+*/
 
 /* Make sure images do not get cut off when scaling */
 .carousel-slide img {
