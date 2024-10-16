@@ -25,7 +25,7 @@ const LatestArrivalsCarousel = ({ products }: { products: Product[] }) => {
     nextArrow: <NextArrow />,
     prevArrow: <PrevArrow />,
     beforeChange: (oldIndex: number, newIndex: number) => {
-      oldIndex = 0;
+      if (oldIndex > 0) oldIndex = 0;
       setCurrent(newIndex);
     }, // Update current slide on change
     responsive: [
