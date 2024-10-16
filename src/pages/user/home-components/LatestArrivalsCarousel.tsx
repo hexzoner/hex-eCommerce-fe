@@ -12,12 +12,14 @@ const LatestArrivalsCarousel = ({ products }: { products: any[] }) => {
   const navigate = useNavigate();
   // Number of total slides
   const totalSlides = products.length;
+  const slideToShow = 5;
 
   const settings = {
+    initailSlide: 0,
     dots: false, // Disable dots navigation
     infinite: true, // Infinite scrolling
     speed: 500,
-    slidesToShow: totalSlides, // Adjust to show 5 items at a time (center + sides)
+    slidesToShow: slideToShow, // Adjust to show 5 items at a time (center + sides)
     slidesToScroll: 1,
     centerMode: true, // Enables center item
     centerPadding: "0px", // No padding around the center item
@@ -60,11 +62,12 @@ const LatestArrivalsCarousel = ({ products }: { products: any[] }) => {
 
   // Function to calculate the correct scaling factor
   const getScale = (index: number) => {
-    const normalizedIndex = (index + totalSlides) % totalSlides; // Ensure the index is within bounds
-    const relativePos = (normalizedIndex - current + totalSlides) % totalSlides; // Calculate the relative position
+    // const normalizedIndex = (index + slideToShow) % slideToShow; // Ensure the index is within bounds
+    // const relativePos = (normalizedIndex - current + slideToShow) % slideToShow; // Calculate the relative position
+    const relativePos = (index - current + totalSlides) % totalSlides; // Calculate the relative position
 
-    if (relativePos === 1) return "scale-[101%]"; // Center slide
-    if (relativePos === 0 || relativePos === 2) return "scale-[80%]"; // Sides around center
+    if (relativePos === 0) return "scale-[101%]"; // Center slide
+    if (relativePos === 1 || relativePos === totalSlides - 1) return "scale-[80%]"; // Sides around center
     return "scale-[60%]"; // Outermost slides
   };
 
