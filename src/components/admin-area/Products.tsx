@@ -89,7 +89,7 @@ export default function Products() {
     const fetchProducts = async () => {
       setLoading(true);
       try {
-        const products = await getProducts([], [], [], page, perPage);
+        const products = await getProducts([], [], [], [], page, perPage);
         // console.log(products);
         setProducts(sortTables(products.results, "id", "desc"));
         setTotalPages(products.totalPages);
