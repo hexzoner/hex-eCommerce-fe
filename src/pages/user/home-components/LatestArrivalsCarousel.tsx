@@ -1,23 +1,25 @@
 import "../../../css/carousel.css";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import { Product } from "../../../components/admin-area/Products";
+
 import { useState } from "react";
 import Slider from "react-slick";
 import { useNavigate } from "react-router-dom";
 
-const LatestArrivalsCarousel = ({ products }: { products: Product[] }) => {
+const LatestArrivalsCarousel = ({ products }: { products: any[] }) => {
   // State to track the current slide
   const [current, setCurrent] = useState(0);
   const navigate = useNavigate();
   // Number of total slides
-  const totalSlides = 5; // Adjust based on your data
+  const totalSlides = products.length;
+  const slideToShow = 5;
 
   const settings = {
+    initailSlide: 0,
     dots: false, // Disable dots navigation
     infinite: true, // Infinite scrolling
     speed: 500,
-    slidesToShow: totalSlides, // Adjust to show 5 items at a time (center + sides)
+    slidesToShow: slideToShow, // Adjust to show 5 items at a time (center + sides)
     slidesToScroll: 1,
     centerMode: true, // Enables center item
     centerPadding: "0px", // No padding around the center item
@@ -60,29 +62,35 @@ const LatestArrivalsCarousel = ({ products }: { products: Product[] }) => {
 
   // Function to calculate the correct scaling factor
   const getScale = (index: number) => {
-    const normalizedIndex = (index + totalSlides) % totalSlides; // Ensure the index is within bounds
-    const relativePos = (normalizedIndex - current + totalSlides) % totalSlides; // Calculate the relative position
+    // const normalizedIndex = (index + slideToShow) % slideToShow; // Ensure the index is within bounds
+    // const relativePos = (normalizedIndex - current + slideToShow) % slideToShow; // Calculate the relative position
+    const relativePos = (index - current + totalSlides) % totalSlides; // Calculate the relative position
 
-    if (relativePos === 1) return "scale-[101%]"; // Center slide
-    if (relativePos === 0 || relativePos === 2) return "scale-[80%]"; // Sides around center
+    if (relativePos === 0) return "scale-[101%]"; // Center slide
+    if (relativePos === 1 || relativePos === totalSlides - 1) return "scale-[80%]"; // Sides around center
     return "scale-[60%]"; // Outermost slides
   };
 
   return (
     <div className="max-w-screen-xl m-auto slider-container px-0">
       <Slider {...settings}>
-        {products.map((product, index) => (
-          <div key={product.id} className="relative cursor-pointer">
-            <div className={`transition-transform duration-300 ${getScale(index)} overflow-visible`}>
-              <img
-                onClick={() => navigate(`/product/${product.id}`)}
-                src={product.image}
-                alt={`Product ${product.id}`}
-                className="w-full h-96 object-cover rounded-lg"
-              />
+        {products.map((product, index) => {
+          // Getting the last element of the link to use as the product ID
+          const productId = product.link.split("/").pop();
+
+          return (
+            <div key={product.id} className="relative cursor-pointer">
+              <div className={`transition-transform duration-300 ${getScale(index)} overflow-visible`}>
+                <img
+                  onClick={() => navigate(`/product/${productId}`)}
+                  src={product.image}
+                  alt={`Product ${productId}`}
+                  className="w-full h-96 object-cover rounded-lg"
+                />
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </Slider>
     </div>
   );

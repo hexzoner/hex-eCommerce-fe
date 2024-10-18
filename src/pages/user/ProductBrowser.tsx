@@ -37,6 +37,7 @@ export default function ProductBrowser() {
       selectedCategories.map((x) => x.id),
       selectedColors.map((x) => x.id),
       selectedSizes.map((x) => x.id),
+      [],
       page,
       perPage
     )

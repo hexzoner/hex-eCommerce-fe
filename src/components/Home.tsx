@@ -1,4 +1,5 @@
-import { getProducts } from "../api/products";
+// import { getProducts } from "../api/products";
+import { getLatestArrivals } from "../api/latest";
 import { getReviews } from "../api/reviews";
 import { useState, useEffect } from "react";
 import { Product } from "./admin-area/Products";
@@ -26,9 +27,9 @@ export default function Home() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    getProducts([], [], [], 1, 5)
+    getLatestArrivals()
       .then((res) => {
-        setProducts(res.results);
+        setProducts(res);
         getReviews()
           .then((res) => {
             setReviews(res.reviews);
@@ -160,7 +161,11 @@ export default function Home() {
               <button className={outlineButtonClass}>Meet our Producers</button>
             </div>
             <div className="m-auto">
-              <img className="h-[437px] w-[395px] rounded-[15px]" src="https://placehold.co/400x440" alt="Producer Image" />
+              <img
+                className="h-[437px] w-[395px] rounded-[15px] object-cover"
+                src="https://www.indianhandmaderugs.com/wp-content/uploads/2022/06/Quality-Control-carpet-rug-manufacturer-in-india.jpg"
+                alt="Producer Image"
+              />
             </div>
           </div>
         </div>

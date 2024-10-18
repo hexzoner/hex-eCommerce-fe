@@ -1,6 +1,6 @@
 import { createBrowserRouter, createRoutesFromElements, Route, RouterProvider } from "react-router-dom";
 import "./css/App.css";
-import { MainLayout, ProtectedLayout, Authorize, TaxonomyLayout } from "./layouts/layouts";
+import { MainLayout, ProtectedLayout, Authorize, TaxonomyLayout, DashboardLayout } from "./layouts/layouts";
 import {
   Home,
   About,
@@ -18,7 +18,19 @@ import {
   RugTypes,
   Sales,
 } from "./components/components";
-import { Dashboard, Categories, Orders, Users, Products, OrderDetails, Colors, Sizes, Reviews } from "./components/admin-area/admin-components";
+import {
+  Dashboard,
+  Categories,
+  Orders,
+  Users,
+  Products,
+  OrderDetails,
+  Colors,
+  Sizes,
+  Reviews,
+  HomeArrivals,
+  Producers,
+} from "./components/admin-area/admin-components";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -40,7 +52,7 @@ const router = createBrowserRouter(
         <Route path="wishlist" element={<Wishlist />} />
 
         <Route path="/admin" element={<Authorize roles={["admin"]} />}>
-          <Route path="dashboard" element={<Dashboard />} />
+          {/* <Route path="dashboard" element={<Dashboard />} /> */}
           <Route path="categories" element={<Categories />} />
           <Route path="colors" element={<Colors />} />
           <Route path="sizes" element={<Sizes />} />
@@ -53,6 +65,12 @@ const router = createBrowserRouter(
             <Route index element={<Categories />} path="categories" />
             <Route path="colors" element={<Colors />} />
             <Route path="sizes" element={<Sizes />} />
+            <Route path="producers" element={<Producers />} />
+          </Route>
+
+          <Route path="dashboard" element={<DashboardLayout />}>
+            <Route index element={<Dashboard />} />
+            <Route path="home-latest" element={<HomeArrivals />} />
           </Route>
         </Route>
       </Route>

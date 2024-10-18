@@ -11,7 +11,7 @@ export default function Footer() {
             </div>
             {/* Teppalu */}
 
-            <p className="font-semibold text-base">Copyright © {new Date().getFullYear()}. All right reserved.</p>
+            <p className="font-semibold text-base">{new Date().getFullYear()}</p>
           </div>
         </aside>
       </footer>

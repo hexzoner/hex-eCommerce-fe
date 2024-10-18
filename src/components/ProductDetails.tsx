@@ -7,10 +7,12 @@ import { useShop } from "../context";
 import { getReviews } from "../api/reviews";
 import Pagination from "./Pagination";
 import { useNavigate } from "react-router-dom";
+import { getProducts } from "../api/products";
 // import { updateCart } from "../api/cart";
 // import { toast } from "react-toastify";
 import { formatDateShort } from "../utils/dateUtils";
 import { Rating } from "react-simple-star-rating";
+import RugsByProducer from "../pages/user/product-details-components/RugsByProducer";
 
 export default function ProductDetails() {
   const { id } = useParams<{ id: string }>();
@@ -28,6 +30,8 @@ export default function ProductDetails() {
   const [totalReviews, setTotalReviews] = useState(0);
   const [averateRating, setAverageRating] = useState(0);
   const [responseStatus, setResponseStatus] = useState(200);
+  const [rugsByProducer, setRugsByProducer] = useState<any>([]);
+
   const navigate = useNavigate();
 
   function setReviewsData(res: any) {
@@ -48,6 +52,15 @@ export default function ProductDetails() {
         if (res.status && res.status == 404) {
           setResponseStatus(res.status);
           return;
+        } else {
+          getProducts([], [], [], [res.producer.id])
+            .then((res) => {
+              setRugsByProducer(res.results.filter((product: any) => product.id != id));
+            })
+            .catch((err) => {
+              console.log("Error fetching products by producer");
+              console.log(err);
+            });
         }
       })
       .catch((err) => {
@@ -146,8 +159,8 @@ export default function ProductDetails() {
             </button>
           </div>
         </div>
-        <div className="w-full max-w-[80rem] m-auto ">
-          <div role="tablist" className="tabs tabs-bordered mb-16">
+        <div className="w-full max-w-[80rem] m-auto border-b-2 border-black border-opacity-25 pb-12">
+          <div role="tablist" className="tabs tabs-bordered ">
             {/* Tab 1 */}
             <input type="radio" name="my_tabs_1" role="tab" className="tab" aria-label="Description" defaultChecked />
             <div role="tabpanel" className="tab-content p-10">
@@ -170,7 +183,20 @@ export default function ProductDetails() {
             </div>
           </div>
         </div>
-        <section className="bg-[#fcfaf5] w-full text-center ">
+
+        <section className="max-w-[70rem] m-auto  pb-16 mt-16">
+          <div className="flex gap-8">
+            <div className="w-2/3 flex flex-col gap-8">
+              <p className="font-semibold text-4xl">Meet {product.producer.name}</p>
+              <p>{product.producer.description}</p>
+              <p className="font-semibold text-xl mt-16">More rugs from this producer</p>
+              <RugsByProducer products={rugsByProducer} />
+            </div>
+            <img className="w-1/3 rounded-xl object-cover max-h-80" src={product.producer.image} alt="producer image" />
+          </div>
+        </section>
+
+        <section className="bg-[#fcfaf5] w-full text-center">
           <div className="max-w-[40rem] m-auto py-20 border-b-[2.5px] border-black border-opacity-15 mb-4">
             <p className="font-semibold text-2xl">Customer Reviews</p>
             <p className="">{totalReviews} Reviews</p>

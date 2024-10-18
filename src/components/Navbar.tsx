@@ -2,7 +2,7 @@ import { NavLink, useLocation } from "react-router-dom";
 import { useAuth, useShop } from "../context";
 import { useState, useEffect } from "react";
 // import { mainMakrupColors } from "./Home";
-const activeColor = "#b63c3e";
+export const activeColor = "#b63c3e";
 const navLinkClass = ({ isActive }: { isActive: boolean }) => `btn btn-ghost  + ${isActive ? `text-[${activeColor}]` : ""} `;
 
 export default function Navbar() {
