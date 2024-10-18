@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { NextArrow, PrevArrow } from "../home-components/LatestArrivalsCarousel";
 
 function RugsByProducer({ products }: { products: Product[] }) {
-  if (!products || products.length == 0) return null;
+  // if (products.length == 0) return <></>;
   const settings = {
     // centerPadding: "50px",
     dots: products.length > 3 ? true : false,
@@ -50,30 +50,32 @@ function RugsByProducer({ products }: { products: Product[] }) {
   const navigate = useNavigate();
   return (
     <div className={`slider-container ${settings.slidesToShow > 1 ? "max-w-[40rem]" : "max-w-[20rem]"} `}>
-      <Slider {...settings}>
-        {products.map((product, index) => (
-          <div key={index} className="text-sm m-auto ">
-            <div className="flex flex-col justify-between px-6 py-8  ">
-              <img
-                onClick={() => {
-                  navigate(`/product/${product.id}`);
-                  window.scrollTo(0, 0);
-                }}
-                className="cursor-pointer object-cover"
-                src={product.image}
-                alt="product image"
-              />
-              <div>
-                {/* <Rating initialValue={Number(product.rating)} size={20} readonly={true} className="my-1" /> */}
-                <p className="font-semibold text-center">{product.name}</p>
-              </div>
+      {products.length > 0 && (
+        <Slider {...settings}>
+          {products.map((product, index) => (
+            <div key={index} className="text-sm m-auto ">
+              <div className="flex flex-col justify-between px-6 py-8  ">
+                <img
+                  onClick={() => {
+                    navigate(`/product/${product.id}`);
+                    window.scrollTo(0, 0);
+                  }}
+                  className="cursor-pointer object-cover"
+                  src={product.image}
+                  alt="product image"
+                />
+                <div>
+                  {/* <Rating initialValue={Number(product.rating)} size={20} readonly={true} className="my-1" /> */}
+                  <p className="font-semibold text-center">{product.name}</p>
+                </div>
 
-              {/* <p className="">{product.review}</p> */}
-              {/* <p className="font-semibold">{product.author}</p> */}
+                {/* <p className="">{product.review}</p> */}
+                {/* <p className="font-semibold">{product.author}</p> */}
+              </div>
             </div>
-          </div>
-        ))}
-      </Slider>
+          ))}
+        </Slider>
+      )}
     </div>
   );
 }

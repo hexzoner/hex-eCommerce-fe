@@ -55,8 +55,7 @@ export default function ProductDetails() {
         } else {
           getProducts([], [], [], [res.producer.id])
             .then((res) => {
-              setRugsByProducer(res.results);
-              // console.log(res.results);
+              setRugsByProducer(res.results.filter((product: any) => product.id != id));
             })
             .catch((err) => {
               console.log("Error fetching products by producer");
@@ -191,7 +190,7 @@ export default function ProductDetails() {
               <p className="font-semibold text-4xl">Meet {product.producer.name}</p>
               <p>{product.producer.description}</p>
               <p className="font-semibold text-xl mt-16">More rugs from this producer</p>
-              <RugsByProducer products={rugsByProducer.filter((x: any) => x.id !== product.id)} />
+              <RugsByProducer products={rugsByProducer} />
             </div>
             <img className="w-1/3 rounded-xl object-cover max-h-80" src={product.producer.image} alt="producer image" />
           </div>
