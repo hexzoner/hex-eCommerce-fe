@@ -22,6 +22,11 @@ const TaxonomyLayout = () => {
               Sizes
             </NavLink>
           </li>
+          <li>
+            <NavLink to="producers" className={navLinkClass}>
+              Producers
+            </NavLink>
+          </li>
         </ul>
         <div className="w-full">
           <Outlet />

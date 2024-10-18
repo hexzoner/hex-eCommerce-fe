@@ -29,6 +29,7 @@ import {
   Sizes,
   Reviews,
   HomeArrivals,
+  Producers,
 } from "./components/admin-area/admin-components";
 
 const router = createBrowserRouter(
@@ -64,6 +65,7 @@ const router = createBrowserRouter(
             <Route index element={<Categories />} path="categories" />
             <Route path="colors" element={<Colors />} />
             <Route path="sizes" element={<Sizes />} />
+            <Route path="producers" element={<Producers />} />
           </Route>
 
           <Route path="dashboard" element={<DashboardLayout />}>
