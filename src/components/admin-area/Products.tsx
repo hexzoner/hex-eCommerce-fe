@@ -33,6 +33,10 @@ export interface Product {
   details: string;
   notes: string;
   instructions: string;
+  producer: {
+    id: number;
+    name: string;
+  };
 }
 
 export default function Products() {
@@ -64,6 +68,10 @@ export default function Products() {
     details: "",
     notes: "",
     instructions: "",
+    producer: {
+      id: 0,
+      name: "",
+    },
   };
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);

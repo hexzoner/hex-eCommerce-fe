@@ -5,6 +5,7 @@ import { getCategories } from "../../../api/categories";
 import { getColors } from "../../../api/colors";
 import { getSizes } from "../../../api/sizes";
 import { createProduct, updateProduct, deleteProduct } from "../../../api/products";
+import { getProducers } from "../../../api/producers";
 // import { restoreToken } from "../../utils/storage";
 import { ConfirmPopup, LoadingSpinnerSmall } from "../admin-components";
 import { FilterDropdown } from "../../Filters";
@@ -23,6 +24,7 @@ export function CreateProductModal({
   setUpdate: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const [categories, setCategories] = useState([]);
+  const [producers, setProducers] = useState([]);
   const [colors, setColors] = useState([]);
   const [sizes, setSizes] = useState([]);
   const [selectedSizes, setSelectedSizes] = useState<Size[]>([]);
@@ -53,6 +55,7 @@ export function CreateProductModal({
     details: string;
     notes: string;
     instructions: string;
+    producer: number | string;
   }>();
 
   const imageInput = watch("image");
@@ -70,6 +73,7 @@ export function CreateProductModal({
       details: product.details,
       notes: product.notes,
       instructions: product.instructions,
+      producer: product.isEdit ? product.producer.id : "",
     });
 
     setSelectedSizes(product.isEdit ? product.sizes.map((s) => ({ id: s.id, name: s.name })) : []);
@@ -89,6 +93,16 @@ export function CreateProductModal({
       try {
         const categories = await getCategories();
         setCategories(categories);
+        // console.log(categories);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+
+    const fetchProducers = async () => {
+      try {
+        const producers = await getProducers();
+        setProducers(producers);
         // console.log(categories);
       } catch (err) {
         console.log(err);
@@ -118,6 +132,7 @@ export function CreateProductModal({
     fetchSizes();
     fetchCategories();
     fetchColors();
+    fetchProducers();
   }, []);
 
   function handleDelete(e: React.MouseEvent) {
@@ -146,11 +161,13 @@ export function CreateProductModal({
     details: string;
     notes: string;
     instructions: string;
+    producer: number | string;
   }) {
     // console.log(data);
     // parsing the data to the correct type before sending it to the server
     const price = typeof data.price === "string" ? parseFloat(data.price) : data.price;
     const category = typeof data.category === "string" ? parseInt(data.category) : data.category;
+    const producer = typeof data.producer === "string" ? parseInt(data.producer) : data.producer;
     const color = typeof data.color === "string" ? parseInt(data.color) : data.color;
     const defaultSize = typeof data.defaultSize === "string" ? parseInt(data.defaultSize) : data.defaultSize;
     // console.log({ name: data.name, description: data.description, price, categoryId: category });
@@ -169,6 +186,7 @@ export function CreateProductModal({
       details: data.details,
       notes: data.notes,
       instructions: data.instructions,
+      producerId: producer,
     };
     if (!product.isEdit) {
       try {
@@ -293,6 +311,26 @@ export function CreateProductModal({
                           </select>
                           {errors.category && (
                             <p className="text-error text-xs text-left right-8 font-semibold">{errors.category.message?.toString()}</p>
+                          )}
+                        </div>
+
+                        <div>
+                          <select
+                            className="select select-bordered w-full"
+                            {...register("producer", {
+                              required: "Producer is required",
+                            })}>
+                            <option value="">Select a producer</option>
+                            {producers.map((producer: any) => {
+                              return (
+                                <option key={producer.id} value={producer.id}>
+                                  {producer.name}
+                                </option>
+                              );
+                            })}
+                          </select>
+                          {errors.producer && (
+                            <p className="text-error text-xs text-left right-8 font-semibold">{errors.producer.message?.toString()}</p>
                           )}
                         </div>
 

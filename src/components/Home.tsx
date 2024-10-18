@@ -161,7 +161,11 @@ export default function Home() {
               <button className={outlineButtonClass}>Meet our Producers</button>
             </div>
             <div className="m-auto">
-              <img className="h-[437px] w-[395px] rounded-[15px]" src="https://placehold.co/400x440" alt="Producer Image" />
+              <img
+                className="h-[437px] w-[395px] rounded-[15px] object-cover"
+                src="https://www.indianhandmaderugs.com/wp-content/uploads/2022/06/Quality-Control-carpet-rug-manufacturer-in-india.jpg"
+                alt="Producer Image"
+              />
             </div>
           </div>
         </div>

@@ -12,14 +12,22 @@ const headers = {
   Authorization: `Bearer ${restoreToken()}`,
 };
 
-export const getProducts = async (categories?: number[], colors?: number[], sizes?: number[], page?: number, perPage?: number) => {
-  ///products?category=1,2&color=2
+export const getProducts = async (
+  categories?: number[],
+  colors?: number[],
+  sizes?: number[],
+  producers?: number[],
+  page?: number,
+  perPage?: number
+) => {
+  // /products?category=1,2&color=2
   let url = `${baseURL}?`;
   if (categories && categories.length > 0) url += `category=${categories.join(",")}&`;
   if (colors && colors.length > 0) url += `color=${colors.join(",")}&`;
   if (sizes && sizes.length > 0) url += `size=${sizes.join(",")}&`;
-  if (page) url += `&page=${page}`;
-  if (perPage) url += `&perPage=${perPage}`;
+  if (page) url += `page=${page}&`;
+  if (perPage) url += `perPage=${perPage}&`;
+  if (producers && producers.length > 0) url += `producer=${producers.join(",")}&`;
 
   // console.log(url);
   const response = await axios
@@ -52,6 +60,7 @@ interface ProductProps {
   instructions: string;
   active?: boolean;
   id?: number;
+  producerId: number;
 }
 
 export const createProduct = async (product: ProductProps) => {
@@ -72,6 +81,7 @@ export const createProduct = async (product: ProductProps) => {
         notes: product.notes,
         instructions: product.instructions,
         active: product.active,
+        producerId: product.producerId,
       },
       {
         headers,
@@ -103,6 +113,7 @@ export const updateProduct = async (product: ProductProps) => {
     details: product.details,
     notes: product.notes,
     instructions: product.instructions,
+    producerId: product.producerId,
   };
 
   // console.log(body);
