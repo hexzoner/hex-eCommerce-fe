@@ -1,11 +1,14 @@
 import { Product } from "../Products";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { getCategories } from "../../../api/categories";
 import { getColors } from "../../../api/colors";
 import { getSizes } from "../../../api/sizes";
 import { createProduct, updateProduct, deleteProduct } from "../../../api/products";
+import { getReviews } from "../../../api/reviews";
 import { getProducers } from "../../../api/producers";
+import sortTables from "../../../utils/sortTables";
+import { formatDateShort } from "../../../utils/dateUtils";
 // import { restoreToken } from "../../utils/storage";
 import { ConfirmPopup, LoadingSpinnerSmall } from "../admin-components";
 import { FilterDropdown } from "../../Filters";
@@ -27,6 +30,7 @@ export function CreateProductModal({
   const [producers, setProducers] = useState([]);
   const [colors, setColors] = useState([]);
   const [sizes, setSizes] = useState([]);
+  const [reviews, setReviews] = useState([]);
   const [selectedSizes, setSelectedSizes] = useState<Size[]>([]);
   const [selectedColors, setSelectedColors] = useState<Color[]>([]);
   const [loading, setLoading] = useState(false);
@@ -86,6 +90,18 @@ export function CreateProductModal({
 
   useEffect(() => {
     resetFormToDefault();
+
+    const fetchReviews = async () => {
+      try {
+        const response = await getReviews(undefined, undefined, undefined, product.id);
+        setReviews(response.reviews);
+        // console.log(response);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+
+    fetchReviews();
   }, [product]);
 
   useEffect(() => {
@@ -239,6 +255,15 @@ export function CreateProductModal({
     const createProductModal = document.getElementById("create_product_modal");
     if (createProductModal) (createProductModal as HTMLDialogElement).close();
   }
+
+  const [sortOrder, setSortOrder] = useState("asc");
+  const handleSortClick = (key: string, e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    e.preventDefault();
+    const newSortOrder = sortOrder === "asc" ? "desc" : "asc";
+    setSortOrder(newSortOrder);
+    const sorted = sortTables(reviews, key, newSortOrder);
+    setReviews(sorted);
+  };
 
   return (
     <>
@@ -566,7 +591,147 @@ export function CreateProductModal({
                   {/* Tab 4 */}
                   <input type="radio" name="my_tabs_1" role="tab" className="tab" aria-label="Reviews" />
                   <div role="tabpanel" className="tab-content p-10">
-                    <p>Reviews</p>
+                    <div>
+                      <table className="table rounded-md table-zebra table-sm w-full shadow-md mb-12">
+                        <thead className="text-sm bg-base-300">
+                          <tr>
+                            <th className="font-bold">
+                              <div className="flex gap-1 items-center">
+                                <span>ID</span>
+                                <button
+                                  title="Sort"
+                                  className="hover:cursor-pointer"
+                                  onClick={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => handleSortClick("id", e)}>
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    strokeWidth="1.5"
+                                    stroke="currentColor"
+                                    className="size-6">
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 15 12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9" />
+                                  </svg>
+                                </button>
+                              </div>
+                            </th>
+
+                            <th className="font-bold">
+                              <div className="flex gap-1 items-center">
+                                <span>Author</span>
+                                <button
+                                  title="SortByEmail"
+                                  className="hover:cursor-pointer"
+                                  onClick={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => handleSortClick("author", e)}>
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    strokeWidth="1.5"
+                                    stroke="currentColor"
+                                    className="size-6">
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 15 12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9" />
+                                  </svg>
+                                </button>
+                              </div>
+                            </th>
+                            <th className="font-bold">
+                              <div className="flex gap-1 items-center">
+                                <span>Rating</span>
+                                <button
+                                  title="Sort"
+                                  className="hover:cursor-pointer"
+                                  onClick={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => handleSortClick("rating", e)}>
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    strokeWidth="1.5"
+                                    stroke="currentColor"
+                                    className="size-6">
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 15 12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9" />
+                                  </svg>
+                                </button>
+                              </div>
+                            </th>
+                            <th className="font-bold">
+                              <div className="flex gap-1 items-center">
+                                <span>Title</span>
+                                <button
+                                  title="Sort"
+                                  className="hover:cursor-pointer"
+                                  onClick={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => handleSortClick("title", e)}>
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    strokeWidth="1.5"
+                                    stroke="currentColor"
+                                    className="size-6">
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 15 12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9" />
+                                  </svg>
+                                </button>
+                              </div>
+                            </th>
+                            <th className="font-bold">
+                              <div className="flex gap-1 items-center">
+                                <span>Comment</span>
+                                <button
+                                  title="Sort"
+                                  className="hover:cursor-pointer"
+                                  onClick={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => handleSortClick("review", e)}>
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    strokeWidth="1.5"
+                                    stroke="currentColor"
+                                    className="size-6">
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 15 12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9" />
+                                  </svg>
+                                </button>
+                              </div>
+                            </th>
+                            <th className="font-bold">
+                              <div className="flex gap-1 items-center">
+                                <span>Date</span>
+                                <button
+                                  title="SortByEmail"
+                                  className="hover:cursor-pointer"
+                                  onClick={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => handleSortClick("date", e)}>
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    strokeWidth="1.5"
+                                    stroke="currentColor"
+                                    className="size-6">
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 15 12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9" />
+                                  </svg>
+                                </button>
+                              </div>
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {reviews.map((review: any) => (
+                            <tr
+                              onClick={() => {
+                                // setSelectedReview(review);
+                                // handleAddReview();
+                              }}
+                              className="cursor-pointer hover"
+                              key={review.id}>
+                              <td>{review.id}</td>
+                              <td>{review.author}</td>
+                              <td>{review.rating} </td>
+                              <td>{review.title}</td>
+                              <td>{review.review}</td>
+                              <td>{formatDateShort(review.date)}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
                   </div>
                 </div>
               </form>
