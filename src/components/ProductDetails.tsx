@@ -79,7 +79,13 @@ export default function ProductDetails() {
   useEffect(() => {
     setLoadingReviews(true);
     // console.log("Fetching reviews");
-    getReviews(page, perPage, sort, Number(id))
+    getReviews({
+      page,
+      perPage,
+      sort,
+      sortBy: "date",
+      productId: Number(id),
+    })
       .then((res) => {
         setReviewsData(res);
       })

@@ -21,12 +21,26 @@ export interface iCreateReviewAPI {
   featured?: boolean;
 }
 
-export const getReviews = async (page?: number, perPage?: number, sort?: string, productId?: number) => {
+// export const getReviews = async (page?: number, perPage?: number, sort?: string, productId?: number) => {
+export const getReviews = async ({
+  page,
+  perPage,
+  sort,
+  sortBy,
+  productId,
+}: {
+  page?: number;
+  perPage?: number;
+  sort?: string;
+  sortBy?: string;
+  productId?: number;
+}) => {
   let url = `${baseURL}?`;
   if (page) url += `&page=${page}`;
   if (perPage) url += `&perPage=${perPage}`;
   if (sort) url += `&sort=${sort}`;
   if (productId) url += `&productId=${productId}`;
+  if (sortBy) url += `&sortBy=${sortBy}`;
 
   const response = await axios
     .get(url, {
