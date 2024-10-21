@@ -78,19 +78,19 @@ export default function ColorModal({ color, setSelectedColor, setColors }: Color
               <div className="modal-action">
                 <form method="dialog">
                   {/* if there is a button in form, it will close the modal */}
-                  <button onClick={handleDelete} className="btn btn-error btn-sm">
+                  <button onClick={handleDelete} className="btn btn-error btn-sm rounded-none">
                     Delete
                   </button>
                   {editMode ? (
-                    <button onClick={finishEdit} className="btn btn-warning btn-sm">
+                    <button onClick={finishEdit} className="btn btn-warning btn-sm rounded-none">
                       Save
                     </button>
                   ) : (
-                    <button onClick={handleEdit} className="btn btn-warning btn-sm">
+                    <button onClick={handleEdit} className="btn btn-warning btn-sm rounded-none">
                       Edit
                     </button>
                   )}
-                  <button className="btn btn-sm">Close</button>
+                  <button className="btn btn-sm rounded-none">Close</button>
                 </form>
               </div>
             </div>
@@ -145,10 +145,10 @@ export function CreateColorModal({ setColors }: { setColors: React.Dispatch<Reac
             <div className="modal-action">
               <form method="dialog">
                 {/* if there is a button in form, it will close the modal */}
-                <button onClick={handleCreate} className="btn btn-success btn-sm">
+                <button onClick={handleCreate} className="btn btn-success btn-sm rounded-none">
                   Create
                 </button>
-                <button className="btn btn-sm">Close</button>
+                <button className="btn btn-sm rounded-none">Close</button>
               </form>
             </div>
           </div>
