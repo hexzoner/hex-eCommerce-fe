@@ -54,7 +54,10 @@ export default function Reviews() {
   const [totalReviews, setTotalReviews] = useState(0);
 
   useEffect(() => {
-    getReviews(page, perPage)
+    getReviews({
+      page,
+      perPage,
+    })
       .then((res) => {
         // console.log(res);
         setReviews(sortTables(res.reviews, "id", "desc"));

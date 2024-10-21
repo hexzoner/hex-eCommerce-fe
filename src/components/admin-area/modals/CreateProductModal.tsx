@@ -95,7 +95,7 @@ export function CreateProductModal({
     if (product.id === 0) return;
     const fetchReviews = async () => {
       try {
-        const response = await getReviews(undefined, undefined, undefined, product.id);
+        const response = await getReviews({ productId: product.id });
         setReviews(response.reviews);
         // console.log(response);
       } catch (err) {

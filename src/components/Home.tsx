@@ -30,7 +30,7 @@ export default function Home() {
     getLatestArrivals()
       .then((res) => {
         setProducts(res);
-        getReviews()
+        getReviews({ page: 1, perPage: 10, sortBy: "rating", sort: "desc" })
           .then((res) => {
             setReviews(res.reviews);
           })
