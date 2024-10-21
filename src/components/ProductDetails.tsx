@@ -13,6 +13,8 @@ import { getProducts } from "../api/products";
 import { formatDateShort } from "../utils/dateUtils";
 import { Rating } from "react-simple-star-rating";
 import RugsByProducer from "../pages/user/product-details-components/RugsByProducer";
+import FeaturedReviewsCarousel from "../pages/user/product-details-components/FeaturedReviewsCarousel";
+import { Review } from "../pages/admin/Reviews";
 
 export default function ProductDetails() {
   const { id } = useParams<{ id: string }>();
@@ -23,6 +25,7 @@ export default function ProductDetails() {
   const [selectedSize, setSelectedSize] = useState<any>({});
   const [selectedColor, setSelectedColor] = useState<any>({});
   const [productReviews, setProductReviews] = useState<any>([]);
+  const [featuredReviews, setFeaturedReviews] = useState<Review[]>([]);
   const [page, setPage] = useState(1);
   const [perPage, setPerPage] = useState(5);
   const [sort, setSort] = useState("desc");
@@ -39,6 +42,7 @@ export default function ProductDetails() {
     setTotalPages(res.totalPages);
     setTotalReviews(res.totalReviews);
     setAverageRating(res.averageRating);
+    setFeaturedReviews(res.featuredReviews);
   }
 
   useEffect(() => {
@@ -124,9 +128,20 @@ export default function ProductDetails() {
         </ul>
       </div>
       <div className="flex flex-col min-h-screen mt-8 text-left">
-        <div className="flex-col lg:flex-row flex gap-0 items-start max-w-[80rem] m-auto ">
-          <img className="w-full lg:w-1/2 px-24 lg:px-0" src={product.image} alt="Product image" />
-          <div className="flex flex-col w-full lg:w-1/2 px-4 lg:px-16 min-h-[55vh] justify-between gap-4 pb-6">
+        {/* Product Image, Name, Price, Category, Size, Color, Add to Cart Button */}
+        <div className="flex-col lg:flex-row flex gap-0 items-start max-w-[80rem] m-auto h-full">
+          <div className="w-full lg:w-1/2 px-24 lg:px-0  flex-1 self-stretch">
+            <img className="" src={product.image} alt="Product image" />
+            {/* Featured Reviews */}
+            {featuredReviews.length > 0 && (
+              <section className="max-w-[70rem] m-auto ">
+                <p className="font-semibold text-xl pt-6">Featured Reviews</p>
+                <FeaturedReviewsCarousel reviews={featuredReviews} />
+              </section>
+            )}
+          </div>
+
+          <div className="flex flex-col w-full lg:w-1/2 px-4 lg:px-16 justify-between gap-6 pb-6 self-stretch flex-1 ">
             <div className="flex justify-between items-center">
               <p className="text-3xl font-semibold">{product.name}</p>
               <FavIcon product={product} wishlist={wishlist} setWishlist={setWishlist} />
@@ -160,6 +175,8 @@ export default function ProductDetails() {
             </button>
           </div>
         </div>
+
+        {/* Description, Details, Notes, Instructions Tabs */}
         <div className="w-full max-w-[80rem] m-auto border-b-2 border-black border-opacity-25 pb-12">
           <div role="tablist" className="tabs tabs-bordered ">
             {/* Tab 1 */}
@@ -185,6 +202,7 @@ export default function ProductDetails() {
           </div>
         </div>
 
+        {/* Meet the producer section */}
         <section className="max-w-[70rem] m-auto  pb-16 mt-16">
           <div className="flex gap-8">
             <div className="w-2/3 flex flex-col gap-8">
@@ -197,6 +215,7 @@ export default function ProductDetails() {
           </div>
         </section>
 
+        {/* Customer Reviews */}
         <section className="bg-[#fcfaf5] w-full text-center">
           <div className="max-w-[40rem] m-auto py-20 border-b-[2.5px] border-black border-opacity-15 mb-4">
             <p className="font-semibold text-2xl">Customer Reviews</p>

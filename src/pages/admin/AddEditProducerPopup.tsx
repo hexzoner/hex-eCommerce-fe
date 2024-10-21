@@ -123,7 +123,7 @@ export default function AddEditProducerPopup({ producer, setProducers }: { produ
               )}
 
               <div>
-                <button className="btn btn-success btn-sm">Save</button>
+                <button className="btn btn-success btn-sm rounded-none">Save</button>
                 {/* <button onClick={handleCancel} className="btn btn-sm">
                   Cancel
                 </button> */}

@@ -22,6 +22,7 @@ import Reviews from "../../pages/admin/Reviews";
 import { HomeArrivals } from "../../pages/admin/HomeArrivals";
 import Producers from "../../pages/admin/Producers";
 import AddEditProducerPopup from "../../pages/admin/AddEditProducerPopup";
+import { LoadingSpinnerPopup } from "./modals/LoadingSpinnerPopup";
 
 export {
   Categories,
@@ -48,4 +49,5 @@ export {
   HomeArrivals,
   Producers,
   AddEditProducerPopup,
+  LoadingSpinnerPopup,
 };

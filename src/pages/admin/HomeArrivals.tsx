@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import sortTables from "../../utils/sortTables";
 import { getLatestArrivals } from "../../api/latest";
 import LoadingSpinner from "../../components/LoadingSpinner";
-import { ConfirmPopup } from "../../components/admin-area/admin-components";
+import { ConfirmPopup, LoadingSpinnerPopup } from "../../components/admin-area/admin-components";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { createLatestArrival, updateLatestArrival, deleteLatestArrival } from "../../api/latest";
 import { toast } from "react-toastify";
@@ -136,6 +136,7 @@ export function HomeArrivals() {
         handleDelete={handleDelete}
         setSelectedProduct={setSelectedProduct}
         setLatestArrivals={setLatestArrivals}
+        isLoading={loading}
       />
       <ConfirmPopup confirmText="Are you sure you want to remove this product?" deleteConfirmed={handleConfirmDelete} />
     </div>
@@ -147,11 +148,13 @@ const AddEditLatestArrival = ({
   handleDelete,
   setSelectedProduct,
   setLatestArrivals,
+  isLoading,
 }: {
   product: LatestArrival;
   handleDelete: any;
   setSelectedProduct: any;
   setLatestArrivals: any;
+  isLoading: boolean;
 }) => {
   const adding = product.name ? false : true;
   const [editMode, setEditMode] = useState(adding);
@@ -225,88 +228,94 @@ const AddEditLatestArrival = ({
             ✕
           </button>
         </form>
-        {!editMode ? (
-          <div className="flex flex-col gap-4">
-            <h3 className="font-bold text-lg px-8">{product.name}</h3>
-            <img src={product.image} alt="product image" />
-            <p className="px-8">{product.link}</p>
-            <div className="flex justify-start gap-2 mx-8">
-              <button onClick={() => setEditMode(true)} className="btn btn-warning btn-sm ">
-                Edit
-              </button>
-              <button onClick={handleDelete} className="btn btn-error btn-sm ">
-                Delete
-              </button>
-            </div>
-          </div>
-        ) : (
-          <div className="flex flex-col gap-4 min-h-72 justify-between pt-6">
-            <form onSubmit={handleSubmit(onSubmit)}>
-              <div className="flex flex-col justify-between h-64">
-                <div className="flex flex-col gap-3">
-                  <div>
-                    <div className="flex items-center gap-3">
-                      <label htmlFor="name" className="label min-w-16">
-                        Name
-                      </label>
-                      <input
-                        defaultValue={product && product.name?.length > 0 ? product.name : ""}
-                        id="name"
-                        type="text"
-                        className="input input-bordered input-sm w-full "
-                        {...register("name", { required: true })}
-                      />
-                    </div>
-                    {errors.name && <span className="text-xs text-error italic">Name is required</span>}
-                  </div>
-                  <div>
-                    <div className="flex items-center gap-3">
-                      <label htmlFor="image" className="label min-w-16">
-                        Image
-                      </label>
-                      <input
-                        defaultValue={product && product.image?.length > 0 ? product.image : ""}
-                        id="image"
-                        type="text"
-                        className="input input-bordered input-sm w-full"
-                        {...register("image", { required: true })}
-                      />
-                    </div>
-                    {errors.image && <span className="text-xs text-error italic">Image is required</span>}
-                  </div>
-                  <div>
-                    <div className="flex items-center gap-3">
-                      <label htmlFor="link" className="label min-w-16">
-                        Link
-                      </label>
-                      <input
-                        defaultValue={product && product.link?.length > 0 ? product.link : ""}
-                        id="link"
-                        type="text"
-                        className="input input-bordered input-sm w-full"
-                        {...register("link", { required: true })}
-                      />
-                    </div>
-                    {errors.link && <span className="text-xs text-error italic">Link is required</span>}
-                  </div>
-                </div>
-                <div className="flex justify-start mx-0 gap-2">
-                  <button onClick={() => {}} className="btn btn-warning btn-sm ">
-                    Save
+        {!isLoading ? (
+          <div>
+            {!editMode ? (
+              <div className="flex flex-col gap-4">
+                <h3 className="font-bold text-lg px-8">{product.name}</h3>
+                <img src={product.image} alt="product image" />
+                <p className="px-8">{product.link}</p>
+                <div className="flex justify-start gap-2 mx-8">
+                  <button onClick={() => setEditMode(true)} className="btn btn-warning btn-sm ">
+                    Edit
                   </button>
-                  <button
-                    onClick={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-                      e.preventDefault();
-                      //   setEditMode(false);
-                      closePopup();
-                    }}
-                    className="btn btn-sm ">
-                    Cancel
+                  <button onClick={handleDelete} className="btn btn-error btn-sm ">
+                    Delete
                   </button>
                 </div>
               </div>
-            </form>
+            ) : (
+              <div className="flex flex-col gap-4 min-h-72 justify-between pt-6">
+                <form onSubmit={handleSubmit(onSubmit)}>
+                  <div className="flex flex-col justify-between h-64">
+                    <div className="flex flex-col gap-3">
+                      <div>
+                        <div className="flex items-center gap-3">
+                          <label htmlFor="name" className="label min-w-16">
+                            Name
+                          </label>
+                          <input
+                            defaultValue={product && product.name?.length > 0 ? product.name : ""}
+                            id="name"
+                            type="text"
+                            className="input input-bordered input-sm w-full "
+                            {...register("name", { required: true })}
+                          />
+                        </div>
+                        {errors.name && <span className="text-xs text-error italic">Name is required</span>}
+                      </div>
+                      <div>
+                        <div className="flex items-center gap-3">
+                          <label htmlFor="image" className="label min-w-16">
+                            Image
+                          </label>
+                          <input
+                            defaultValue={product && product.image?.length > 0 ? product.image : ""}
+                            id="image"
+                            type="text"
+                            className="input input-bordered input-sm w-full"
+                            {...register("image", { required: true })}
+                          />
+                        </div>
+                        {errors.image && <span className="text-xs text-error italic">Image is required</span>}
+                      </div>
+                      <div>
+                        <div className="flex items-center gap-3">
+                          <label htmlFor="link" className="label min-w-16">
+                            Link
+                          </label>
+                          <input
+                            defaultValue={product && product.link?.length > 0 ? product.link : ""}
+                            id="link"
+                            type="text"
+                            className="input input-bordered input-sm w-full"
+                            {...register("link", { required: true })}
+                          />
+                        </div>
+                        {errors.link && <span className="text-xs text-error italic">Link is required</span>}
+                      </div>
+                    </div>
+                    <div className="flex justify-start mx-0 gap-2">
+                      <button onClick={() => {}} className="btn btn-warning btn-sm ">
+                        Save
+                      </button>
+                      <button
+                        onClick={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+                          e.preventDefault();
+                          //   setEditMode(false);
+                          closePopup();
+                        }}
+                        className="btn btn-sm ">
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            )}
           </div>
+        ) : (
+          <LoadingSpinnerPopup />
         )}
       </div>
     </dialog>
