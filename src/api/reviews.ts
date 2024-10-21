@@ -16,8 +16,9 @@ export interface iCreateReviewAPI {
   title: string;
   review: string;
   image: string;
-  productId: number;
+  productId?: number;
   date: string;
+  featured: boolean;
 }
 
 export const getReviews = async (page?: number, perPage?: number, sort?: string, productId?: number) => {

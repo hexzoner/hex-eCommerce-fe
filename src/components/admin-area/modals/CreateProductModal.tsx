@@ -5,7 +5,7 @@ import { getCategories } from "../../../api/categories";
 import { getColors } from "../../../api/colors";
 import { getSizes } from "../../../api/sizes";
 import { createProduct, updateProduct, deleteProduct } from "../../../api/products";
-import { getReviews } from "../../../api/reviews";
+import { getReviews, updateReview } from "../../../api/reviews";
 import { getProducers } from "../../../api/producers";
 import sortTables from "../../../utils/sortTables";
 import { formatDateShort } from "../../../utils/dateUtils";
@@ -15,6 +15,8 @@ import { FilterDropdown } from "../../Filters";
 import { Size } from "../Sizes";
 import { Color } from "../Colors";
 import Editor from "react-simple-wysiwyg";
+import { Review } from "../../../pages/admin/Reviews";
+import { iCreateReviewAPI } from "../../../api/reviews";
 const dummyRug = "https://th.bing.com/th/id/OIP.MvnwHj_3a0ICmk72FNI5WQHaFR?rs=1&pid=ImgDetMain";
 
 export function CreateProductModal({
@@ -30,7 +32,7 @@ export function CreateProductModal({
   const [producers, setProducers] = useState([]);
   const [colors, setColors] = useState([]);
   const [sizes, setSizes] = useState([]);
-  const [reviews, setReviews] = useState([]);
+  const [reviews, setReviews] = useState<Review[]>([]);
   const [selectedSizes, setSelectedSizes] = useState<Size[]>([]);
   const [selectedColors, setSelectedColors] = useState<Color[]>([]);
   const [loading, setLoading] = useState(false);
@@ -90,7 +92,7 @@ export function CreateProductModal({
 
   useEffect(() => {
     resetFormToDefault();
-
+    if (product.id === 0) return;
     const fetchReviews = async () => {
       try {
         const response = await getReviews(undefined, undefined, undefined, product.id);
@@ -264,6 +266,30 @@ export function CreateProductModal({
     const sorted = sortTables(reviews, key, newSortOrder);
     setReviews(sorted);
   };
+
+  async function handleFeatuedCheckboxChange(e: any, review: Review) {
+    const body: iCreateReviewAPI = {
+      author: review.author,
+      rating: review.rating,
+      title: review.title,
+      review: review.review,
+      featured: e.target.checked,
+      productId: product.id,
+      image: review.image,
+      date: review.date,
+    };
+
+    setReviews((prev) =>
+      prev.map((r: Review) => {
+        if (r.id === review.id) {
+          return { ...r, featured: e.target.checked };
+        }
+        return r;
+      })
+    );
+    await updateReview(body, review.id);
+    // console.log(res);
+  }
 
   return (
     <>
@@ -597,11 +623,11 @@ export function CreateProductModal({
                           <tr>
                             <th className="font-bold">
                               <div className="flex gap-1 items-center">
-                                <span>ID</span>
+                                <span>Featured</span>
                                 <button
                                   title="Sort"
                                   className="hover:cursor-pointer"
-                                  onClick={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => handleSortClick("id", e)}>
+                                  onClick={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => handleSortClick("featured", e)}>
                                   <svg
                                     xmlns="http://www.w3.org/2000/svg"
                                     fill="none"
@@ -713,7 +739,7 @@ export function CreateProductModal({
                           </tr>
                         </thead>
                         <tbody>
-                          {reviews.map((review: any) => (
+                          {reviews.map((review: Review) => (
                             <tr
                               onClick={() => {
                                 // setSelectedReview(review);
@@ -721,7 +747,14 @@ export function CreateProductModal({
                               }}
                               className="cursor-pointer hover"
                               key={review.id}>
-                              <td>{review.id}</td>
+                              <td>
+                                <input
+                                  onChange={(e) => handleFeatuedCheckboxChange(e, review)}
+                                  type="checkbox"
+                                  className="checkbox"
+                                  checked={review.featured ? true : false}
+                                />
+                              </td>
                               <td>{review.author}</td>
                               <td>{review.rating} </td>
                               <td>{review.title}</td>

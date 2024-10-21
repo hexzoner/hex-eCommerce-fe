@@ -21,6 +21,7 @@ export interface Review {
   };
   date: string;
   id: number;
+  featured: boolean;
 }
 
 export default function Reviews() {
@@ -37,6 +38,7 @@ export default function Reviews() {
       name: "",
     },
     date: "",
+    featured: false,
   };
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
