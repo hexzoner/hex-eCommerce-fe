@@ -49,6 +49,16 @@ interface ShopContextProps {
   addToCart: (product: any, quantity: number, size: number, color: number) => void;
   cartLoading: boolean;
   updateCartQuantity: (productId: number, quantity: number, color: number, size: number) => void;
+  styles: any[];
+  setStyles: React.Dispatch<React.SetStateAction<any[]>>;
+  materials: any[];
+  setMaterials: React.Dispatch<React.SetStateAction<any[]>>;
+  techniques: any[];
+  setTechniques: React.Dispatch<React.SetStateAction<any[]>>;
+  shapes: any[];
+  setShapes: React.Dispatch<React.SetStateAction<any[]>>;
+  producers: any[];
+  setProducers: React.Dispatch<React.SetStateAction<any[]>>;
 }
 
 const ShopContext = createContext<ShopContextProps>({
@@ -70,6 +80,16 @@ const ShopContext = createContext<ShopContextProps>({
   addToCart: () => {},
   cartLoading: false,
   updateCartQuantity: () => {},
+  styles: [],
+  setStyles: () => {},
+  materials: [],
+  setMaterials: () => {},
+  techniques: [],
+  setTechniques: () => {},
+  shapes: [],
+  setShapes: () => {},
+  producers: [],
+  setProducers: () => {},
 });
 
 const useShop = () => {

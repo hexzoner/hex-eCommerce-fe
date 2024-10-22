@@ -18,6 +18,10 @@ export default function ProductBrowser() {
   const [selectedCategories, setSelectedCategories] = useState<any[]>([]);
   const [selectedColors, setSelectedColors] = useState<any[]>([]);
   const [selectedSizes, setSelectedSizes] = useState<any[]>([]);
+  const [selectedStyles, setSelectedStyles] = useState<any[]>([]);
+  const [selectedShapes, setSelectedShapes] = useState<any[]>([]);
+  const [selectedMaterials, setSelectedMaterials] = useState<any[]>([]);
+  const [selectedTechniques, setSelectedTechniques] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const { wishlist, setWishlist, shopLoading } = useShop();
   const navigate = useNavigate();
@@ -33,14 +37,17 @@ export default function ProductBrowser() {
     // if (shopLoading) return;
     setLoading(true);
     // console.log("Filters - fetching products");
-    getProducts(
-      selectedCategories.map((x) => x.id),
-      selectedColors.map((x) => x.id),
-      selectedSizes.map((x) => x.id),
-      [],
+    getProducts({
+      categories: selectedCategories.map((x) => x.id),
+      colors: selectedColors.map((x) => x.id),
+      sizes: selectedSizes.map((x) => x.id),
+      shapes: selectedShapes.map((x) => x.id),
+      techniques: selectedTechniques.map((x) => x.id),
+      materials: selectedMaterials.map((x) => x.id),
+      styles: selectedStyles.map((x) => x.id),
       page,
-      perPage
-    )
+      perPage,
+    })
       .then((res) => {
         setProducts(res.results.filter((x: any) => x.active == true));
         setTotalPages(res.totalPages);
@@ -48,7 +55,7 @@ export default function ProductBrowser() {
       })
       .catch((err) => console.log(err))
       .finally(() => setLoading(false));
-  }, [selectedCategories, selectedColors, selectedSizes, page, perPage]);
+  }, [selectedCategories, selectedColors, selectedSizes, selectedStyles, selectedShapes, selectedMaterials, selectedTechniques, page, perPage]);
 
   return (
     <div className={mainMakrupColors + " min-h-screen max-w-[80rem] m-auto py-6"}>
@@ -73,6 +80,14 @@ export default function ProductBrowser() {
           setSelectedColors={setSelectedColors}
           selectedSizes={selectedSizes}
           setSelectedSizes={setSelectedSizes}
+          selectedStyles={selectedStyles}
+          setSelectedStyles={setSelectedStyles}
+          selectedShapes={selectedShapes}
+          setSelectedShapes={setSelectedShapes}
+          selectedMaterials={selectedMaterials}
+          setSelectedMaterials={setSelectedMaterials}
+          selectedTechniques={selectedTechniques}
+          setSelectedTechniques={setSelectedTechniques}
         />
       </div>
       <section className="my-8 ">

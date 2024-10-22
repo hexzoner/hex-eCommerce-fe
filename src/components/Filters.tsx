@@ -11,6 +11,14 @@ export default function Filters({
   selectedColors,
   selectedSizes,
   setSelectedSizes,
+  selectedStyles,
+  setSelectedStyles,
+  selectedShapes,
+  setSelectedShapes,
+  selectedMaterials,
+  setSelectedMaterials,
+  selectedTechniques,
+  setSelectedTechniques,
 }: {
   setProducts: any;
   setSelectedCategories: any;
@@ -19,8 +27,16 @@ export default function Filters({
   selectedColors: any[];
   selectedSizes: any[];
   setSelectedSizes: any;
+  selectedStyles: any[];
+  setSelectedStyles: any;
+  selectedShapes: any[];
+  setSelectedShapes: any;
+  selectedMaterials: any[];
+  setSelectedMaterials: any;
+  selectedTechniques: any[];
+  setSelectedTechniques: any;
 }) {
-  const { categories, colors, sizes } = useShop();
+  const { categories, colors, sizes, styles, shapes, materials, techniques } = useShop();
   const [selectedRemoved, setSelectedRemoved] = useState(false);
 
   return (
@@ -50,6 +66,38 @@ export default function Filters({
           selectedRemoved={selectedRemoved}
           width={3}
         />
+        <FilterDropdown
+          name="Technique"
+          options={techniques}
+          setSelected={setSelectedTechniques}
+          selected={selectedTechniques}
+          selectedRemoved={selectedRemoved}
+          width={3}
+        />
+        <FilterDropdown
+          name="Styles"
+          options={styles}
+          setSelected={setSelectedStyles}
+          selected={selectedStyles}
+          selectedRemoved={selectedRemoved}
+          width={3}
+        />
+        <FilterDropdown
+          name="Materials"
+          options={materials}
+          setSelected={setSelectedMaterials}
+          selected={selectedMaterials}
+          selectedRemoved={selectedRemoved}
+          width={3}
+        />
+        <FilterDropdown
+          name="Shapes"
+          options={shapes}
+          setSelected={setSelectedShapes}
+          selected={selectedShapes}
+          selectedRemoved={selectedRemoved}
+          width={3}
+        />
       </div>
       {/* Selected categories tags for the selected filters. */}
       {selectedCategories.map((x, index) => (
@@ -68,6 +116,34 @@ export default function Filters({
 
       {selectedSizes.map((x, index) => (
         <SelectedTag key={index} obj={x} setSelected={setSelectedSizes} selectedRemoved={selectedRemoved} setSelectedRemoved={setSelectedRemoved} />
+      ))}
+
+      {selectedTechniques.map((x, index) => (
+        <SelectedTag
+          key={index}
+          obj={x}
+          setSelected={setSelectedTechniques}
+          selectedRemoved={selectedRemoved}
+          setSelectedRemoved={setSelectedRemoved}
+        />
+      ))}
+
+      {selectedStyles.map((x, index) => (
+        <SelectedTag key={index} obj={x} setSelected={setSelectedStyles} selectedRemoved={selectedRemoved} setSelectedRemoved={setSelectedRemoved} />
+      ))}
+
+      {selectedMaterials.map((x, index) => (
+        <SelectedTag
+          key={index}
+          obj={x}
+          setSelected={setSelectedMaterials}
+          selectedRemoved={selectedRemoved}
+          setSelectedRemoved={setSelectedRemoved}
+        />
+      ))}
+
+      {selectedShapes.map((x, index) => (
+        <SelectedTag key={index} obj={x} setSelected={setSelectedShapes} selectedRemoved={selectedRemoved} setSelectedRemoved={setSelectedRemoved} />
       ))}
     </div>
   );

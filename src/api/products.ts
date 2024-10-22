@@ -12,19 +12,38 @@ const headers = {
   Authorization: `Bearer ${restoreToken()}`,
 };
 
-export const getProducts = async (
-  categories?: number[],
-  colors?: number[],
-  sizes?: number[],
-  producers?: number[],
-  page?: number,
-  perPage?: number
-) => {
-  // /products?category=1,2&color=2
+export const getProducts = async ({
+  categories,
+  colors,
+  sizes,
+  producers,
+  shapes,
+  techniques,
+  materials,
+  styles,
+  page,
+  perPage,
+}: {
+  categories?: number[];
+  colors?: number[];
+  sizes?: number[];
+  producers?: number[];
+  shapes?: number[];
+  techniques?: number[];
+  materials?: number[];
+  styles?: number[];
+  page?: number;
+  perPage?: number;
+}) => {
+  //products?category=1,2&color=2
   let url = `${baseURL}?`;
   if (categories && categories.length > 0) url += `category=${categories.join(",")}&`;
   if (colors && colors.length > 0) url += `color=${colors.join(",")}&`;
   if (sizes && sizes.length > 0) url += `size=${sizes.join(",")}&`;
+  if (shapes && shapes.length > 0) url += `shape=${shapes.join(",")}&`;
+  if (techniques && techniques.length > 0) url += `technique=${techniques.join(",")}&`;
+  if (materials && materials.length > 0) url += `material=${materials.join(",")}&`;
+  if (styles && styles.length > 0) url += `style=${styles.join(",")}&`;
   if (page) url += `page=${page}&`;
   if (perPage) url += `perPage=${perPage}&`;
   if (producers && producers.length > 0) url += `producer=${producers.join(",")}&`;

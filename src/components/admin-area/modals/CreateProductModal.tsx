@@ -1,19 +1,10 @@
 import { Product } from "../Products";
 import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { getCategories } from "../../../api/categories";
-import { getColors } from "../../../api/colors";
-import { getSizes } from "../../../api/sizes";
 import { createProduct, updateProduct, deleteProduct } from "../../../api/products";
-import { getStyles } from "../../../api/styles";
-import { getMaterials } from "../../../api/material";
-import { getTechniques } from "../../../api/technique";
-import { getShapes } from "../../../api/shapes";
 import { getReviews, updateReview } from "../../../api/reviews";
-import { getProducers } from "../../../api/producers";
 import sortTables from "../../../utils/sortTables";
 import { formatDateShort } from "../../../utils/dateUtils";
-// import { restoreToken } from "../../utils/storage";
 import { ConfirmPopup, LoadingSpinnerSmall } from "../admin-components";
 import { FilterDropdown } from "../../Filters";
 import { Size } from "../Sizes";
@@ -21,6 +12,7 @@ import { Color } from "../Colors";
 import Editor from "react-simple-wysiwyg";
 import { Review } from "../../../pages/admin/Reviews";
 import { iCreateReviewAPI } from "../../../api/reviews";
+import { useShop } from "../../../context";
 const dummyRug = "https://th.bing.com/th/id/OIP.MvnwHj_3a0ICmk72FNI5WQHaFR?rs=1&pid=ImgDetMain";
 
 const selectStyle = "select select-bordered w-full select-sm rounded-none";
@@ -35,14 +27,8 @@ export function CreateProductModal({
   setProducts: React.Dispatch<React.SetStateAction<Product[]>>;
   setUpdate: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
-  const [categories, setCategories] = useState([]);
-  const [shapes, setShapes] = useState([]);
-  const [techniques, setTechniques] = useState([]);
-  const [materials, setMaterials] = useState([]);
-  const [styles, setStyles] = useState([]);
-  const [producers, setProducers] = useState([]);
-  const [colors, setColors] = useState([]);
-  const [sizes, setSizes] = useState([]);
+  const { categories, techniques, shapes, producers, colors, sizes, materials, styles } = useShop();
+
   const [reviews, setReviews] = useState<Review[]>([]);
   const [selectedSizes, setSelectedSizes] = useState<Size[]>([]);
   const [selectedColors, setSelectedColors] = useState<Color[]>([]);
@@ -124,32 +110,6 @@ export function CreateProductModal({
 
     fetchReviews();
   }, [product]);
-
-  useEffect(() => {
-    const fetchTaxonomies = async () => {
-      try {
-        const shapes = await getShapes();
-        setShapes(shapes);
-        const materials = await getMaterials();
-        setMaterials(materials);
-        const styles = await getStyles();
-        setStyles(styles);
-        const categories = await getCategories();
-        setCategories(categories);
-        const producers = await getProducers();
-        setProducers(producers);
-        const colors = await getColors();
-        setColors(colors);
-        const sizes = await getSizes();
-        setSizes(sizes);
-        const techniques = await getTechniques();
-        setTechniques(techniques);
-      } catch (err) {
-        console.log(err);
-      }
-    };
-    fetchTaxonomies();
-  }, []);
 
   function handleDelete(e: React.MouseEvent) {
     e.preventDefault();
