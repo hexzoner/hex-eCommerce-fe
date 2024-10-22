@@ -61,32 +61,40 @@ interface ProductProps {
   active?: boolean;
   id?: number;
   producerId: number;
+  styleId: number;
+  shapeId: number;
+  techniqueId: number;
+  materialId: number;
+}
+
+function getBodyAPI(product: ProductProps) {
+  return {
+    name: product.name,
+    description: product.description,
+    price: product.price,
+    categoryId: product.categoryId,
+    styleId: product.styleId,
+    defaultColorId: product.defaultColorId,
+    image: product.image,
+    sizes: product.sizes,
+    defaultSizeId: product.defaultSize,
+    colors: product.colors,
+    details: product.details,
+    notes: product.notes,
+    instructions: product.instructions,
+    active: product.active,
+    producerId: product.producerId,
+    shapeId: product.shapeId,
+    techniqueId: product.techniqueId,
+    materialId: product.materialId,
+  };
 }
 
 export const createProduct = async (product: ProductProps) => {
   const response = await axios
-    .post(
-      `${baseURL}`,
-      {
-        name: product.name,
-        description: product.description,
-        price: product.price,
-        categoryId: product.categoryId,
-        defaultColorId: product.defaultColorId,
-        image: product.image,
-        sizes: product.sizes,
-        defaultSizeId: product.defaultSize,
-        colors: product.colors,
-        details: product.details,
-        notes: product.notes,
-        instructions: product.instructions,
-        active: product.active,
-        producerId: product.producerId,
-      },
-      {
-        headers,
-      }
-    )
+    .post(`${baseURL}`, getBodyAPI(product), {
+      headers,
+    })
     .then((res) => {
       //   console.log(res.data);
       return res.data;
@@ -99,28 +107,11 @@ export const createProduct = async (product: ProductProps) => {
 };
 
 export const updateProduct = async (product: ProductProps) => {
-  const body = {
-    name: product.name,
-    description: product.description,
-    price: product.price,
-    categoryId: product.categoryId,
-    image: product.image,
-    colors: product.colors,
-    defaultColorId: product.defaultColorId,
-    sizes: product.sizes,
-    defaultSizeId: product.defaultSize,
-    active: product.active,
-    details: product.details,
-    notes: product.notes,
-    instructions: product.instructions,
-    producerId: product.producerId,
-  };
-
   // console.log(body);
   // console.log(product.id);
 
   const response = await axios
-    .put(`${baseURL}/${product.id}`, body, {
+    .put(`${baseURL}/${product.id}`, getBodyAPI(product), {
       headers,
     })
     .then((res) => {

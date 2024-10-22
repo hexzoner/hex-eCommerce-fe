@@ -19,6 +19,23 @@ export interface Product {
     id: number;
     name: string;
   };
+  style: {
+    id: number;
+    name: string;
+  };
+  technique: {
+    id: number;
+    name: string;
+  };
+  shape: {
+    id: number;
+    name: string;
+  };
+  material: {
+    id: number;
+    name: string;
+  };
+
   defaultColor: {
     id: number;
     name: string;
@@ -69,6 +86,22 @@ export default function Products() {
     notes: "",
     instructions: "",
     producer: {
+      id: 0,
+      name: "",
+    },
+    style: {
+      id: 0,
+      name: "",
+    },
+    technique: {
+      id: 0,
+      name: "",
+    },
+    shape: {
+      id: 0,
+      name: "",
+    },
+    material: {
       id: 0,
       name: "",
     },

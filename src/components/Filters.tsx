@@ -149,7 +149,7 @@ export function FilterDropdown({
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       ref={dropdownRef}>
-      <div tabIndex={0} role="button" className="border-[1.5px] py-[10px] select-bordered w-full px-4">
+      <div tabIndex={0} role="button" className="border-[1.5px] select-bordered w-full pl-6 br-8 select select-sm rounded-none">
         {name}
       </div>
       <ul tabIndex={0} className={`dropdown-content menu bg-base-100 rounded-box z-[1] p-2 shadow max-h-72 ` + filterMarkup}>
