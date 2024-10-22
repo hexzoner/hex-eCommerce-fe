@@ -30,6 +30,10 @@ import {
   Reviews,
   HomeArrivals,
   Producers,
+  Shapes,
+  Material,
+  Styles,
+  Technqiue,
 } from "./components/admin-area/admin-components";
 
 const router = createBrowserRouter(
@@ -63,6 +67,10 @@ const router = createBrowserRouter(
           <Route path="reviews" element={<Reviews />} />
           <Route path="taxonomy" element={<TaxonomyLayout />}>
             <Route index element={<Categories />} path="categories" />
+            <Route path="materials" element={<Material />} />
+            <Route path="styles" element={<Styles />} />
+            <Route path="shapes" element={<Shapes />} />
+            <Route path="technique" element={<Technqiue />} />
             <Route path="colors" element={<Colors />} />
             <Route path="sizes" element={<Sizes />} />
             <Route path="producers" element={<Producers />} />

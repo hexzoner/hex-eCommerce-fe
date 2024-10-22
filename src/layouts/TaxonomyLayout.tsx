@@ -13,6 +13,26 @@ const TaxonomyLayout = () => {
             </NavLink>
           </li>
           <li>
+            <NavLink to="shapes" className={navLinkClass}>
+              Shapes
+            </NavLink>
+          </li>
+          <li>
+            <NavLink to="materials" className={navLinkClass}>
+              Materials
+            </NavLink>
+          </li>
+          <li>
+            <NavLink to="styles" className={navLinkClass}>
+              Styles
+            </NavLink>
+          </li>
+          <li>
+            <NavLink to="technique" className={navLinkClass}>
+              Technique
+            </NavLink>
+          </li>
+          <li>
             <NavLink to="colors" className={navLinkClass}>
               Colors
             </NavLink>

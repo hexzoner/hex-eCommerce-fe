@@ -23,6 +23,14 @@ import { HomeArrivals } from "../../pages/admin/HomeArrivals";
 import Producers from "../../pages/admin/Producers";
 import AddEditProducerPopup from "../../pages/admin/AddEditProducerPopup";
 import { LoadingSpinnerPopup } from "./modals/LoadingSpinnerPopup";
+import Material from "../../pages/admin/Material";
+import Shapes from "../../pages/admin/Shapes";
+import Technqiue from "../../pages/admin/Technqiue";
+import Styles from "../../pages/admin/Styles";
+import AddEditMaterialPopup from "../../pages/admin/AddEditMaterialPopup";
+import AddEditTechniquePopup from "../../pages/admin/AddEditTechniquePopup";
+import AddEditShapePopup from "../../pages/admin/AddEditShapePopup";
+import AddEditStylePopup from "../../pages/admin/AddEditStylePopup";
 
 export {
   Categories,
@@ -50,4 +58,12 @@ export {
   Producers,
   AddEditProducerPopup,
   LoadingSpinnerPopup,
+  Material,
+  Shapes,
+  Technqiue,
+  Styles,
+  AddEditMaterialPopup,
+  AddEditTechniquePopup,
+  AddEditShapePopup,
+  AddEditStylePopup,
 };
