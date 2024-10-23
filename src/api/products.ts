@@ -84,6 +84,7 @@ interface ProductProps {
   shapeId: number;
   techniqueId: number;
   materialId: number;
+  rooms: string;
 }
 
 function getBodyAPI(product: ProductProps) {
@@ -98,6 +99,7 @@ function getBodyAPI(product: ProductProps) {
     sizes: product.sizes,
     defaultSizeId: product.defaultSize,
     colors: product.colors,
+    rooms: product.rooms,
     details: product.details,
     notes: product.notes,
     instructions: product.instructions,
@@ -126,7 +128,7 @@ export const createProduct = async (product: ProductProps) => {
 };
 
 export const updateProduct = async (product: ProductProps) => {
-  // console.log(body);
+  console.log(getBodyAPI(product));
   // console.log(product.id);
 
   const response = await axios

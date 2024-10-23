@@ -13,6 +13,9 @@ import Editor from "react-simple-wysiwyg";
 import { Review } from "../../../pages/admin/Reviews";
 import { iCreateReviewAPI } from "../../../api/reviews";
 import { useShop } from "../../../context";
+import { RoomTypes } from "../../../utils/constants";
+import { iRoom } from "../../../utils/constants";
+
 const dummyRug = "https://th.bing.com/th/id/OIP.MvnwHj_3a0ICmk72FNI5WQHaFR?rs=1&pid=ImgDetMain";
 
 const selectStyle = "select select-bordered w-full select-sm rounded-none";
@@ -27,11 +30,13 @@ export function CreateProductModal({
   setProducts: React.Dispatch<React.SetStateAction<Product[]>>;
   setUpdate: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
+  // console.log(product);
   const { categories, techniques, shapes, producers, colors, sizes, materials, styles } = useShop();
 
   const [reviews, setReviews] = useState<Review[]>([]);
   const [selectedSizes, setSelectedSizes] = useState<Size[]>([]);
   const [selectedColors, setSelectedColors] = useState<Color[]>([]);
+  const [selectedRooms, setSelectedRooms] = useState<iRoom[]>([]);
   const [loading, setLoading] = useState(false);
   const [descriptionHtml, setDescriptionHtml] = useState(""); // Local state for the WYSIWYG editor
   const [detailsHtml, setDetailsHtml] = useState(""); // Local state for the WYSIWYG editor
@@ -89,6 +94,7 @@ export function CreateProductModal({
 
     setSelectedSizes(product.isEdit ? product.sizes.map((s) => ({ id: s.id, name: s.name })) : []);
     setSelectedColors(product.isEdit ? product.colors.map((c) => ({ id: c.id, name: c.name })) : []);
+
     setDescriptionHtml(product.description);
     setDetailsHtml(product.details);
     setNotesHtml(product.notes);
@@ -143,7 +149,6 @@ export function CreateProductModal({
     technique: number | string;
     material: number | string;
   }) {
-    // console.log(data);
     // parsing the data to the correct type before sending it to the server
     const price = typeof data.price === "string" ? parseFloat(data.price) : data.price;
     const category = typeof data.category === "string" ? parseInt(data.category) : data.category;
@@ -165,6 +170,8 @@ export function CreateProductModal({
       colors: selectedColors.map((c) => c.id),
       defaultColorId: color,
       sizes: selectedSizes.map((s) => s.id),
+      //convert rooms array to a single string
+      rooms: selectedRooms.reduce((acc, curr) => acc + curr.id + ",", ""),
       active: data.active === undefined ? false : data.active,
       defaultSize,
       details: data.details,
@@ -462,6 +469,14 @@ export function CreateProductModal({
                       </div>
 
                       <div className="w-1/2 flex flex-col gap-6">
+                        <FilterDropdown
+                          name="Rooms"
+                          options={RoomTypes}
+                          setSelected={setSelectedRooms}
+                          selected={selectedRooms}
+                          selectedRemoved={selectedRooms}
+                        />
+
                         <FilterDropdown
                           name="Colors"
                           options={colors}

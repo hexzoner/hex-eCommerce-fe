@@ -59,6 +59,10 @@ interface ShopContextProps {
   setShapes: React.Dispatch<React.SetStateAction<any[]>>;
   producers: any[];
   setProducers: React.Dispatch<React.SetStateAction<any[]>>;
+  rooms: any[];
+  setRooms: React.Dispatch<React.SetStateAction<any[]>>;
+  features: any[];
+  setFeatures: React.Dispatch<React.SetStateAction<any[]>>;
 }
 
 const ShopContext = createContext<ShopContextProps>({
@@ -90,6 +94,10 @@ const ShopContext = createContext<ShopContextProps>({
   setShapes: () => {},
   producers: [],
   setProducers: () => {},
+  rooms: [],
+  setRooms: () => {},
+  features: [],
+  setFeatures: () => {},
 });
 
 const useShop = () => {

@@ -13,6 +13,8 @@ import { getSizes } from "../api/sizes";
 import { getCart, updateCart } from "../api/cart";
 import { toast } from "react-toastify";
 import { getProducers } from "../api/producers";
+import { getRooms } from "../api/rooms";
+import { getFeatures } from "../api/features";
 
 const ShopProvider = ({ children }: { children: ReactNode }) => {
   const { user, isAuthenticated } = useAuth();
@@ -23,6 +25,8 @@ const ShopProvider = ({ children }: { children: ReactNode }) => {
   const [materials, setMaterials] = useState<any[]>([]);
   const [techniques, setTechniques] = useState<any[]>([]);
   const [shapes, setShapes] = useState<any[]>([]);
+  const [rooms, setRooms] = useState<any[]>([]);
+  const [features, setFeatures] = useState<any[]>([]);
   const [producers, setProducers] = useState<any[]>([]);
   const [colors, setColors] = useState<any[]>([]);
   const [sizes, setSizes] = useState<any[]>([]);
@@ -95,6 +99,10 @@ const ShopProvider = ({ children }: { children: ReactNode }) => {
         setSizes(sizes);
         const techniques = await getTechniques();
         setTechniques(techniques);
+        const rooms = await getRooms();
+        setRooms(rooms);
+        const features = await getFeatures();
+        setFeatures(features);
       } catch (err) {
         console.log(err);
       }
@@ -159,6 +167,10 @@ const ShopProvider = ({ children }: { children: ReactNode }) => {
         setStyles,
         shapes,
         setShapes,
+        rooms,
+        setRooms,
+        features,
+        setFeatures,
       }}>
       {children}
     </ShopContext.Provider>

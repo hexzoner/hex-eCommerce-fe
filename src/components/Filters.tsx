@@ -75,7 +75,7 @@ export default function Filters({
           width={3}
         />
         <FilterDropdown
-          name="Styles"
+          name="Style"
           options={styles}
           setSelected={setSelectedStyles}
           selected={selectedStyles}
@@ -83,7 +83,7 @@ export default function Filters({
           width={3}
         />
         <FilterDropdown
-          name="Materials"
+          name="Material"
           options={materials}
           setSelected={setSelectedMaterials}
           selected={selectedMaterials}
@@ -91,7 +91,7 @@ export default function Filters({
           width={3}
         />
         <FilterDropdown
-          name="Shapes"
+          name="Shape"
           options={shapes}
           setSelected={setSelectedShapes}
           selected={selectedShapes}

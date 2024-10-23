@@ -46,6 +46,7 @@ export interface Product {
   sizes: Size[];
   defaultSize: Size;
   colors: Color[];
+
   active: boolean;
   details: string;
   notes: string;

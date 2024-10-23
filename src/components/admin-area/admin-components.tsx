@@ -27,10 +27,10 @@ import Material from "../../pages/admin/Material";
 import Shapes from "../../pages/admin/Shapes";
 import Technqiue from "../../pages/admin/Technqiue";
 import Styles from "../../pages/admin/Styles";
-import AddEditMaterialPopup from "../../pages/admin/AddEditMaterialPopup";
-import AddEditTechniquePopup from "../../pages/admin/AddEditTechniquePopup";
-import AddEditShapePopup from "../../pages/admin/AddEditShapePopup";
-import AddEditStylePopup from "../../pages/admin/AddEditStylePopup";
+
+import TaxonomyPopup from "../../pages/admin/TaxonomyPopup";
+import Features from "../../pages/admin/Features";
+import Rooms from "../../pages/admin/Rooms";
 
 export {
   Categories,
@@ -62,8 +62,7 @@ export {
   Shapes,
   Technqiue,
   Styles,
-  AddEditMaterialPopup,
-  AddEditTechniquePopup,
-  AddEditShapePopup,
-  AddEditStylePopup,
+  TaxonomyPopup,
+  Features,
+  Rooms,
 };

@@ -9,8 +9,7 @@ import ReviewsCarousel from "../pages/user/home-components/ReviewsCarousel";
 import LoadingSpinner from "./LoadingSpinner";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-
-export const Rooms: string[] = ["Living Room", "Bedroom", "Dining Room", "Kitchen", "Hallway", "Balcony", "Bathroom"];
+import { RoomTypes } from "../utils/constants";
 
 export default function Home() {
   const [loading, setLoading] = useState(true);
@@ -90,11 +89,11 @@ export default function Home() {
           <p className="font-semibold text-3xl max-w-96 m-auto">Find the perfect rug size for your room.</p>
           <p className="max-w-72 m-auto text-justify">Our rugs come in a variety of sizes to fit any room in your home.</p>
           <div className="flex justify-between items-center gap-4 flex-wrap md:flex-nowrap ">
-            {Rooms.map((room, index) => {
+            {RoomTypes.map((room, index) => {
               return (
                 <div key={index} className="flex flex-col justify-between gap-4 mt-4 m-auto">
-                  <img src="https://placehold.co/200x200/png" alt={room} />
-                  <p className="font-bold text-sm cursor-pointer">{room + " >"}</p>
+                  <img src="https://placehold.co/200x200/png" alt={room.name} />
+                  <p className="font-bold text-sm cursor-pointer">{room.name + " >"}</p>
                   {/* <p className="font-normal text-xl">Shop Now</p> */}
                 </div>
               );

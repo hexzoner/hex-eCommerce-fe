@@ -1,12 +1,25 @@
-import { Shape } from "./Shapes";
+import { Taxonomy } from "./Taxonomies";
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { createShape, deleteShape, updateShape } from "../../api/shapes";
 import { LoadingSpinnerSmall } from "../../components/admin-area/modals/ColorModals";
 import { ConfirmPopup } from "../../components/admin-area/admin-components";
 
-export default function AddEditShapePopup({ shape, setShapes }: { shape: Shape; setShapes: any }) {
-  const modalName = "shape_modal";
+export default function TaxonomyPopup({
+  taxonomy,
+  setTaxonomies,
+  modalName,
+  createTaxonomy,
+  updateTaxonomy,
+  deleteTaxonomy,
+}: {
+  taxonomy: Taxonomy;
+  setTaxonomies: any;
+  modalName: string;
+  createTaxonomy: (data: any) => Promise<any>;
+  updateTaxonomy: (data: any, id: number) => Promise<any>;
+  deleteTaxonomy: (id: number) => Promise<any>;
+}) {
+  //   const modalName = "style_modal";
   const {
     register,
     handleSubmit,
@@ -23,13 +36,13 @@ export default function AddEditShapePopup({ shape, setShapes }: { shape: Shape; 
 
   useEffect(() => {
     resetForm();
-  }, [shape]);
+  }, [taxonomy]);
 
   function resetForm() {
     reset({
-      name: shape.name,
+      name: taxonomy.name,
       //   description: material.description,
-      image: shape.image,
+      image: taxonomy.image,
     });
   }
 
@@ -38,13 +51,13 @@ export default function AddEditShapePopup({ shape, setShapes }: { shape: Shape; 
 
   function onSubmit(data: any) {
     // console.log(data);
-    if (shape.id <= 0) {
+    if (taxonomy.id <= 0) {
       setLoading(true);
-      createShape(data)
+      createTaxonomy(data)
         .then((res) => {
           // console.log(res);
           if (res) {
-            setShapes((prev: any) => [...prev, res]);
+            setTaxonomies((prev: any) => [...prev, res]);
             resetForm();
             const modal = document.getElementById(modalName);
             if (modal) (modal as HTMLDialogElement).close();
@@ -58,9 +71,9 @@ export default function AddEditShapePopup({ shape, setShapes }: { shape: Shape; 
         });
     } else {
       setLoading(true);
-      updateShape(data, shape.id)
+      updateTaxonomy(data, taxonomy.id)
         .then((res) => {
-          if (res) setShapes((prev: any) => prev.map((p: any) => (p.id === shape.id ? res : p)));
+          if (res) setTaxonomies((prev: any) => prev.map((p: any) => (p.id === taxonomy.id ? res : p)));
           resetForm();
           const modal = document.getElementById(modalName);
           if (modal) (modal as HTMLDialogElement).close();
@@ -83,9 +96,9 @@ export default function AddEditShapePopup({ shape, setShapes }: { shape: Shape; 
 
   function deleteConfirmed() {
     setLoading(true);
-    deleteShape(shape.id)
+    deleteTaxonomy(taxonomy.id)
       .then((res) => {
-        if (res) setShapes((prev: any) => prev.filter((p: any) => p.id !== shape.id));
+        if (res) setTaxonomies((prev: any) => prev.filter((p: any) => p.id !== taxonomy.id));
         resetForm();
         const modal = document.getElementById(modalName);
         if (modal) (modal as HTMLDialogElement).close();
@@ -150,7 +163,7 @@ export default function AddEditShapePopup({ shape, setShapes }: { shape: Shape; 
                 {/* <button onClick={handleCancel} className="btn btn-sm">
                   Cancel
                 </button> */}
-                {shape.id > 0 && (
+                {taxonomy.id > 0 && (
                   <button onClick={handleDelete} className="btn btn-error btn-sm rounded-none">
                     Delete
                   </button>
@@ -164,7 +177,7 @@ export default function AddEditShapePopup({ shape, setShapes }: { shape: Shape; 
           </div>
         )}
       </div>
-      <ConfirmPopup deleteConfirmed={deleteConfirmed} confirmText="Are you sure to delete this shape?" />
+      <ConfirmPopup deleteConfirmed={deleteConfirmed} confirmText="Are you sure to delete this taxonomy?" />
     </dialog>
   );
 }

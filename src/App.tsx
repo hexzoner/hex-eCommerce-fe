@@ -34,6 +34,8 @@ import {
   Material,
   Styles,
   Technqiue,
+  Features,
+  Rooms,
 } from "./components/admin-area/admin-components";
 
 const router = createBrowserRouter(
@@ -69,6 +71,8 @@ const router = createBrowserRouter(
             <Route index element={<Categories />} path="categories" />
             <Route path="materials" element={<Material />} />
             <Route path="styles" element={<Styles />} />
+            <Route path="features" element={<Features />} />
+            <Route path="rooms" element={<Rooms />} />
             <Route path="shapes" element={<Shapes />} />
             <Route path="technique" element={<Technqiue />} />
             <Route path="colors" element={<Colors />} />
