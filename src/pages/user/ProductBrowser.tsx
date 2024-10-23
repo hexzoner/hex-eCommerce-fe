@@ -22,6 +22,8 @@ export default function ProductBrowser() {
   const [selectedShapes, setSelectedShapes] = useState<any[]>([]);
   const [selectedMaterials, setSelectedMaterials] = useState<any[]>([]);
   const [selectedTechniques, setSelectedTechniques] = useState<any[]>([]);
+  const [selectedFeatures, setSelectedFeatures] = useState<any[]>([]);
+  const [selectedRooms, setSelectedRooms] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const { wishlist, setWishlist, shopLoading } = useShop();
   const navigate = useNavigate();
@@ -45,6 +47,8 @@ export default function ProductBrowser() {
       techniques: selectedTechniques.map((x) => x.id),
       materials: selectedMaterials.map((x) => x.id),
       styles: selectedStyles.map((x) => x.id),
+      rooms: selectedRooms.map((x) => x.id),
+      features: selectedFeatures.map((x) => x.id),
       page,
       perPage,
     })
@@ -55,7 +59,19 @@ export default function ProductBrowser() {
       })
       .catch((err) => console.log(err))
       .finally(() => setLoading(false));
-  }, [selectedCategories, selectedColors, selectedSizes, selectedStyles, selectedShapes, selectedMaterials, selectedTechniques, page, perPage]);
+  }, [
+    selectedCategories,
+    selectedColors,
+    selectedSizes,
+    selectedStyles,
+    selectedShapes,
+    selectedMaterials,
+    selectedTechniques,
+    selectedFeatures,
+    selectedRooms,
+    page,
+    perPage,
+  ]);
 
   return (
     <div className={mainMakrupColors + " min-h-screen max-w-[80rem] m-auto py-6"}>
@@ -88,6 +104,10 @@ export default function ProductBrowser() {
           setSelectedMaterials={setSelectedMaterials}
           selectedTechniques={selectedTechniques}
           setSelectedTechniques={setSelectedTechniques}
+          selectedFeatures={selectedFeatures}
+          setSelectedFeatures={setSelectedFeatures}
+          selectedRooms={selectedRooms}
+          setSelectedRooms={setSelectedRooms}
         />
       </div>
       <section className="my-8 ">

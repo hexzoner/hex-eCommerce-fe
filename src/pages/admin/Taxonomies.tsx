@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 import LoadingSpinner from "../../components/LoadingSpinner";
 import { TaxonomyPopup } from "../../components/admin-area/admin-components";
 
-export interface Taxonomy {
+export interface iTaxonomy {
   id: number;
   name: string;
   image: string;

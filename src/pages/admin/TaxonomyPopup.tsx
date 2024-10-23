@@ -1,4 +1,4 @@
-import { Taxonomy } from "./Taxonomies";
+import { iTaxonomy } from "./Taxonomies";
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { LoadingSpinnerSmall } from "../../components/admin-area/modals/ColorModals";
@@ -12,7 +12,7 @@ export default function TaxonomyPopup({
   updateTaxonomy,
   deleteTaxonomy,
 }: {
-  taxonomy: Taxonomy;
+  taxonomy: iTaxonomy;
   setTaxonomies: any;
   modalName: string;
   createTaxonomy: (data: any) => Promise<any>;

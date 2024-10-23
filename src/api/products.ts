@@ -21,6 +21,8 @@ export const getProducts = async ({
   techniques,
   materials,
   styles,
+  rooms,
+  features,
   page,
   perPage,
 }: {
@@ -32,6 +34,8 @@ export const getProducts = async ({
   techniques?: number[];
   materials?: number[];
   styles?: number[];
+  rooms?: number[];
+  features?: number[];
   page?: number;
   perPage?: number;
 }) => {
@@ -44,6 +48,8 @@ export const getProducts = async ({
   if (techniques && techniques.length > 0) url += `technique=${techniques.join(",")}&`;
   if (materials && materials.length > 0) url += `material=${materials.join(",")}&`;
   if (styles && styles.length > 0) url += `style=${styles.join(",")}&`;
+  if (rooms && rooms.length > 0) url += `room=${rooms.join(",")}&`;
+  if (features && features.length > 0) url += `feature=${features.join(",")}&`;
   if (page) url += `page=${page}&`;
   if (perPage) url += `perPage=${perPage}&`;
   if (producers && producers.length > 0) url += `producer=${producers.join(",")}&`;
@@ -84,7 +90,8 @@ interface ProductProps {
   shapeId: number;
   techniqueId: number;
   materialId: number;
-  rooms: string;
+  rooms: number[];
+  features: number[];
 }
 
 function getBodyAPI(product: ProductProps) {
@@ -99,7 +106,6 @@ function getBodyAPI(product: ProductProps) {
     sizes: product.sizes,
     defaultSizeId: product.defaultSize,
     colors: product.colors,
-    rooms: product.rooms,
     details: product.details,
     notes: product.notes,
     instructions: product.instructions,
@@ -108,6 +114,8 @@ function getBodyAPI(product: ProductProps) {
     shapeId: product.shapeId,
     techniqueId: product.techniqueId,
     materialId: product.materialId,
+    rooms: product.rooms,
+    features: product.features,
   };
 }
 
@@ -128,7 +136,7 @@ export const createProduct = async (product: ProductProps) => {
 };
 
 export const updateProduct = async (product: ProductProps) => {
-  console.log(getBodyAPI(product));
+  // console.log(getBodyAPI(product));
   // console.log(product.id);
 
   const response = await axios

@@ -13,7 +13,6 @@ import Editor from "react-simple-wysiwyg";
 import { Review } from "../../../pages/admin/Reviews";
 import { iCreateReviewAPI } from "../../../api/reviews";
 import { useShop } from "../../../context";
-import { RoomTypes } from "../../../utils/constants";
 import { iRoom } from "../../../utils/constants";
 
 const dummyRug = "https://th.bing.com/th/id/OIP.MvnwHj_3a0ICmk72FNI5WQHaFR?rs=1&pid=ImgDetMain";
@@ -30,13 +29,13 @@ export function CreateProductModal({
   setProducts: React.Dispatch<React.SetStateAction<Product[]>>;
   setUpdate: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
-  // console.log(product);
-  const { categories, techniques, shapes, producers, colors, sizes, materials, styles } = useShop();
+  const { categories, techniques, shapes, producers, colors, sizes, materials, styles, rooms, features } = useShop();
 
   const [reviews, setReviews] = useState<Review[]>([]);
   const [selectedSizes, setSelectedSizes] = useState<Size[]>([]);
   const [selectedColors, setSelectedColors] = useState<Color[]>([]);
   const [selectedRooms, setSelectedRooms] = useState<iRoom[]>([]);
+  const [selectedFeatures, setSelectedFeatures] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [descriptionHtml, setDescriptionHtml] = useState(""); // Local state for the WYSIWYG editor
   const [detailsHtml, setDetailsHtml] = useState(""); // Local state for the WYSIWYG editor
@@ -73,6 +72,7 @@ export function CreateProductModal({
   const imageInput = watch("image");
 
   function resetFormToDefault() {
+    // console.log(product);
     reset({
       name: product.name,
       description: product.description,
@@ -91,9 +91,10 @@ export function CreateProductModal({
       technique: product.isEdit ? product.technique.id : "",
       material: product.isEdit ? product.material.id : "",
     });
-
-    setSelectedSizes(product.isEdit ? product.sizes.map((s) => ({ id: s.id, name: s.name })) : []);
-    setSelectedColors(product.isEdit ? product.colors.map((c) => ({ id: c.id, name: c.name })) : []);
+    setSelectedSizes(product.isEdit ? product.sizes.map((x) => ({ id: x.id, name: x.name })) : []);
+    setSelectedColors(product.isEdit ? product.colors.map((x) => ({ id: x.id, name: x.name })) : []);
+    setSelectedRooms(product.isEdit ? product.rooms.map((x) => ({ id: x.id, name: x.name })) : []);
+    setSelectedFeatures(product.isEdit ? product.features.map((x) => ({ id: x.id, name: x.name, image: x.image })) : []);
 
     setDescriptionHtml(product.description);
     setDetailsHtml(product.details);
@@ -149,6 +150,7 @@ export function CreateProductModal({
     technique: number | string;
     material: number | string;
   }) {
+    // console.log(data);
     // parsing the data to the correct type before sending it to the server
     const price = typeof data.price === "string" ? parseFloat(data.price) : data.price;
     const category = typeof data.category === "string" ? parseInt(data.category) : data.category;
@@ -170,8 +172,8 @@ export function CreateProductModal({
       colors: selectedColors.map((c) => c.id),
       defaultColorId: color,
       sizes: selectedSizes.map((s) => s.id),
-      //convert rooms array to a single string
-      rooms: selectedRooms.reduce((acc, curr) => acc + curr.id + ",", ""),
+      rooms: selectedRooms.map((r) => r.id),
+      features: selectedFeatures.map((f) => f.id),
       active: data.active === undefined ? false : data.active,
       defaultSize,
       details: data.details,
@@ -471,10 +473,18 @@ export function CreateProductModal({
                       <div className="w-1/2 flex flex-col gap-6">
                         <FilterDropdown
                           name="Rooms"
-                          options={RoomTypes}
+                          options={rooms}
                           setSelected={setSelectedRooms}
                           selected={selectedRooms}
                           selectedRemoved={selectedRooms}
+                        />
+
+                        <FilterDropdown
+                          name="Features"
+                          options={features}
+                          setSelected={setSelectedFeatures}
+                          selected={selectedFeatures}
+                          selectedRemoved={selectedFeatures}
                         />
 
                         <FilterDropdown

@@ -19,6 +19,10 @@ export default function Filters({
   setSelectedMaterials,
   selectedTechniques,
   setSelectedTechniques,
+  selectedFeatures,
+  setSelectedFeatures,
+  selectedRooms,
+  setSelectedRooms,
 }: {
   setProducts: any;
   setSelectedCategories: any;
@@ -35,8 +39,12 @@ export default function Filters({
   setSelectedMaterials: any;
   selectedTechniques: any[];
   setSelectedTechniques: any;
+  selectedFeatures: any[];
+  setSelectedFeatures: any;
+  selectedRooms: any[];
+  setSelectedRooms: any;
 }) {
-  const { categories, colors, sizes, styles, shapes, materials, techniques } = useShop();
+  const { categories, colors, sizes, styles, shapes, materials, techniques, features, rooms } = useShop();
   const [selectedRemoved, setSelectedRemoved] = useState(false);
 
   return (
@@ -72,7 +80,7 @@ export default function Filters({
           setSelected={setSelectedTechniques}
           selected={selectedTechniques}
           selectedRemoved={selectedRemoved}
-          width={3}
+          width={2}
         />
         <FilterDropdown
           name="Style"
@@ -80,7 +88,7 @@ export default function Filters({
           setSelected={setSelectedStyles}
           selected={selectedStyles}
           selectedRemoved={selectedRemoved}
-          width={3}
+          width={2}
         />
         <FilterDropdown
           name="Material"
@@ -88,7 +96,7 @@ export default function Filters({
           setSelected={setSelectedMaterials}
           selected={selectedMaterials}
           selectedRemoved={selectedRemoved}
-          width={3}
+          width={2}
         />
         <FilterDropdown
           name="Shape"
@@ -96,7 +104,23 @@ export default function Filters({
           setSelected={setSelectedShapes}
           selected={selectedShapes}
           selectedRemoved={selectedRemoved}
-          width={3}
+          width={2}
+        />
+        <FilterDropdown
+          name="Features"
+          options={features}
+          setSelected={setSelectedFeatures}
+          selected={selectedFeatures}
+          selectedRemoved={selectedRemoved}
+          width={2}
+        />
+        <FilterDropdown
+          name="Rooms"
+          options={rooms}
+          setSelected={setSelectedRooms}
+          selected={selectedRooms}
+          selectedRemoved={selectedRemoved}
+          width={2}
         />
       </div>
       {/* Selected categories tags for the selected filters. */}

@@ -7,6 +7,8 @@ import { formatDateShort } from "../../utils/dateUtils";
 import { Size } from "./Sizes";
 import { Color } from "./Colors";
 import Pagination from "../Pagination";
+import { iRoom } from "../../utils/constants";
+import { iTaxonomy } from "../../pages/admin/Taxonomies";
 
 export interface Product {
   id: number;
@@ -46,7 +48,8 @@ export interface Product {
   sizes: Size[];
   defaultSize: Size;
   colors: Color[];
-
+  rooms: iRoom[];
+  features: iTaxonomy[];
   active: boolean;
   details: string;
   notes: string;
@@ -106,6 +109,8 @@ export default function Products() {
       id: 0,
       name: "",
     },
+    rooms: [],
+    features: [],
   };
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);

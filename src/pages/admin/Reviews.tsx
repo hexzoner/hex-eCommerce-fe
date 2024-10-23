@@ -74,7 +74,7 @@ export default function Reviews() {
   }, [page, perPage]);
 
   useEffect(() => {
-    getProducts()
+    getProducts({})
       .then((res) => {
         setProducts(res.results);
       })
