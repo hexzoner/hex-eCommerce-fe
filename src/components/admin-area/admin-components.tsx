@@ -1,4 +1,4 @@
-import Categories from "./Categories";
+import Categories from "../../pages/admin/Categories";
 import Products from "./Products";
 import Users from "./Users";
 import Orders from "./Orders";
@@ -11,7 +11,7 @@ import ProductModal from "./modals/ProductModal";
 import OrderModal from "./modals/OrderModal";
 import UserModal from "./modals/UserModal";
 import ConfirmPopup from "./modals/ConfirmPopup";
-import Colors from "./Colors";
+import Colors from "../../pages/admin/Colors";
 import { LoadingSpinnerSmall } from "./modals/CategoryModal";
 import { CreateColorModal } from "./modals/ColorModals";
 import ColorModal from "./modals/ColorModals";

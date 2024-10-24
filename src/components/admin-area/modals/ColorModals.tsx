@@ -1,4 +1,4 @@
-import { Color } from "../Colors";
+import { Color } from "../../../pages/admin/Colors";
 import { useState } from "react";
 import { updateColor, createColor, deleteColor, getColors } from "../../../api/colors";
 import { restoreToken } from "../../../utils/storage";

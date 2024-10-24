@@ -1,6 +1,7 @@
 import axios from "axios";
-import { Color } from "../components/admin-area/Colors";
+import { iTaxonomy } from "../pages/admin/Taxonomies";
 // import { toast } from "react-toastify";
+import { restoreToken } from "../utils/storage";
 
 const API_URL = import.meta.env.VITE_API_URL;
 if (!API_URL) throw new Error("API URL is required, are you missing a .env file?");
@@ -21,18 +22,14 @@ export const getColors = async () => {
   return response;
 };
 
-export const updateColor = async (token: string, color: Color) => {
+export const updateColor = async (data: iTaxonomy, id: number) => {
   const response = await axios
-    .put(
-      `${baseURL}/${color.id}`,
-      { name: color.name },
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    )
+    .put(`${baseURL}/${id}`, data, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${restoreToken()}`,
+      },
+    })
     .then((res) => {
       // console.log(res.data);
       return res.data;
@@ -41,18 +38,14 @@ export const updateColor = async (token: string, color: Color) => {
   return response;
 };
 
-export const createColor = async (token: string, color: Color) => {
+export const createColor = async (data: iTaxonomy) => {
   const response = await axios
-    .post(
-      `${baseURL}`,
-      { name: color.name },
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    )
+    .post(`${baseURL}`, data, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${restoreToken()}`,
+      },
+    })
     .then((res) => {
       // console.log(res.data);
       return res.data;
@@ -61,12 +54,12 @@ export const createColor = async (token: string, color: Color) => {
   return response;
 };
 
-export const deleteColor = async (token: string, id: number) => {
+export const deleteColor = async (id: number) => {
   const response = await axios
     .delete(`${baseURL}/${id}`, {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${restoreToken()}`,
       },
     })
     .then((res) => {

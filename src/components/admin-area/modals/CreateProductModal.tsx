@@ -8,12 +8,12 @@ import { formatDateShort } from "../../../utils/dateUtils";
 import { ConfirmPopup, LoadingSpinnerSmall } from "../admin-components";
 import { FilterDropdown } from "../../Filters";
 import { Size } from "../Sizes";
-import { Color } from "../Colors";
 import Editor from "react-simple-wysiwyg";
 import { Review } from "../../../pages/admin/Reviews";
 import { iCreateReviewAPI } from "../../../api/reviews";
 import { useShop } from "../../../context";
 import { iRoom } from "../../../utils/constants";
+import { iTaxonomy } from "../../../pages/admin/Taxonomies";
 
 const dummyRug = "https://th.bing.com/th/id/OIP.MvnwHj_3a0ICmk72FNI5WQHaFR?rs=1&pid=ImgDetMain";
 
@@ -33,7 +33,7 @@ export function CreateProductModal({
 
   const [reviews, setReviews] = useState<Review[]>([]);
   const [selectedSizes, setSelectedSizes] = useState<Size[]>([]);
-  const [selectedColors, setSelectedColors] = useState<Color[]>([]);
+  const [selectedColors, setSelectedColors] = useState<iTaxonomy[]>([]);
   const [selectedRooms, setSelectedRooms] = useState<iRoom[]>([]);
   const [selectedFeatures, setSelectedFeatures] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
@@ -96,7 +96,7 @@ export function CreateProductModal({
       bestSeller: product.isEdit ? product.bestSeller : false,
     });
     setSelectedSizes(product.isEdit ? product.sizes.map((x) => ({ id: x.id, name: x.name })) : []);
-    setSelectedColors(product.isEdit ? product.colors.map((x) => ({ id: x.id, name: x.name })) : []);
+    setSelectedColors(product.isEdit ? product.colors.map((x) => ({ id: x.id, name: x.name, image: x.image })) : []);
     setSelectedRooms(product.isEdit ? product.rooms.map((x) => ({ id: x.id, name: x.name })) : []);
     setSelectedFeatures(product.isEdit ? product.features.map((x) => ({ id: x.id, name: x.name, image: x.image })) : []);
 

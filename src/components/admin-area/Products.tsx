@@ -5,7 +5,7 @@ import sortTables from "../../utils/sortTables";
 import { CreateProductModal } from "./admin-components";
 import { formatDateShort } from "../../utils/dateUtils";
 import { Size } from "./Sizes";
-import { Color } from "./Colors";
+// import { Color } from "../../pages/admin/Colors";
 import Pagination from "../Pagination";
 import { iRoom } from "../../utils/constants";
 import { iTaxonomy } from "../../pages/admin/Taxonomies";
@@ -47,7 +47,7 @@ export interface Product {
   wishlisted: boolean;
   sizes: Size[];
   defaultSize: Size;
-  colors: Color[];
+  colors: iTaxonomy[];
   rooms: iRoom[];
   features: iTaxonomy[];
   active: boolean;

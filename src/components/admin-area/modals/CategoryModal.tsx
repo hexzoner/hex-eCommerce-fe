@@ -1,4 +1,4 @@
-import { Category } from "../Categories";
+import { Category } from "../../../pages/admin/Categories";
 import { useState } from "react";
 import { updateCategory, createCategory, getCategories, deleteCategory } from "../../../api/categories";
 import { restoreToken } from "../../../utils/storage";
