@@ -58,6 +58,8 @@ export interface Product {
     id: number;
     name: string;
   };
+  new: boolean;
+  bestSeller: boolean;
 }
 
 export default function Products() {
@@ -111,6 +113,8 @@ export default function Products() {
     },
     rooms: [],
     features: [],
+    new: false,
+    bestSeller: false,
   };
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);

@@ -1,6 +1,11 @@
 import { createContext, useContext } from "react";
 import AuthContextProvider from "./AuthContextProvider";
 import ShopContextProvider from "./ShopContextProvider";
+export interface iFilter {
+  type: string;
+  id: number;
+  value: string;
+}
 
 // AuthContext -----------------------------------------------------
 interface AuthContextProps {
@@ -63,6 +68,8 @@ interface ShopContextProps {
   setRooms: React.Dispatch<React.SetStateAction<any[]>>;
   features: any[];
   setFeatures: React.Dispatch<React.SetStateAction<any[]>>;
+  filter: iFilter;
+  setFilter: React.Dispatch<React.SetStateAction<iFilter>>;
 }
 
 const ShopContext = createContext<ShopContextProps>({
@@ -98,6 +105,12 @@ const ShopContext = createContext<ShopContextProps>({
   setRooms: () => {},
   features: [],
   setFeatures: () => {},
+  filter: {
+    id: 0,
+    type: "",
+    value: "",
+  },
+  setFilter: () => {},
 });
 
 const useShop = () => {

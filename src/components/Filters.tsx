@@ -169,6 +169,20 @@ export default function Filters({
       {selectedShapes.map((x, index) => (
         <SelectedTag key={index} obj={x} setSelected={setSelectedShapes} selectedRemoved={selectedRemoved} setSelectedRemoved={setSelectedRemoved} />
       ))}
+
+      {selectedFeatures.map((x, index) => (
+        <SelectedTag
+          key={index}
+          obj={x}
+          setSelected={setSelectedFeatures}
+          selectedRemoved={selectedRemoved}
+          setSelectedRemoved={setSelectedRemoved}
+        />
+      ))}
+
+      {selectedRooms.map((x, index) => (
+        <SelectedTag key={index} obj={x} setSelected={setSelectedRooms} selectedRemoved={selectedRemoved} setSelectedRemoved={setSelectedRemoved} />
+      ))}
     </div>
   );
 }

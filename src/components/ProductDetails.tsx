@@ -57,7 +57,7 @@ export default function ProductDetails() {
           setResponseStatus(res.status);
           return;
         } else {
-          getProducts([], [], [], [res.producer.id])
+          getProducts({ producers: [res.producer.id] })
             .then((res) => {
               setRugsByProducer(res.results.filter((product: any) => product.id != id));
             })
@@ -156,6 +156,20 @@ export default function ProductDetails() {
             <div className="flex gap-4 italic">
               <p>{product.category.name}</p>
             </div>
+
+            {/* Features section */}
+            <div className="flex gap-4 flex-wrap ">
+              {product.features &&
+                product.features.map((feature: any) => {
+                  return (
+                    <div key={feature.id} className="flex gap-1 h-6 items-center">
+                      <img className="h-6 w-6" src={feature.image} alt={feature.name} />
+                      <p className="text-sm">{feature.name}</p>
+                    </div>
+                  );
+                })}
+            </div>
+
             <div className="font-semibold text-lg">
               <span>Size:</span> <span className="ml-1 ">{selectedSize.name}</span>
             </div>

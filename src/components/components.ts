@@ -20,6 +20,7 @@ import ProductBrowser from "../pages/user/ProductBrowser";
 import RugSizes from "../pages/user/RugSizes";
 import RugTypes from "../pages/user/RugTypes";
 import Sales from "../pages/user/Sales";
+import NavbarMenuDropdown from "../pages/user/navbar-components/NavbarMenuDropdown";
 
 export {
   About,
@@ -44,4 +45,5 @@ export {
   RugSizes,
   RugTypes,
   Sales,
+  NavbarMenuDropdown,
 };

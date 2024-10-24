@@ -3,11 +3,12 @@ import { useAuth, useShop } from "../context";
 import { useState, useEffect } from "react";
 // import { mainMakrupColors } from "./Home";
 export const activeColor = "#b63c3e";
+import { NavbarMenuDropdown } from "./components";
 const navLinkClass = ({ isActive }: { isActive: boolean }) => `btn btn-ghost  + ${isActive ? `text-[${activeColor}]` : ""} `;
 
 export default function Navbar() {
   const { user, isAuthenticated, logout, authLoading } = useAuth();
-  const { cart, setCart } = useShop();
+  const { cart, setCart, rooms } = useShop();
 
   const htmlElement = document.querySelector("html");
   if (htmlElement) htmlElement.setAttribute("data-theme", "winter");
@@ -60,15 +61,18 @@ export default function Navbar() {
             </>
           ) : (
             <>
-              <NavLink to="/products" className={navLinkClass}>
+              {/* <NavLink to="/products" className={navLinkClass}>
                 Featured Rugs
-              </NavLink>
-              <NavLink to="/rug-types" className={navLinkClass}>
+              </NavLink> */}
+              {/* <NavLink to="/rug-types" className={navLinkClass}>
                 Rug Types
-              </NavLink>
-              <NavLink to="/rug-sizes" className={navLinkClass}>
+              </NavLink> */}
+              <NavbarMenuDropdown name={"Featured Rugs"} options={[]} />
+              <NavbarMenuDropdown name={"Rug Types"} options={[]} />
+              <NavbarMenuDropdown name={"Rug Sizes"} options={rooms} />
+              {/* <NavLink to="/rug-sizes" className={navLinkClass}>
                 Rug Sizes
-              </NavLink>
+              </NavLink> */}
               <NavLink to="/sales" className={navLinkClass}>
                 Sales
               </NavLink>

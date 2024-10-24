@@ -67,6 +67,8 @@ export function CreateProductModal({
     shape: number | string;
     technique: number | string;
     material: number | string;
+    new: boolean;
+    bestSeller: boolean;
   }>();
 
   const imageInput = watch("image");
@@ -90,6 +92,8 @@ export function CreateProductModal({
       shape: product.isEdit ? product.shape.id : "",
       technique: product.isEdit ? product.technique.id : "",
       material: product.isEdit ? product.material.id : "",
+      new: product.isEdit ? product.new : false,
+      bestSeller: product.isEdit ? product.bestSeller : false,
     });
     setSelectedSizes(product.isEdit ? product.sizes.map((x) => ({ id: x.id, name: x.name })) : []);
     setSelectedColors(product.isEdit ? product.colors.map((x) => ({ id: x.id, name: x.name })) : []);
@@ -149,6 +153,8 @@ export function CreateProductModal({
     shape: number | string;
     technique: number | string;
     material: number | string;
+    new: boolean;
+    bestSeller: boolean;
   }) {
     // console.log(data);
     // parsing the data to the correct type before sending it to the server
@@ -184,6 +190,8 @@ export function CreateProductModal({
       shapeId: shape,
       techniqueId: technique,
       materialId: material,
+      new: data.new,
+      bestSeller: data.bestSeller,
     };
     if (!product.isEdit) {
       try {
@@ -465,8 +473,18 @@ export function CreateProductModal({
                         </div>
 
                         <div className="flex items-center gap-4">
-                          <p>Is Active?</p>
-                          <input type="checkbox" className="h-5 w-5 text-primary" {...register("active")} />
+                          <p className="text-sm">Is Active?</p>
+                          <input type="checkbox" className="h-5 w-5 text-primary checkbox-sm" {...register("active")} />
+                        </div>
+
+                        <div className="flex items-center gap-4">
+                          <p className="text-sm">Is New?</p>
+                          <input type="checkbox" className="h-5 w-5 text-primary checkbox-sm" {...register("new")} />
+                        </div>
+
+                        <div className="flex items-center gap-4">
+                          <p className="text-sm">Is Best Seller?</p>
+                          <input type="checkbox" className="h-5 w-5 text-primary checkbox-sm" {...register("bestSeller")} />
                         </div>
                       </div>
 

@@ -9,14 +9,15 @@ import ReviewsCarousel from "../pages/user/home-components/ReviewsCarousel";
 import LoadingSpinner from "./LoadingSpinner";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { RoomTypes } from "../utils/constants";
+import { useShop } from "../context";
 
+export const homeMainBG = "bg-[#eff2f6]";
 export default function Home() {
   const [loading, setLoading] = useState(true);
   const [products, setProducts] = useState<Product[]>([]);
   const [reviews, setReviews] = useState<Review[]>([]);
+  const { rooms, setFilter } = useShop();
 
-  const homeMainBG = "bg-[#eff2f6]";
   const tipsSubHeader = "text-lg font-bold";
   const tipsText = "text-lg font-medium";
   const numberMarkup = "text-xl bg-[#CECECE] rounded-full py-4";
@@ -89,10 +90,16 @@ export default function Home() {
           <p className="font-semibold text-3xl max-w-96 m-auto">Find the perfect rug size for your room.</p>
           <p className="max-w-72 m-auto text-justify">Our rugs come in a variety of sizes to fit any room in your home.</p>
           <div className="flex justify-between items-center gap-4 flex-wrap md:flex-nowrap ">
-            {RoomTypes.map((room, index) => {
+            {rooms.map((room, index) => {
               return (
-                <div key={index} className="flex flex-col justify-between gap-4 mt-4 m-auto">
-                  <img src="https://placehold.co/200x200/png" alt={room.name} />
+                <div
+                  onClick={() => {
+                    navigate(`/products/`);
+                    setFilter({ type: "Rug Sizes", id: room.id, value: room.name });
+                  }}
+                  key={index}
+                  className="flex flex-col justify-between gap-4 mt-4 m-auto">
+                  <img className="h-[8.25rem] w-[8.25rem]" src={room.image} alt={room.name} />
                   <p className="font-bold text-sm cursor-pointer">{room.name + " >"}</p>
                   {/* <p className="font-normal text-xl">Shop Now</p> */}
                 </div>

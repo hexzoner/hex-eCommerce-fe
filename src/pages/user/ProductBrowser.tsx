@@ -14,6 +14,11 @@ import { calculatePriceRange } from "../../utils/miscUtils";
 import Pagination from "../../components/Pagination";
 
 export default function ProductBrowser() {
+  // /products/room/Hallway
+  // /products/type/Wool
+  // const { room } = useParams<{ type: string; room: string; color: string }>();
+  const { wishlist, setWishlist, shopLoading, filter } = useShop();
+
   const [products, setProducts] = useState<Product[]>([]);
   const [selectedCategories, setSelectedCategories] = useState<any[]>([]);
   const [selectedColors, setSelectedColors] = useState<any[]>([]);
@@ -23,9 +28,8 @@ export default function ProductBrowser() {
   const [selectedMaterials, setSelectedMaterials] = useState<any[]>([]);
   const [selectedTechniques, setSelectedTechniques] = useState<any[]>([]);
   const [selectedFeatures, setSelectedFeatures] = useState<any[]>([]);
-  const [selectedRooms, setSelectedRooms] = useState<any[]>([]);
+  const [selectedRooms, setSelectedRooms] = useState<any[]>(filter?.type === "Rug Sizes" ? [{ id: filter.id, name: filter.value }] : []);
   const [loading, setLoading] = useState(true);
-  const { wishlist, setWishlist, shopLoading } = useShop();
   const navigate = useNavigate();
 
   // Pagination
@@ -47,7 +51,7 @@ export default function ProductBrowser() {
       techniques: selectedTechniques.map((x) => x.id),
       materials: selectedMaterials.map((x) => x.id),
       styles: selectedStyles.map((x) => x.id),
-      rooms: selectedRooms.map((x) => x.id),
+      rooms: filter?.type === "Rug Sizes" ? [filter.id] : selectedRooms.map((x) => x.id),
       features: selectedFeatures.map((x) => x.id),
       page,
       perPage,
@@ -72,6 +76,10 @@ export default function ProductBrowser() {
     page,
     perPage,
   ]);
+
+  useEffect(() => {
+    setSelectedRooms(filter?.type === "Rug Sizes" ? [{ id: filter.id, name: filter.value }] : []);
+  }, [filter]);
 
   return (
     <div className={mainMakrupColors + " min-h-screen max-w-[80rem] m-auto py-6"}>

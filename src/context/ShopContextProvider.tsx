@@ -15,6 +15,7 @@ import { toast } from "react-toastify";
 import { getProducers } from "../api/producers";
 import { getRooms } from "../api/rooms";
 import { getFeatures } from "../api/features";
+import { iFilter } from ".";
 
 const ShopProvider = ({ children }: { children: ReactNode }) => {
   const { user, isAuthenticated } = useAuth();
@@ -30,6 +31,11 @@ const ShopProvider = ({ children }: { children: ReactNode }) => {
   const [producers, setProducers] = useState<any[]>([]);
   const [colors, setColors] = useState<any[]>([]);
   const [sizes, setSizes] = useState<any[]>([]);
+  const [filter, setFilter] = useState<iFilter>({
+    type: "",
+    id: 0,
+    value: "",
+  });
   const [cart, setCart] = useState<any>({ products: [], total: 0 });
 
   const [shopLoading, setShopLoading] = useState(true);
@@ -171,6 +177,8 @@ const ShopProvider = ({ children }: { children: ReactNode }) => {
         setRooms,
         features,
         setFeatures,
+        filter,
+        setFilter,
       }}>
       {children}
     </ShopContext.Provider>

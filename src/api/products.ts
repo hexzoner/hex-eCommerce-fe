@@ -92,6 +92,8 @@ interface ProductProps {
   materialId: number;
   rooms: number[];
   features: number[];
+  new: boolean;
+  bestSeller: boolean;
 }
 
 function getBodyAPI(product: ProductProps) {
@@ -116,6 +118,8 @@ function getBodyAPI(product: ProductProps) {
     materialId: product.materialId,
     rooms: product.rooms,
     features: product.features,
+    new: product.new,
+    bestSeller: product.bestSeller,
   };
 }
 
