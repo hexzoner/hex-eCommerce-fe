@@ -28,8 +28,10 @@ export default function ProductBrowser() {
   const [selectedMaterials, setSelectedMaterials] = useState<any[]>([]);
   const [selectedTechniques, setSelectedTechniques] = useState<any[]>([]);
   const [selectedFeatures, setSelectedFeatures] = useState<any[]>([]);
-  const [selectedRooms, setSelectedRooms] = useState<any[]>(filter?.type === "Rug Sizes" ? [{ id: filter.id, name: filter.value }] : []);
+  const [selectedRooms, setSelectedRooms] = useState<any[]>(filter.type === "Rug Sizes" ? [{ id: filter.id, name: filter.value }] : []);
   const [loading, setLoading] = useState(true);
+  const [refreshSelected, setRefreshSelected] = useState(false);
+
   const navigate = useNavigate();
 
   // Pagination
@@ -51,7 +53,8 @@ export default function ProductBrowser() {
       techniques: selectedTechniques.map((x) => x.id),
       materials: selectedMaterials.map((x) => x.id),
       styles: selectedStyles.map((x) => x.id),
-      rooms: filter?.type === "Rug Sizes" ? [filter.id] : selectedRooms.map((x) => x.id),
+      // rooms: filter?.type === "Rug Sizes" ? [filter.id] : selectedRooms.map((x) => x.id),
+      rooms: selectedRooms.map((x) => x.id),
       features: selectedFeatures.map((x) => x.id),
       page,
       perPage,
@@ -79,8 +82,12 @@ export default function ProductBrowser() {
   ]);
 
   useEffect(() => {
-    setSelectedRooms(filter?.type === "Rug Sizes" ? [{ id: filter.id, name: filter.value }] : []);
+    // console.log("Filter", filter);
+    setSelectedRooms(filter.type === "Rug Sizes" ? [{ id: filter.id, name: filter.value }] : []);
+    setRefreshSelected(!refreshSelected);
   }, [filter]);
+
+  // console.log(selectedRooms);
 
   return (
     <div className={mainMakrupColors + " min-h-screen max-w-[80rem] m-auto py-6"}>
@@ -117,6 +124,8 @@ export default function ProductBrowser() {
           setSelectedFeatures={setSelectedFeatures}
           selectedRooms={selectedRooms}
           setSelectedRooms={setSelectedRooms}
+          refreshSelected={refreshSelected}
+          setRefreshSelected={setRefreshSelected}
         />
       </div>
       <section className="my-8 ">
