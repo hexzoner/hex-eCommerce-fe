@@ -25,6 +25,8 @@ export const getProducts = async ({
   features,
   page,
   perPage,
+  isNew,
+  isBestSeller,
 }: {
   categories?: number[];
   colors?: number[];
@@ -38,6 +40,8 @@ export const getProducts = async ({
   features?: number[];
   page?: number;
   perPage?: number;
+  isNew?: boolean;
+  isBestSeller?: boolean;
 }) => {
   //products?category=1,2&color=2
   let url = `${baseURL}?`;
@@ -53,6 +57,8 @@ export const getProducts = async ({
   if (page) url += `page=${page}&`;
   if (perPage) url += `perPage=${perPage}&`;
   if (producers && producers.length > 0) url += `producer=${producers.join(",")}&`;
+  if (isNew) url += `isNew=${isNew}&`;
+  if (isBestSeller) url += `isBestSeller=${isBestSeller}&`;
 
   // console.log(url);
   const response = await axios

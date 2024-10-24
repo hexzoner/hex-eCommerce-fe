@@ -136,8 +136,12 @@ export default function ProductDetails() {
       <div className="flex flex-col min-h-screen mt-8 text-left">
         {/* Product Image, Name, Price, Category, Size, Color, Add to Cart Button */}
         <div className="flex-col lg:flex-row flex gap-0 items-start max-w-[80rem] m-auto h-full">
-          <div className="w-full lg:w-1/2 px-24 lg:px-0  flex-1 self-stretch">
+          <div className="w-full lg:w-1/2 px-24 lg:px-0  flex-1 self-stretch relative">
             <img className="" src={product.image} alt="Product image" />
+            {product.new && <span className="text-lg badge-lg badge badge-primary py-6 px-4 font-semibold absolute top-0 right-0 ">NEW</span>}
+            {product.bestSeller && (
+              <span className="text-lg badge-lg badge badge-warning py-6 px-4 font-semibold absolute top-0 right-0 ">BEST SELLER</span>
+            )}
             {/* Featured Reviews */}
             {featuredReviews.length > 0 && (
               <section className="max-w-[70rem] m-auto ">

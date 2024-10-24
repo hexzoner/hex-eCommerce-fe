@@ -52,18 +52,30 @@ export default function Home() {
             <p className="font-semibold text-xl py-2 px-4 w-fit mx-auto text-outline  rounded-xl">
               Lorem ipsum dolor sit amet consectetur adipiscing elit Ut et.
             </p>
-            <button onClick={() => navigate("/products")} className="btn btn-neutral rounded-none max-w-[194px] mx-auto btn-lg px-12">
+            <button
+              onClick={() => {
+                setFilter({ type: "", id: 0, value: "" });
+                navigate("/products");
+              }}
+              className="btn btn-neutral rounded-none max-w-[194px] mx-auto btn-lg px-12">
               Shop All
             </button>
           </div>
           <div className="flex flex-col gap-4 md:gap-0 w-full md:w-1/3 justify-between font-normal text-xl">
             <div className="hero-2-background h-[251px] gap-4 rounded-xl text-center flex flex-col justify-between py-4">
               <p></p>
-              <p className="bg-white w-fit mx-auto px-6 rounded-md py-2">Wool Rugs</p>
+              <button className="btn text-lg  mx-auto px-6 rounded-md py-2">Wool Rugs</button>
             </div>
             <div className="hero-3-background h-[251px] gap-4 rounded-xl text-center flex flex-col justify-between py-4">
               <p></p>
-              <p className="bg-white w-fit mx-auto px-6 rounded-md py-2">New Arrivals</p>
+              <button
+                onClick={() => {
+                  setFilter({ type: "New Arrivals", id: 0, value: "true" });
+                  navigate("/products");
+                }}
+                className="btn text-lg  mx-auto px-6 rounded-md py-2">
+                New Arrivals
+              </button>
             </div>
           </div>
         </div>
@@ -98,7 +110,7 @@ export default function Home() {
                     setFilter({ type: "Rug Sizes", id: room.id, value: room.name });
                   }}
                   key={index}
-                  className="flex flex-col justify-between gap-4 mt-4 m-auto">
+                  className="flex flex-col justify-between gap-4 mt-4 m-auto cursor-pointer">
                   <img className="h-[8.25rem] w-[8.25rem]" src={room.image} alt={room.name} />
                   <p className="font-bold text-sm cursor-pointer">{room.name + " >"}</p>
                   {/* <p className="font-normal text-xl">Shop Now</p> */}

@@ -55,6 +55,7 @@ export default function ProductBrowser() {
       features: selectedFeatures.map((x) => x.id),
       page,
       perPage,
+      isNew: filter?.type === "New Arrivals" ? (filter.value === "true" ? true : false) : undefined,
     })
       .then((res) => {
         setProducts(res.results.filter((x: any) => x.active == true));
@@ -155,8 +156,10 @@ export const ProductCard = ({ product, wishlist, setWishlist }: { product: Produ
 
   return (
     <div className="card bg-base-100 w-72 mx-auto">
-      <figure>
-        <img onClick={handleClick} className="w-72 h-48 object-cover  cursor-pointer" src={product.image} alt="Rug Image" />
+      <figure className="relative">
+        <img onClick={handleClick} className="w-72 h-48 object-cover  cursor-pointer p-2" src={product.image} alt="Rug Image" />
+        {product.new && <span className="badge badge-primary py-6 px-4 font-semibold absolute top-0 right-0">NEW</span>}
+        {product.bestSeller && <span className="badge badge-warning py-6 px-4 font-semibold absolute top-0 right-0 ">BEST SELLER</span>}
       </figure>
       <div className="card-body">
         <h2 className="text-xl font-bold text-center flex items-center justify-between ">
