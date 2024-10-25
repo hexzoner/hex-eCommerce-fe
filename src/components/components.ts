@@ -21,6 +21,7 @@ import RugSizes from "../pages/user/RugSizes";
 import RugTypes from "../pages/user/RugTypes";
 import Sales from "../pages/user/Sales";
 import NavbarMenuDropdown from "../pages/user/navbar-components/NavbarMenuDropdown";
+import NewBestSellerBadge from "../pages/user/product-details-components/NewBestSellerBadge";
 
 export {
   About,
@@ -46,4 +47,5 @@ export {
   RugTypes,
   Sales,
   NavbarMenuDropdown,
+  NewBestSellerBadge,
 };

@@ -8,7 +8,7 @@ const navLinkClass = ({ isActive }: { isActive: boolean }) => `btn btn-ghost  + 
 
 export default function Navbar() {
   const { user, isAuthenticated, logout, authLoading } = useAuth();
-  const { cart, setCart, rooms } = useShop();
+  const { cart, setCart, rooms, categories } = useShop();
 
   const htmlElement = document.querySelector("html");
   if (htmlElement) htmlElement.setAttribute("data-theme", "winter");
@@ -34,7 +34,7 @@ export default function Navbar() {
         </div>
       </div>
       <div className="navbar max-w-screen-xl m-auto font-normal text-lg">
-        <div className="flex-1 flex-wrap">
+        <div className="flex-1 flex-wrap ">
           <NavLink to="/" className="text-2xl mr-4">
             <Logo fill={"black"} />
           </NavLink>
@@ -68,7 +68,7 @@ export default function Navbar() {
                 Rug Types
               </NavLink> */}
               <NavbarMenuDropdown name={"Featured Rugs"} options={[]} />
-              <NavbarMenuDropdown name={"Rug Types"} options={[]} />
+              <NavbarMenuDropdown name={"Rug Types"} options={categories} />
               <NavbarMenuDropdown name={"Rug Sizes"} options={rooms} />
               {/* <NavLink to="/rug-sizes" className={navLinkClass}>
                 Rug Sizes

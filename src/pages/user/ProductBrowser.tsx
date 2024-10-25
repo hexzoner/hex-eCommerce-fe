@@ -12,6 +12,7 @@ import { useShop } from "../../context";
 import Filters from "../../components/Filters";
 import { calculatePriceRange } from "../../utils/miscUtils";
 import Pagination from "../../components/Pagination";
+import { NewBestSellerBadge } from "../../components/components";
 
 export default function ProductBrowser() {
   // /products/room/Hallway
@@ -20,7 +21,7 @@ export default function ProductBrowser() {
   const { wishlist, setWishlist, shopLoading, filter } = useShop();
 
   const [products, setProducts] = useState<Product[]>([]);
-  const [selectedCategories, setSelectedCategories] = useState<any[]>([]);
+  const [selectedCategories, setSelectedCategories] = useState<any[]>(filter.type === "Rug Types" ? [{ id: filter.id, name: filter.value }] : []);
   const [selectedColors, setSelectedColors] = useState<any[]>([]);
   const [selectedSizes, setSelectedSizes] = useState<any[]>([]);
   const [selectedStyles, setSelectedStyles] = useState<any[]>([]);
@@ -46,6 +47,7 @@ export default function ProductBrowser() {
     setLoading(true);
     // console.log("Filters - fetching products");
     getProducts({
+      // categories: filter.type === "Rug Types" ? [filter.id] : selectedCategories.map((x) => x.id),
       categories: selectedCategories.map((x) => x.id),
       colors: selectedColors.map((x) => x.id),
       sizes: selectedSizes.map((x) => x.id),
@@ -53,12 +55,12 @@ export default function ProductBrowser() {
       techniques: selectedTechniques.map((x) => x.id),
       materials: selectedMaterials.map((x) => x.id),
       styles: selectedStyles.map((x) => x.id),
-      // rooms: filter?.type === "Rug Sizes" ? [filter.id] : selectedRooms.map((x) => x.id),
+      // rooms: filter.type === "Rug Sizes" ? [filter.id] : selectedRooms.map((x) => x.id),
       rooms: selectedRooms.map((x) => x.id),
       features: selectedFeatures.map((x) => x.id),
       page,
       perPage,
-      isNew: filter?.type === "New Arrivals" ? (filter.value === "true" ? true : false) : undefined,
+      isNew: filter.type === "New Arrivals" ? (filter.value === "true" ? true : false) : undefined,
     })
       .then((res) => {
         setProducts(res.results.filter((x: any) => x.active == true));
@@ -83,7 +85,9 @@ export default function ProductBrowser() {
 
   useEffect(() => {
     // console.log("Filter", filter);
-    setSelectedRooms(filter.type === "Rug Sizes" ? [{ id: filter.id, name: filter.value }] : []);
+    if (filter.type === "Rug Sizes") setSelectedRooms([{ id: filter.id, name: filter.value }]);
+    if (filter.type === "Rug Types") setSelectedCategories([{ id: filter.id, name: filter.value }]);
+
     setRefreshSelected(!refreshSelected);
   }, [filter]);
 
@@ -164,11 +168,10 @@ export const ProductCard = ({ product, wishlist, setWishlist }: { product: Produ
   }
 
   return (
-    <div className="card bg-base-100 w-72 mx-auto">
-      <figure className="relative">
+    <div className="card bg-base-100 w-72 mx-auto ">
+      <figure className="relative tooltip">
         <img onClick={handleClick} className="w-72 h-48 object-cover  cursor-pointer p-2" src={product.image} alt="Rug Image" />
-        {product.new && <span className="badge badge-primary py-6 px-4 font-semibold absolute top-0 right-0">NEW</span>}
-        {product.bestSeller && <span className="badge badge-warning py-6 px-4 font-semibold absolute top-0 right-0 ">BEST SELLER</span>}
+        <NewBestSellerBadge isNew={product.new} isBestSeller={product.bestSeller} />
       </figure>
       <div className="card-body">
         <h2 className="text-xl font-bold text-center flex items-center justify-between ">

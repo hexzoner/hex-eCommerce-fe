@@ -64,7 +64,14 @@ export default function Home() {
           <div className="flex flex-col gap-4 md:gap-0 w-full md:w-1/3 justify-between font-normal text-xl">
             <div className="hero-2-background h-[251px] gap-4 rounded-xl text-center flex flex-col justify-between py-4">
               <p></p>
-              <button className="btn text-lg  mx-auto px-6 rounded-md py-2">Wool Rugs</button>
+              <button
+                onClick={() => {
+                  setFilter({ type: "Rug Types", id: 1, value: "Wool Rugs" });
+                  navigate("/products");
+                }}
+                className="btn text-lg  mx-auto px-6 rounded-md py-2">
+                Wool Rugs
+              </button>
             </div>
             <div className="hero-3-background h-[251px] gap-4 rounded-xl text-center flex flex-col justify-between py-4">
               <p></p>
