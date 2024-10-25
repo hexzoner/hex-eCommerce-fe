@@ -1,6 +1,11 @@
 import { createContext, useContext } from "react";
 import AuthContextProvider from "./AuthContextProvider";
 import ShopContextProvider from "./ShopContextProvider";
+export interface iFilter {
+  type: string;
+  id: number;
+  value: string;
+}
 
 // AuthContext -----------------------------------------------------
 interface AuthContextProps {
@@ -49,6 +54,22 @@ interface ShopContextProps {
   addToCart: (product: any, quantity: number, size: number, color: number) => void;
   cartLoading: boolean;
   updateCartQuantity: (productId: number, quantity: number, color: number, size: number) => void;
+  styles: any[];
+  setStyles: React.Dispatch<React.SetStateAction<any[]>>;
+  materials: any[];
+  setMaterials: React.Dispatch<React.SetStateAction<any[]>>;
+  techniques: any[];
+  setTechniques: React.Dispatch<React.SetStateAction<any[]>>;
+  shapes: any[];
+  setShapes: React.Dispatch<React.SetStateAction<any[]>>;
+  producers: any[];
+  setProducers: React.Dispatch<React.SetStateAction<any[]>>;
+  rooms: any[];
+  setRooms: React.Dispatch<React.SetStateAction<any[]>>;
+  features: any[];
+  setFeatures: React.Dispatch<React.SetStateAction<any[]>>;
+  filter: iFilter;
+  setFilter: React.Dispatch<React.SetStateAction<iFilter>>;
 }
 
 const ShopContext = createContext<ShopContextProps>({
@@ -70,6 +91,26 @@ const ShopContext = createContext<ShopContextProps>({
   addToCart: () => {},
   cartLoading: false,
   updateCartQuantity: () => {},
+  styles: [],
+  setStyles: () => {},
+  materials: [],
+  setMaterials: () => {},
+  techniques: [],
+  setTechniques: () => {},
+  shapes: [],
+  setShapes: () => {},
+  producers: [],
+  setProducers: () => {},
+  rooms: [],
+  setRooms: () => {},
+  features: [],
+  setFeatures: () => {},
+  filter: {
+    id: 0,
+    type: "",
+    value: "",
+  },
+  setFilter: () => {},
 });
 
 const useShop = () => {

@@ -11,6 +11,20 @@ export default function Filters({
   selectedColors,
   selectedSizes,
   setSelectedSizes,
+  selectedStyles,
+  setSelectedStyles,
+  selectedShapes,
+  setSelectedShapes,
+  selectedMaterials,
+  setSelectedMaterials,
+  selectedTechniques,
+  setSelectedTechniques,
+  selectedFeatures,
+  setSelectedFeatures,
+  selectedRooms,
+  setSelectedRooms,
+  refreshSelected,
+  setRefreshSelected,
 }: {
   setProducts: any;
   setSelectedCategories: any;
@@ -19,19 +33,33 @@ export default function Filters({
   selectedColors: any[];
   selectedSizes: any[];
   setSelectedSizes: any;
+  selectedStyles: any[];
+  setSelectedStyles: any;
+  selectedShapes: any[];
+  setSelectedShapes: any;
+  selectedMaterials: any[];
+  setSelectedMaterials: any;
+  selectedTechniques: any[];
+  setSelectedTechniques: any;
+  selectedFeatures: any[];
+  setSelectedFeatures: any;
+  selectedRooms: any[];
+  setSelectedRooms: any;
+  refreshSelected: any;
+  setRefreshSelected: any;
 }) {
-  const { categories, colors, sizes } = useShop();
-  const [selectedRemoved, setSelectedRemoved] = useState(false);
+  const { categories, colors, sizes, styles, shapes, materials, techniques, features, rooms } = useShop();
+  // const [selectedRemoved, setSelectedRemoved] = useState(false);
 
   return (
     <div>
-      <div className="border-b-[1.5px] border-t-[1.5px] border-black flex items-start mb-2 gap-4 py-4">
+      <div className="border-b-[1.5px] border-t-[1.5px] border-black flex flex-wrap items-start mb-2 gap-4 py-4">
         <FilterDropdown
           name="Category"
           options={categories}
           setSelected={setSelectedCategories}
           selected={selectedCategories}
-          selectedRemoved={selectedRemoved}
+          selectedRemoved={refreshSelected}
           width={2}
         />
         <FilterDropdown
@@ -39,7 +67,7 @@ export default function Filters({
           options={colors}
           setSelected={setSelectedColors}
           selected={selectedColors}
-          selectedRemoved={selectedRemoved}
+          selectedRemoved={refreshSelected}
           width={2}
         />
         <FilterDropdown
@@ -47,8 +75,56 @@ export default function Filters({
           options={sizes}
           setSelected={setSelectedSizes}
           selected={selectedSizes}
-          selectedRemoved={selectedRemoved}
+          selectedRemoved={refreshSelected}
           width={3}
+        />
+        <FilterDropdown
+          name="Technique"
+          options={techniques}
+          setSelected={setSelectedTechniques}
+          selected={selectedTechniques}
+          selectedRemoved={refreshSelected}
+          width={2}
+        />
+        <FilterDropdown
+          name="Style"
+          options={styles}
+          setSelected={setSelectedStyles}
+          selected={selectedStyles}
+          selectedRemoved={refreshSelected}
+          width={2}
+        />
+        <FilterDropdown
+          name="Material"
+          options={materials}
+          setSelected={setSelectedMaterials}
+          selected={selectedMaterials}
+          selectedRemoved={refreshSelected}
+          width={2}
+        />
+        <FilterDropdown
+          name="Shape"
+          options={shapes}
+          setSelected={setSelectedShapes}
+          selected={selectedShapes}
+          selectedRemoved={refreshSelected}
+          width={2}
+        />
+        <FilterDropdown
+          name="Features"
+          options={features}
+          setSelected={setSelectedFeatures}
+          selected={selectedFeatures}
+          selectedRemoved={refreshSelected}
+          width={2}
+        />
+        <FilterDropdown
+          name="Rooms"
+          options={rooms}
+          setSelected={setSelectedRooms}
+          selected={selectedRooms}
+          selectedRemoved={refreshSelected}
+          width={2}
         />
       </div>
       {/* Selected categories tags for the selected filters. */}
@@ -57,17 +133,59 @@ export default function Filters({
           key={index}
           obj={x}
           setSelected={setSelectedCategories}
-          setSelectedRemoved={setSelectedRemoved}
-          selectedRemoved={selectedRemoved}
+          setSelectedRemoved={setRefreshSelected}
+          selectedRemoved={refreshSelected}
         />
       ))}
       {/* Selected color tags for the selected filters. */}
       {selectedColors.map((x, index) => (
-        <SelectedTag key={index} obj={x} setSelected={setSelectedColors} selectedRemoved={selectedRemoved} setSelectedRemoved={setSelectedRemoved} />
+        <SelectedTag key={index} obj={x} setSelected={setSelectedColors} selectedRemoved={refreshSelected} setSelectedRemoved={setRefreshSelected} />
       ))}
 
       {selectedSizes.map((x, index) => (
-        <SelectedTag key={index} obj={x} setSelected={setSelectedSizes} selectedRemoved={selectedRemoved} setSelectedRemoved={setSelectedRemoved} />
+        <SelectedTag key={index} obj={x} setSelected={setSelectedSizes} selectedRemoved={refreshSelected} setSelectedRemoved={setRefreshSelected} />
+      ))}
+
+      {selectedTechniques.map((x, index) => (
+        <SelectedTag
+          key={index}
+          obj={x}
+          setSelected={setSelectedTechniques}
+          selectedRemoved={refreshSelected}
+          setSelectedRemoved={setRefreshSelected}
+        />
+      ))}
+
+      {selectedStyles.map((x, index) => (
+        <SelectedTag key={index} obj={x} setSelected={setSelectedStyles} selectedRemoved={refreshSelected} setSelectedRemoved={setRefreshSelected} />
+      ))}
+
+      {selectedMaterials.map((x, index) => (
+        <SelectedTag
+          key={index}
+          obj={x}
+          setSelected={setSelectedMaterials}
+          selectedRemoved={refreshSelected}
+          setSelectedRemoved={setRefreshSelected}
+        />
+      ))}
+
+      {selectedShapes.map((x, index) => (
+        <SelectedTag key={index} obj={x} setSelected={setSelectedShapes} selectedRemoved={refreshSelected} setSelectedRemoved={setRefreshSelected} />
+      ))}
+
+      {selectedFeatures.map((x, index) => (
+        <SelectedTag
+          key={index}
+          obj={x}
+          setSelected={setSelectedFeatures}
+          selectedRemoved={refreshSelected}
+          setSelectedRemoved={setRefreshSelected}
+        />
+      ))}
+
+      {selectedRooms.map((x, index) => (
+        <SelectedTag key={index} obj={x} setSelected={setSelectedRooms} selectedRemoved={refreshSelected} setSelectedRemoved={setRefreshSelected} />
       ))}
     </div>
   );
@@ -149,7 +267,7 @@ export function FilterDropdown({
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       ref={dropdownRef}>
-      <div tabIndex={0} role="button" className="border-[1.5px] py-[10px] select-bordered w-full px-4">
+      <div tabIndex={0} role="button" className="border-[1.5px] select-bordered w-full pl-6 br-8 select select-sm rounded-none">
         {name}
       </div>
       <ul tabIndex={0} className={`dropdown-content menu bg-base-100 rounded-box z-[1] p-2 shadow max-h-72 ` + filterMarkup}>

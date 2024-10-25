@@ -12,14 +12,27 @@ import { useShop } from "../../context";
 import Filters from "../../components/Filters";
 import { calculatePriceRange } from "../../utils/miscUtils";
 import Pagination from "../../components/Pagination";
+import { NewBestSellerBadge } from "../../components/components";
 
 export default function ProductBrowser() {
+  // /products/room/Hallway
+  // /products/type/Wool
+  // const { room } = useParams<{ type: string; room: string; color: string }>();
+  const { wishlist, setWishlist, shopLoading, filter } = useShop();
+
   const [products, setProducts] = useState<Product[]>([]);
-  const [selectedCategories, setSelectedCategories] = useState<any[]>([]);
+  const [selectedCategories, setSelectedCategories] = useState<any[]>(filter.type === "Rug Types" ? [{ id: filter.id, name: filter.value }] : []);
   const [selectedColors, setSelectedColors] = useState<any[]>([]);
   const [selectedSizes, setSelectedSizes] = useState<any[]>([]);
+  const [selectedStyles, setSelectedStyles] = useState<any[]>([]);
+  const [selectedShapes, setSelectedShapes] = useState<any[]>([]);
+  const [selectedMaterials, setSelectedMaterials] = useState<any[]>([]);
+  const [selectedTechniques, setSelectedTechniques] = useState<any[]>([]);
+  const [selectedFeatures, setSelectedFeatures] = useState<any[]>([]);
+  const [selectedRooms, setSelectedRooms] = useState<any[]>(filter.type === "Rug Sizes" ? [{ id: filter.id, name: filter.value }] : []);
   const [loading, setLoading] = useState(true);
-  const { wishlist, setWishlist, shopLoading } = useShop();
+  const [refreshSelected, setRefreshSelected] = useState(false);
+
   const navigate = useNavigate();
 
   // Pagination
@@ -33,14 +46,22 @@ export default function ProductBrowser() {
     // if (shopLoading) return;
     setLoading(true);
     // console.log("Filters - fetching products");
-    getProducts(
-      selectedCategories.map((x) => x.id),
-      selectedColors.map((x) => x.id),
-      selectedSizes.map((x) => x.id),
-      [],
+    getProducts({
+      // categories: filter.type === "Rug Types" ? [filter.id] : selectedCategories.map((x) => x.id),
+      categories: selectedCategories.map((x) => x.id),
+      colors: selectedColors.map((x) => x.id),
+      sizes: selectedSizes.map((x) => x.id),
+      shapes: selectedShapes.map((x) => x.id),
+      techniques: selectedTechniques.map((x) => x.id),
+      materials: selectedMaterials.map((x) => x.id),
+      styles: selectedStyles.map((x) => x.id),
+      // rooms: filter.type === "Rug Sizes" ? [filter.id] : selectedRooms.map((x) => x.id),
+      rooms: selectedRooms.map((x) => x.id),
+      features: selectedFeatures.map((x) => x.id),
       page,
-      perPage
-    )
+      perPage,
+      isNew: filter.type === "New Arrivals" ? (filter.value === "true" ? true : false) : undefined,
+    })
       .then((res) => {
         setProducts(res.results.filter((x: any) => x.active == true));
         setTotalPages(res.totalPages);
@@ -48,7 +69,29 @@ export default function ProductBrowser() {
       })
       .catch((err) => console.log(err))
       .finally(() => setLoading(false));
-  }, [selectedCategories, selectedColors, selectedSizes, page, perPage]);
+  }, [
+    selectedCategories,
+    selectedColors,
+    selectedSizes,
+    selectedStyles,
+    selectedShapes,
+    selectedMaterials,
+    selectedTechniques,
+    selectedFeatures,
+    selectedRooms,
+    page,
+    perPage,
+  ]);
+
+  useEffect(() => {
+    // console.log("Filter", filter);
+    if (filter.type === "Rug Sizes") setSelectedRooms([{ id: filter.id, name: filter.value }]);
+    if (filter.type === "Rug Types") setSelectedCategories([{ id: filter.id, name: filter.value }]);
+
+    setRefreshSelected(!refreshSelected);
+  }, [filter]);
+
+  // console.log(selectedRooms);
 
   return (
     <div className={mainMakrupColors + " min-h-screen max-w-[80rem] m-auto py-6"}>
@@ -73,6 +116,20 @@ export default function ProductBrowser() {
           setSelectedColors={setSelectedColors}
           selectedSizes={selectedSizes}
           setSelectedSizes={setSelectedSizes}
+          selectedStyles={selectedStyles}
+          setSelectedStyles={setSelectedStyles}
+          selectedShapes={selectedShapes}
+          setSelectedShapes={setSelectedShapes}
+          selectedMaterials={selectedMaterials}
+          setSelectedMaterials={setSelectedMaterials}
+          selectedTechniques={selectedTechniques}
+          setSelectedTechniques={setSelectedTechniques}
+          selectedFeatures={selectedFeatures}
+          setSelectedFeatures={setSelectedFeatures}
+          selectedRooms={selectedRooms}
+          setSelectedRooms={setSelectedRooms}
+          refreshSelected={refreshSelected}
+          setRefreshSelected={setRefreshSelected}
         />
       </div>
       <section className="my-8 ">
@@ -111,9 +168,10 @@ export const ProductCard = ({ product, wishlist, setWishlist }: { product: Produ
   }
 
   return (
-    <div className="card bg-base-100 w-72 mx-auto">
-      <figure>
-        <img onClick={handleClick} className="w-72 h-48 object-cover  cursor-pointer" src={product.image} alt="Rug Image" />
+    <div className="card bg-base-100 w-72 mx-auto ">
+      <figure className="relative tooltip">
+        <img onClick={handleClick} className="w-72 h-48 object-cover  cursor-pointer p-2" src={product.image} alt="Rug Image" />
+        <NewBestSellerBadge isNew={product.new} isBestSeller={product.bestSeller} />
       </figure>
       <div className="card-body">
         <h2 className="text-xl font-bold text-center flex items-center justify-between ">

@@ -1,4 +1,4 @@
-import Categories from "./Categories";
+import Categories from "../../pages/admin/Categories";
 import Products from "./Products";
 import Users from "./Users";
 import Orders from "./Orders";
@@ -11,7 +11,7 @@ import ProductModal from "./modals/ProductModal";
 import OrderModal from "./modals/OrderModal";
 import UserModal from "./modals/UserModal";
 import ConfirmPopup from "./modals/ConfirmPopup";
-import Colors from "./Colors";
+import Colors from "../../pages/admin/Colors";
 import { LoadingSpinnerSmall } from "./modals/CategoryModal";
 import { CreateColorModal } from "./modals/ColorModals";
 import ColorModal from "./modals/ColorModals";
@@ -23,6 +23,14 @@ import { HomeArrivals } from "../../pages/admin/HomeArrivals";
 import Producers from "../../pages/admin/Producers";
 import AddEditProducerPopup from "../../pages/admin/AddEditProducerPopup";
 import { LoadingSpinnerPopup } from "./modals/LoadingSpinnerPopup";
+import Material from "../../pages/admin/Material";
+import Shapes from "../../pages/admin/Shapes";
+import Technqiue from "../../pages/admin/Technqiue";
+import Styles from "../../pages/admin/Styles";
+
+import TaxonomyPopup from "../../pages/admin/TaxonomyPopup";
+import Features from "../../pages/admin/Features";
+import Rooms from "../../pages/admin/Rooms";
 
 export {
   Categories,
@@ -50,4 +58,11 @@ export {
   Producers,
   AddEditProducerPopup,
   LoadingSpinnerPopup,
+  Material,
+  Shapes,
+  Technqiue,
+  Styles,
+  TaxonomyPopup,
+  Features,
+  Rooms,
 };

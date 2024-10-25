@@ -99,7 +99,7 @@ const LatestArrivalsCarousel = ({ products }: { products: any[] }) => {
 export const NextArrow = (props: any) => {
   const { onClick } = props;
   return (
-    <div className="custom-arrow right-arrow text-center" onClick={onClick}>
+    <div className="custom-arrow right-arrow text-center font-semibold opacity-75" onClick={onClick}>
       &#10095; {/* Right arrow symbol */}
     </div>
   );
@@ -108,7 +108,7 @@ export const NextArrow = (props: any) => {
 export const PrevArrow = (props: any) => {
   const { onClick } = props;
   return (
-    <div className="custom-arrow left-arrow text-center" onClick={onClick}>
+    <div className="custom-arrow left-arrow text-center font-semibold opacity-75" onClick={onClick}>
       &#10094; {/* Left arrow symbol */}
     </div>
   );

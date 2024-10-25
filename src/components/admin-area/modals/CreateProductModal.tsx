@@ -1,23 +1,24 @@
 import { Product } from "../Products";
 import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { getCategories } from "../../../api/categories";
-import { getColors } from "../../../api/colors";
-import { getSizes } from "../../../api/sizes";
 import { createProduct, updateProduct, deleteProduct } from "../../../api/products";
 import { getReviews, updateReview } from "../../../api/reviews";
-import { getProducers } from "../../../api/producers";
 import sortTables from "../../../utils/sortTables";
 import { formatDateShort } from "../../../utils/dateUtils";
-// import { restoreToken } from "../../utils/storage";
 import { ConfirmPopup, LoadingSpinnerSmall } from "../admin-components";
 import { FilterDropdown } from "../../Filters";
 import { Size } from "../Sizes";
-import { Color } from "../Colors";
 import Editor from "react-simple-wysiwyg";
 import { Review } from "../../../pages/admin/Reviews";
 import { iCreateReviewAPI } from "../../../api/reviews";
+import { useShop } from "../../../context";
+import { iRoom } from "../../../utils/constants";
+import { iTaxonomy } from "../../../pages/admin/Taxonomies";
+
 const dummyRug = "https://th.bing.com/th/id/OIP.MvnwHj_3a0ICmk72FNI5WQHaFR?rs=1&pid=ImgDetMain";
+
+const selectStyle = "select select-bordered w-full select-sm rounded-none";
+const inputStyle = "input input-bordered w-full rounded-none input-sm";
 
 export function CreateProductModal({
   product,
@@ -28,13 +29,13 @@ export function CreateProductModal({
   setProducts: React.Dispatch<React.SetStateAction<Product[]>>;
   setUpdate: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
-  const [categories, setCategories] = useState([]);
-  const [producers, setProducers] = useState([]);
-  const [colors, setColors] = useState([]);
-  const [sizes, setSizes] = useState([]);
+  const { categories, techniques, shapes, producers, colors, sizes, materials, styles, rooms, features } = useShop();
+
   const [reviews, setReviews] = useState<Review[]>([]);
   const [selectedSizes, setSelectedSizes] = useState<Size[]>([]);
-  const [selectedColors, setSelectedColors] = useState<Color[]>([]);
+  const [selectedColors, setSelectedColors] = useState<iTaxonomy[]>([]);
+  const [selectedRooms, setSelectedRooms] = useState<iRoom[]>([]);
+  const [selectedFeatures, setSelectedFeatures] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [descriptionHtml, setDescriptionHtml] = useState(""); // Local state for the WYSIWYG editor
   const [detailsHtml, setDetailsHtml] = useState(""); // Local state for the WYSIWYG editor
@@ -62,11 +63,18 @@ export function CreateProductModal({
     notes: string;
     instructions: string;
     producer: number | string;
+    style: number | string;
+    shape: number | string;
+    technique: number | string;
+    material: number | string;
+    new: boolean;
+    bestSeller: boolean;
   }>();
 
   const imageInput = watch("image");
 
   function resetFormToDefault() {
+    // console.log(product);
     reset({
       name: product.name,
       description: product.description,
@@ -80,10 +88,18 @@ export function CreateProductModal({
       notes: product.notes,
       instructions: product.instructions,
       producer: product.isEdit ? product.producer.id : "",
+      style: product.isEdit ? product.style.id : "",
+      shape: product.isEdit ? product.shape.id : "",
+      technique: product.isEdit ? product.technique.id : "",
+      material: product.isEdit ? product.material.id : "",
+      new: product.isEdit ? product.new : false,
+      bestSeller: product.isEdit ? product.bestSeller : false,
     });
+    setSelectedSizes(product.isEdit ? product.sizes.map((x) => ({ id: x.id, name: x.name })) : []);
+    setSelectedColors(product.isEdit ? product.colors.map((x) => ({ id: x.id, name: x.name, image: x.image })) : []);
+    setSelectedRooms(product.isEdit ? product.rooms.map((x) => ({ id: x.id, name: x.name })) : []);
+    setSelectedFeatures(product.isEdit ? product.features.map((x) => ({ id: x.id, name: x.name, image: x.image })) : []);
 
-    setSelectedSizes(product.isEdit ? product.sizes.map((s) => ({ id: s.id, name: s.name })) : []);
-    setSelectedColors(product.isEdit ? product.colors.map((c) => ({ id: c.id, name: c.name })) : []);
     setDescriptionHtml(product.description);
     setDetailsHtml(product.details);
     setNotesHtml(product.notes);
@@ -105,53 +121,6 @@ export function CreateProductModal({
 
     fetchReviews();
   }, [product]);
-
-  useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const categories = await getCategories();
-        setCategories(categories);
-        // console.log(categories);
-      } catch (err) {
-        console.log(err);
-      }
-    };
-
-    const fetchProducers = async () => {
-      try {
-        const producers = await getProducers();
-        setProducers(producers);
-        // console.log(categories);
-      } catch (err) {
-        console.log(err);
-      }
-    };
-
-    const fetchColors = async () => {
-      try {
-        const colors = await getColors();
-        setColors(colors);
-        // console.log(categories);
-      } catch (err) {
-        console.log(err);
-      }
-    };
-
-    const fetchSizes = async () => {
-      try {
-        const sizes = await getSizes();
-        setSizes(sizes);
-        // console.log(categories);
-      } catch (err) {
-        console.log(err);
-      }
-    };
-
-    fetchSizes();
-    fetchCategories();
-    fetchColors();
-    fetchProducers();
-  }, []);
 
   function handleDelete(e: React.MouseEvent) {
     e.preventDefault();
@@ -180,6 +149,12 @@ export function CreateProductModal({
     notes: string;
     instructions: string;
     producer: number | string;
+    style: number | string;
+    shape: number | string;
+    technique: number | string;
+    material: number | string;
+    new: boolean;
+    bestSeller: boolean;
   }) {
     // console.log(data);
     // parsing the data to the correct type before sending it to the server
@@ -188,6 +163,10 @@ export function CreateProductModal({
     const producer = typeof data.producer === "string" ? parseInt(data.producer) : data.producer;
     const color = typeof data.color === "string" ? parseInt(data.color) : data.color;
     const defaultSize = typeof data.defaultSize === "string" ? parseInt(data.defaultSize) : data.defaultSize;
+    const style = typeof data.style === "string" ? parseInt(data.style) : data.style;
+    const shape = typeof data.shape === "string" ? parseInt(data.shape) : data.shape;
+    const technique = typeof data.technique === "string" ? parseInt(data.technique) : data.technique;
+    const material = typeof data.material === "string" ? parseInt(data.material) : data.material;
     // console.log({ name: data.name, description: data.description, price, categoryId: category });
     setLoading(true);
     const body = {
@@ -199,12 +178,20 @@ export function CreateProductModal({
       colors: selectedColors.map((c) => c.id),
       defaultColorId: color,
       sizes: selectedSizes.map((s) => s.id),
+      rooms: selectedRooms.map((r) => r.id),
+      features: selectedFeatures.map((f) => f.id),
       active: data.active === undefined ? false : data.active,
       defaultSize,
       details: data.details,
       notes: data.notes,
       instructions: data.instructions,
       producerId: producer,
+      styleId: style,
+      shapeId: shape,
+      techniqueId: technique,
+      materialId: material,
+      new: data.new,
+      bestSeller: data.bestSeller,
     };
     if (!product.isEdit) {
       try {
@@ -335,7 +322,7 @@ export function CreateProductModal({
                         <div>
                           <input
                             type="text"
-                            className="input input-bordered w-full"
+                            className={inputStyle}
                             placeholder="Enter a product name"
                             autoComplete="off"
                             {...register("name", {
@@ -347,7 +334,7 @@ export function CreateProductModal({
 
                         <div>
                           <select
-                            className="select select-bordered w-full"
+                            className={selectStyle}
                             {...register("category", {
                               required: "Category is required",
                             })}>
@@ -367,7 +354,83 @@ export function CreateProductModal({
 
                         <div>
                           <select
-                            className="select select-bordered w-full"
+                            className={selectStyle}
+                            {...register("style", {
+                              required: "Style is required",
+                            })}>
+                            <option value="">Select a style</option>
+                            {styles.map((style: any) => {
+                              return (
+                                <option key={style.id} value={style.id}>
+                                  {style.name}
+                                </option>
+                              );
+                            })}
+                          </select>
+                          {errors.style && <p className="text-error text-xs text-left right-8 font-semibold">{errors.style.message?.toString()}</p>}
+                        </div>
+
+                        <div>
+                          <select
+                            className={selectStyle}
+                            {...register("shape", {
+                              required: "Shape is required",
+                            })}>
+                            <option value="">Select a shape</option>
+                            {shapes.map((shape: any) => {
+                              return (
+                                <option key={shape.id} value={shape.id}>
+                                  {shape.name}
+                                </option>
+                              );
+                            })}
+                          </select>
+                          {errors.shape && <p className="text-error text-xs text-left right-8 font-semibold">{errors.shape.message?.toString()}</p>}
+                        </div>
+
+                        <div>
+                          <select
+                            className={selectStyle}
+                            {...register("technique", {
+                              required: "Technique is required",
+                            })}>
+                            <option value="">Select a technique</option>
+                            {techniques.map((technique: any) => {
+                              return (
+                                <option key={technique.id} value={technique.id}>
+                                  {technique.name}
+                                </option>
+                              );
+                            })}
+                          </select>
+                          {errors.technique && (
+                            <p className="text-error text-xs text-left right-8 font-semibold">{errors.technique.message?.toString()}</p>
+                          )}
+                        </div>
+
+                        <div>
+                          <select
+                            className={selectStyle}
+                            {...register("material", {
+                              required: "Material is required",
+                            })}>
+                            <option value="">Select a material</option>
+                            {materials.map((material: any) => {
+                              return (
+                                <option key={material.id} value={material.id}>
+                                  {material.name}
+                                </option>
+                              );
+                            })}
+                          </select>
+                          {errors.material && (
+                            <p className="text-error text-xs text-left right-8 font-semibold">{errors.material.message?.toString()}</p>
+                          )}
+                        </div>
+
+                        <div>
+                          <select
+                            className={selectStyle}
                             {...register("producer", {
                               required: "Producer is required",
                             })}>
@@ -388,7 +451,7 @@ export function CreateProductModal({
                         <div>
                           <input
                             type="text"
-                            className="input input-bordered w-full "
+                            className={inputStyle}
                             placeholder="Enter a product price"
                             autoComplete="off"
                             {...register("price", {
@@ -410,12 +473,38 @@ export function CreateProductModal({
                         </div>
 
                         <div className="flex items-center gap-4">
-                          <p>Is Active?</p>
-                          <input type="checkbox" className="h-5 w-5 text-primary" {...register("active")} />
+                          <p className="text-sm">Is Active?</p>
+                          <input type="checkbox" className="h-5 w-5 text-primary checkbox-sm" {...register("active")} />
+                        </div>
+
+                        <div className="flex items-center gap-4">
+                          <p className="text-sm">Is New?</p>
+                          <input type="checkbox" className="h-5 w-5 text-primary checkbox-sm" {...register("new")} />
+                        </div>
+
+                        <div className="flex items-center gap-4">
+                          <p className="text-sm">Is Best Seller?</p>
+                          <input type="checkbox" className="h-5 w-5 text-primary checkbox-sm" {...register("bestSeller")} />
                         </div>
                       </div>
 
                       <div className="w-1/2 flex flex-col gap-6">
+                        <FilterDropdown
+                          name="Rooms"
+                          options={rooms}
+                          setSelected={setSelectedRooms}
+                          selected={selectedRooms}
+                          selectedRemoved={selectedRooms}
+                        />
+
+                        <FilterDropdown
+                          name="Features"
+                          options={features}
+                          setSelected={setSelectedFeatures}
+                          selected={selectedFeatures}
+                          selectedRemoved={selectedFeatures}
+                        />
+
                         <FilterDropdown
                           name="Colors"
                           options={colors}
@@ -434,7 +523,7 @@ export function CreateProductModal({
 
                         <div>
                           <select
-                            className="select select-bordered w-full"
+                            className={selectStyle}
                             {...register("color", {
                               required: "Color is required",
                             })}>
@@ -452,7 +541,7 @@ export function CreateProductModal({
 
                         <div>
                           <select
-                            className="select select-bordered w-full"
+                            className={selectStyle}
                             {...register("defaultSize", {
                               required: "Default size is required",
                             })}>

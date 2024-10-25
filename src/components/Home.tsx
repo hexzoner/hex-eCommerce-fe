@@ -9,15 +9,15 @@ import ReviewsCarousel from "../pages/user/home-components/ReviewsCarousel";
 import LoadingSpinner from "./LoadingSpinner";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { useShop } from "../context";
 
-export const Rooms: string[] = ["Living Room", "Bedroom", "Dining Room", "Kitchen", "Hallway", "Balcony", "Bathroom"];
-
+export const homeMainBG = "bg-[#eff2f6]";
 export default function Home() {
   const [loading, setLoading] = useState(true);
   const [products, setProducts] = useState<Product[]>([]);
   const [reviews, setReviews] = useState<Review[]>([]);
+  const { rooms, setFilter } = useShop();
 
-  const homeMainBG = "bg-[#eff2f6]";
   const tipsSubHeader = "text-lg font-bold";
   const tipsText = "text-lg font-medium";
   const numberMarkup = "text-xl bg-[#CECECE] rounded-full py-4";
@@ -43,7 +43,7 @@ export default function Home() {
   if (loading) return <LoadingSpinner />;
 
   return (
-    <div className={"min-h-screen " + homeMainBG}>
+    <div className={"min-h-screen "}>
       {/* Hero section */}
       <section className="max-w-[1115px] m-auto py-20">
         <div className="flex flex-wrap md:flex-nowrap md:h-[521px] justify-center gap-4  text-black">
@@ -52,18 +52,37 @@ export default function Home() {
             <p className="font-semibold text-xl py-2 px-4 w-fit mx-auto text-outline  rounded-xl">
               Lorem ipsum dolor sit amet consectetur adipiscing elit Ut et.
             </p>
-            <button onClick={() => navigate("/products")} className="btn btn-neutral rounded-none max-w-[194px] mx-auto btn-lg px-12">
+            <button
+              onClick={() => {
+                setFilter({ type: "", id: 0, value: "" });
+                navigate("/products");
+              }}
+              className="btn btn-neutral rounded-none max-w-[194px] mx-auto btn-lg px-12">
               Shop All
             </button>
           </div>
           <div className="flex flex-col gap-4 md:gap-0 w-full md:w-1/3 justify-between font-normal text-xl">
             <div className="hero-2-background h-[251px] gap-4 rounded-xl text-center flex flex-col justify-between py-4">
               <p></p>
-              <p className="bg-white w-fit mx-auto px-6 rounded-md py-2">Wool Rugs</p>
+              <button
+                onClick={() => {
+                  setFilter({ type: "Rug Types", id: 1, value: "Wool Rugs" });
+                  navigate("/products");
+                }}
+                className="btn text-lg  mx-auto px-6 rounded-md py-2">
+                Wool Rugs
+              </button>
             </div>
             <div className="hero-3-background h-[251px] gap-4 rounded-xl text-center flex flex-col justify-between py-4">
               <p></p>
-              <p className="bg-white w-fit mx-auto px-6 rounded-md py-2">New Arrivals</p>
+              <button
+                onClick={() => {
+                  setFilter({ type: "New Arrivals", id: 0, value: "true" });
+                  navigate("/products");
+                }}
+                className="btn text-lg  mx-auto px-6 rounded-md py-2">
+                New Arrivals
+              </button>
             </div>
           </div>
         </div>
@@ -72,10 +91,10 @@ export default function Home() {
       {/* Our Latest Arrivals */}
       <section className="bg-white h-[673.65px] mb-12">
         <div>
-          <p className="font-semibold text-4xl pt-20"> Our Latest Arrivals</p>
+          <p className="font-semibold text-4xl pt-20"> Featured Rugs</p>
         </div>
-
-        <div className="mt-20">
+        {/* <div className="m-auto w-80 md:w-full"></div> */}
+        <div className="mt-12 m-auto w-80 md:w-full">
           <LatestArrivalsCarousel products={products} />
         </div>
 
@@ -85,16 +104,22 @@ export default function Home() {
       </section>
 
       {/* Rooms and Sizes section */}
-      <section className={"md:h-[523px] mb-12 px-4 md:px-0  " + homeMainBG}>
+      <section className={"md:h-[523px] mb-12 px-4 py-8 md:px-0  " + homeMainBG}>
         <div className="max-w-screen-lg m-auto gap-4 flex flex-col justify-between h-full ">
           <p className="font-semibold text-3xl max-w-96 m-auto">Find the perfect rug size for your room.</p>
           <p className="max-w-72 m-auto text-justify">Our rugs come in a variety of sizes to fit any room in your home.</p>
           <div className="flex justify-between items-center gap-4 flex-wrap md:flex-nowrap ">
-            {Rooms.map((room, index) => {
+            {rooms.map((room, index) => {
               return (
-                <div key={index} className="flex flex-col justify-between gap-4 mt-4 m-auto">
-                  <img src="https://placehold.co/200x200/png" alt={room} />
-                  <p className="font-bold text-sm cursor-pointer">{room + " >"}</p>
+                <div
+                  onClick={() => {
+                    navigate(`/products/`);
+                    setFilter({ type: "Rug Sizes", id: room.id, value: room.name });
+                  }}
+                  key={index}
+                  className="flex flex-col justify-between gap-4 mt-4 m-auto cursor-pointer">
+                  <img className="h-[8.25rem] w-[8.25rem]" src={room.image} alt={room.name} />
+                  <p className="font-bold text-sm cursor-pointer">{room.name + " >"}</p>
                   {/* <p className="font-normal text-xl">Shop Now</p> */}
                 </div>
               );
@@ -175,7 +200,7 @@ export default function Home() {
       <section className="min-h-[721.75px] bg-white pt-20 text-left pb-28">
         <div className="max-w-screen-xl m-auto flex flex-col justify-between ">
           <p className={headerMarkup}>Here’s what our customers are saying…</p>
-          <div className="mt-12">
+          <div className="mt-12 m-auto w-80 md:w-full">
             <ReviewsCarousel reviews={reviews} />
           </div>
           <button className="text-center text-base font-semibold mt-14 w-fit m-auto">SEE ALL REVIEWS</button>

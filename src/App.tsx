@@ -30,6 +30,12 @@ import {
   Reviews,
   HomeArrivals,
   Producers,
+  Shapes,
+  Material,
+  Styles,
+  Technqiue,
+  Features,
+  Rooms,
 } from "./components/admin-area/admin-components";
 
 const router = createBrowserRouter(
@@ -40,12 +46,18 @@ const router = createBrowserRouter(
       <Route path="login" element={<Login />} />
       <Route path="signup" element={<Signup />} />
       <Route path="forgot-password" element={<ForgotPassword />} />
-      <Route path="products" element={<ProductBrowser />} />
+      {/* /products/room/Hallway */}
+      {/* /products/type/Wool */}
+      <Route path="products" element={<ProductBrowser />}>
+        {/* <Route path="room/:room" element={<ProductBrowser />} />
+        <Route path="type/:type" element={<ProductBrowser />} />
+        <Route path="color/:color" element={<ProductBrowser />} /> */}
+        {/* <Route path="room/:room/type/:type" element={<ProductBrowser />} /> */}
+      </Route>
       <Route path="rug-sizes" element={<RugSizes />} />
       <Route path="rug-types" element={<RugTypes />} />
       <Route path="sales" element={<Sales />} />
       <Route path="product/:id" element={<ProductDetails />} />
-
       <Route element={<ProtectedLayout />}>
         <Route path="cart" element={<Cart />} />
         <Route path="profile" element={<Profile />} />
@@ -63,6 +75,12 @@ const router = createBrowserRouter(
           <Route path="reviews" element={<Reviews />} />
           <Route path="taxonomy" element={<TaxonomyLayout />}>
             <Route index element={<Categories />} path="categories" />
+            <Route path="materials" element={<Material />} />
+            <Route path="styles" element={<Styles />} />
+            <Route path="features" element={<Features />} />
+            <Route path="rooms" element={<Rooms />} />
+            <Route path="shapes" element={<Shapes />} />
+            <Route path="technique" element={<Technqiue />} />
             <Route path="colors" element={<Colors />} />
             <Route path="sizes" element={<Sizes />} />
             <Route path="producers" element={<Producers />} />
@@ -74,7 +92,6 @@ const router = createBrowserRouter(
           </Route>
         </Route>
       </Route>
-
       <Route path="unauthorized" element={<Unauthorized />} />
       <Route path="*" element={<NotFound />} />
     </Route>

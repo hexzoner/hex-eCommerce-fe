@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom";
 import { getProducts } from "../api/products";
 // import { updateCart } from "../api/cart";
 // import { toast } from "react-toastify";
+import { NewBestSellerBadge } from "./components";
 import { formatDateShort } from "../utils/dateUtils";
 import { Rating } from "react-simple-star-rating";
 import RugsByProducer from "../pages/user/product-details-components/RugsByProducer";
@@ -57,7 +58,7 @@ export default function ProductDetails() {
           setResponseStatus(res.status);
           return;
         } else {
-          getProducts([], [], [], [res.producer.id])
+          getProducts({ producers: [res.producer.id] })
             .then((res) => {
               setRugsByProducer(res.results.filter((product: any) => product.id != id));
             })
@@ -117,7 +118,7 @@ export default function ProductDetails() {
   }
 
   return (
-    <div>
+    <div className="">
       <div className="breadcrumbs text-sm text-blue-600  text-left max-w-[80rem] m-auto mt-6">
         <ul>
           <li>
@@ -136,8 +137,9 @@ export default function ProductDetails() {
       <div className="flex flex-col min-h-screen mt-8 text-left">
         {/* Product Image, Name, Price, Category, Size, Color, Add to Cart Button */}
         <div className="flex-col lg:flex-row flex gap-0 items-start max-w-[80rem] m-auto h-full">
-          <div className="w-full lg:w-1/2 px-24 lg:px-0  flex-1 self-stretch">
-            <img className="" src={product.image} alt="Product image" />
+          <div className="w-full lg:w-1/2 px-24 lg:px-0  flex-1 self-stretch relative">
+            <img className="object-fill w-full py-4 px-2" src={product.image} alt="Product image" />
+            <NewBestSellerBadge isNew={product.new} isBestSeller={product.bestSeller} />
             {/* Featured Reviews */}
             {featuredReviews.length > 0 && (
               <section className="max-w-[70rem] m-auto ">
@@ -156,6 +158,20 @@ export default function ProductDetails() {
             <div className="flex gap-4 italic">
               <p>{product.category.name}</p>
             </div>
+
+            {/* Features section */}
+            <div className="flex gap-4 flex-wrap ">
+              {product.features &&
+                product.features.map((feature: any) => {
+                  return (
+                    <div key={feature.id} className="flex gap-1 h-6 items-center  py-4">
+                      <img className="h-6 w-6" src={feature.image} alt={feature.name} />
+                      <p className="text-sm">{feature.name}</p>
+                    </div>
+                  );
+                })}
+            </div>
+
             <div className="font-semibold text-lg">
               <span>Size:</span> <span className="ml-1 ">{selectedSize.name}</span>
             </div>
@@ -209,15 +225,17 @@ export default function ProductDetails() {
         </div>
 
         {/* Meet the producer section */}
-        <section className="max-w-[70rem] m-auto  pb-16 mt-16">
-          <div className="flex gap-8">
-            <div className="w-2/3 flex flex-col gap-8">
+        <section className="max-w-[70rem] m-auto pb-16 mt-16">
+          <div className="flex flex-wrap md:flex-nowrap gap-8">
+            <div className="w-full md:w-2/3 flex flex-col gap-8">
               <p className="font-semibold text-4xl">Meet {product.producer.name}</p>
               <p>{product.producer.description}</p>
               <p className="font-semibold text-xl mt-16">More rugs from this producer</p>
-              <RugsByProducer products={rugsByProducer} />
+              <div className="m-auto w-80 md:w-full">
+                <RugsByProducer products={rugsByProducer} />
+              </div>
             </div>
-            <img className="w-1/3 rounded-xl object-cover max-h-80" src={product.producer.image} alt="producer image" />
+            <img className="w-full md:w-1/3 rounded-xl object-cover max-h-80 " src={product.producer.image} alt="producer image" />
           </div>
         </section>
 

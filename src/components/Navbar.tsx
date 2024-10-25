@@ -3,11 +3,12 @@ import { useAuth, useShop } from "../context";
 import { useState, useEffect } from "react";
 // import { mainMakrupColors } from "./Home";
 export const activeColor = "#b63c3e";
+import { NavbarMenuDropdown } from "./components";
 const navLinkClass = ({ isActive }: { isActive: boolean }) => `btn btn-ghost  + ${isActive ? `text-[${activeColor}]` : ""} `;
 
 export default function Navbar() {
   const { user, isAuthenticated, logout, authLoading } = useAuth();
-  const { cart, setCart } = useShop();
+  const { cart, setCart, rooms, categories } = useShop();
 
   const htmlElement = document.querySelector("html");
   if (htmlElement) htmlElement.setAttribute("data-theme", "winter");
@@ -20,7 +21,7 @@ export default function Navbar() {
   return (
     <div className="bg-[#eff2f6] text-black">
       <div className="bg-[#303030]">
-        <div className="flex justify-center text-white py-2 gap-6 font-normal">
+        <div className="flex justify-center text-white py-2 gap-6 font-normal flex-wrap px-2">
           <span className="text-sm">Quality Excellence</span>
           <span className="text-sm">|</span>
           <span className="text-sm">Sustanability</span>
@@ -33,7 +34,7 @@ export default function Navbar() {
         </div>
       </div>
       <div className="navbar max-w-screen-xl m-auto font-normal text-lg">
-        <div className="flex-1 flex-wrap">
+        <div className="flex-1 flex-wrap ">
           <NavLink to="/" className="text-2xl mr-4">
             <Logo fill={"black"} />
           </NavLink>
@@ -60,15 +61,18 @@ export default function Navbar() {
             </>
           ) : (
             <>
-              <NavLink to="/products" className={navLinkClass}>
+              {/* <NavLink to="/products" className={navLinkClass}>
                 Featured Rugs
-              </NavLink>
-              <NavLink to="/rug-types" className={navLinkClass}>
+              </NavLink> */}
+              {/* <NavLink to="/rug-types" className={navLinkClass}>
                 Rug Types
-              </NavLink>
-              <NavLink to="/rug-sizes" className={navLinkClass}>
+              </NavLink> */}
+              <NavbarMenuDropdown name={"Featured Rugs"} options={[]} />
+              <NavbarMenuDropdown name={"Rug Types"} options={categories} />
+              <NavbarMenuDropdown name={"Rug Sizes"} options={rooms} />
+              {/* <NavLink to="/rug-sizes" className={navLinkClass}>
                 Rug Sizes
-              </NavLink>
+              </NavLink> */}
               <NavLink to="/sales" className={navLinkClass}>
                 Sales
               </NavLink>
@@ -84,7 +88,7 @@ export default function Navbar() {
         {!authLoading ? (
           <>
             {!isAuthenticated ? (
-              <div className="flex-none">
+              <div className="flex flex-wrap">
                 <NavLink to="/wishlist" className={navLinkClass}>
                   Wishlist
                 </NavLink>

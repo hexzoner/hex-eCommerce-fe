@@ -5,8 +5,10 @@ import sortTables from "../../utils/sortTables";
 import { CreateProductModal } from "./admin-components";
 import { formatDateShort } from "../../utils/dateUtils";
 import { Size } from "./Sizes";
-import { Color } from "./Colors";
+// import { Color } from "../../pages/admin/Colors";
 import Pagination from "../Pagination";
+import { iRoom } from "../../utils/constants";
+import { iTaxonomy } from "../../pages/admin/Taxonomies";
 
 export interface Product {
   id: number;
@@ -19,6 +21,23 @@ export interface Product {
     id: number;
     name: string;
   };
+  style: {
+    id: number;
+    name: string;
+  };
+  technique: {
+    id: number;
+    name: string;
+  };
+  shape: {
+    id: number;
+    name: string;
+  };
+  material: {
+    id: number;
+    name: string;
+  };
+
   defaultColor: {
     id: number;
     name: string;
@@ -28,7 +47,9 @@ export interface Product {
   wishlisted: boolean;
   sizes: Size[];
   defaultSize: Size;
-  colors: Color[];
+  colors: iTaxonomy[];
+  rooms: iRoom[];
+  features: iTaxonomy[];
   active: boolean;
   details: string;
   notes: string;
@@ -37,6 +58,8 @@ export interface Product {
     id: number;
     name: string;
   };
+  new: boolean;
+  bestSeller: boolean;
 }
 
 export default function Products() {
@@ -72,6 +95,26 @@ export default function Products() {
       id: 0,
       name: "",
     },
+    style: {
+      id: 0,
+      name: "",
+    },
+    technique: {
+      id: 0,
+      name: "",
+    },
+    shape: {
+      id: 0,
+      name: "",
+    },
+    material: {
+      id: 0,
+      name: "",
+    },
+    rooms: [],
+    features: [],
+    new: false,
+    bestSeller: false,
   };
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
@@ -89,7 +132,7 @@ export default function Products() {
     const fetchProducts = async () => {
       setLoading(true);
       try {
-        const products = await getProducts([], [], [], [], page, perPage);
+        const products = await getProducts({ page, perPage });
         // console.log(products);
         setProducts(sortTables(products.results, "id", "desc"));
         setTotalPages(products.totalPages);
