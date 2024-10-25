@@ -3,6 +3,13 @@ import Taxonomies from "./Taxonomies";
 
 export default function Features() {
   return (
-    <Taxonomies createTaxonomy={createRoom} deleteTaxonomy={deleteRoom} updateTaxonomy={updateRoom} getTaxonomies={getRooms} modalName="room_modal" />
+    <Taxonomies
+      taxonomyName="Room"
+      createTaxonomy={createRoom}
+      deleteTaxonomy={deleteRoom}
+      updateTaxonomy={updateRoom}
+      getTaxonomies={getRooms}
+      modalName="room_modal"
+    />
   );
 }
