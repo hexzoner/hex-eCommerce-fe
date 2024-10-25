@@ -11,12 +11,14 @@ export interface iTaxonomy {
 }
 
 export default function Taxonomies({
+  taxonomyName,
   modalName,
   getTaxonomies,
   createTaxonomy,
   updateTaxonomy,
   deleteTaxonomy,
 }: {
+  taxonomyName: string;
   modalName: string;
   getTaxonomies: () => Promise<any>;
   createTaxonomy: (data: any) => Promise<any>;
@@ -70,9 +72,9 @@ export default function Taxonomies({
   return (
     <div className="min-h-screen ">
       <div className="w-full flex m-auto justify-center items-center mb-4 gap-4">
-        <p className="text-3xl my-6">Features</p>
+        <p className="text-3xl my-6">{taxonomyName}s</p>
         <button onClick={handleAdd} className="btn btn-outline btn-sm">
-          Add Feature
+          Add {taxonomyName}
         </button>
       </div>
       <div className="overflow-x-auto rounded-md max-w-5xl m-auto">

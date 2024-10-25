@@ -4,6 +4,7 @@ import Taxonomies from "./Taxonomies";
 export default function Categories() {
   return (
     <Taxonomies
+      taxonomyName="Category"
       createTaxonomy={createCategory}
       deleteTaxonomy={deleteCategory}
       updateTaxonomy={updateCategory}

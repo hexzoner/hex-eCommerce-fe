@@ -4,6 +4,7 @@ import Taxonomies from "./Taxonomies";
 export default function Features() {
   return (
     <Taxonomies
+      taxonomyName="Style"
       createTaxonomy={createStyle}
       deleteTaxonomy={deleteStyle}
       updateTaxonomy={updateStyle}
