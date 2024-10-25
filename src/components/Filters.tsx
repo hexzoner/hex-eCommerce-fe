@@ -53,7 +53,7 @@ export default function Filters({
 
   return (
     <div>
-      <div className="border-b-[1.5px] border-t-[1.5px] border-black flex items-start mb-2 gap-4 py-4">
+      <div className="border-b-[1.5px] border-t-[1.5px] border-black flex flex-wrap items-start mb-2 gap-4 py-4">
         <FilterDropdown
           name="Category"
           options={categories}

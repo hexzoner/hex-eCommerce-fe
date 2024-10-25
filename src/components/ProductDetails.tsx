@@ -118,7 +118,7 @@ export default function ProductDetails() {
   }
 
   return (
-    <div>
+    <div className="">
       <div className="breadcrumbs text-sm text-blue-600  text-left max-w-[80rem] m-auto mt-6">
         <ul>
           <li>
@@ -164,7 +164,7 @@ export default function ProductDetails() {
               {product.features &&
                 product.features.map((feature: any) => {
                   return (
-                    <div key={feature.id} className="flex gap-1 h-6 items-center">
+                    <div key={feature.id} className="flex gap-1 h-6 items-center  py-4">
                       <img className="h-6 w-6" src={feature.image} alt={feature.name} />
                       <p className="text-sm">{feature.name}</p>
                     </div>
@@ -225,15 +225,17 @@ export default function ProductDetails() {
         </div>
 
         {/* Meet the producer section */}
-        <section className="max-w-[70rem] m-auto  pb-16 mt-16">
-          <div className="flex gap-8">
-            <div className="w-2/3 flex flex-col gap-8">
+        <section className="max-w-[70rem] m-auto pb-16 mt-16">
+          <div className="flex flex-wrap md:flex-nowrap gap-8">
+            <div className="w-full md:w-2/3 flex flex-col gap-8">
               <p className="font-semibold text-4xl">Meet {product.producer.name}</p>
               <p>{product.producer.description}</p>
               <p className="font-semibold text-xl mt-16">More rugs from this producer</p>
-              <RugsByProducer products={rugsByProducer} />
+              <div className="m-auto w-80 md:w-full">
+                <RugsByProducer products={rugsByProducer} />
+              </div>
             </div>
-            <img className="w-1/3 rounded-xl object-cover max-h-80" src={product.producer.image} alt="producer image" />
+            <img className="w-full md:w-1/3 rounded-xl object-cover max-h-80 " src={product.producer.image} alt="producer image" />
           </div>
         </section>
 

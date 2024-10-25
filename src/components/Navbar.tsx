@@ -21,7 +21,7 @@ export default function Navbar() {
   return (
     <div className="bg-[#eff2f6] text-black">
       <div className="bg-[#303030]">
-        <div className="flex justify-center text-white py-2 gap-6 font-normal">
+        <div className="flex justify-center text-white py-2 gap-6 font-normal flex-wrap px-2">
           <span className="text-sm">Quality Excellence</span>
           <span className="text-sm">|</span>
           <span className="text-sm">Sustanability</span>
@@ -88,7 +88,7 @@ export default function Navbar() {
         {!authLoading ? (
           <>
             {!isAuthenticated ? (
-              <div className="flex-none">
+              <div className="flex flex-wrap">
                 <NavLink to="/wishlist" className={navLinkClass}>
                   Wishlist
                 </NavLink>

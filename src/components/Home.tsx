@@ -43,7 +43,7 @@ export default function Home() {
   if (loading) return <LoadingSpinner />;
 
   return (
-    <div className={"min-h-screen " + homeMainBG}>
+    <div className={"min-h-screen "}>
       {/* Hero section */}
       <section className="max-w-[1115px] m-auto py-20">
         <div className="flex flex-wrap md:flex-nowrap md:h-[521px] justify-center gap-4  text-black">
@@ -93,8 +93,8 @@ export default function Home() {
         <div>
           <p className="font-semibold text-4xl pt-20"> Our Latest Arrivals</p>
         </div>
-
-        <div className="mt-20">
+        {/* <div className="m-auto w-80 md:w-full"></div> */}
+        <div className="mt-20 m-auto w-80 md:w-full">
           <LatestArrivalsCarousel products={products} />
         </div>
 
@@ -104,7 +104,7 @@ export default function Home() {
       </section>
 
       {/* Rooms and Sizes section */}
-      <section className={"md:h-[523px] mb-12 px-4 md:px-0  " + homeMainBG}>
+      <section className={"md:h-[523px] mb-12 px-4 py-8 md:px-0  " + homeMainBG}>
         <div className="max-w-screen-lg m-auto gap-4 flex flex-col justify-between h-full ">
           <p className="font-semibold text-3xl max-w-96 m-auto">Find the perfect rug size for your room.</p>
           <p className="max-w-72 m-auto text-justify">Our rugs come in a variety of sizes to fit any room in your home.</p>
@@ -200,7 +200,7 @@ export default function Home() {
       <section className="min-h-[721.75px] bg-white pt-20 text-left pb-28">
         <div className="max-w-screen-xl m-auto flex flex-col justify-between ">
           <p className={headerMarkup}>Here’s what our customers are saying…</p>
-          <div className="mt-12">
+          <div className="mt-12 m-auto w-80 md:w-full">
             <ReviewsCarousel reviews={reviews} />
           </div>
           <button className="text-center text-base font-semibold mt-14 w-fit m-auto">SEE ALL REVIEWS</button>
