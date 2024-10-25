@@ -91,10 +91,10 @@ export default function Home() {
       {/* Our Latest Arrivals */}
       <section className="bg-white h-[673.65px] mb-12">
         <div>
-          <p className="font-semibold text-4xl pt-20"> Our Latest Arrivals</p>
+          <p className="font-semibold text-4xl pt-20"> Featured Rugs</p>
         </div>
         {/* <div className="m-auto w-80 md:w-full"></div> */}
-        <div className="mt-20 m-auto w-80 md:w-full">
+        <div className="mt-12 m-auto w-80 md:w-full">
           <LatestArrivalsCarousel products={products} />
         </div>
 
