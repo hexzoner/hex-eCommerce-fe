@@ -1,8 +1,7 @@
 import { iTaxonomy } from "./Taxonomies";
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { LoadingSpinnerSmall } from "../../components/admin-area/modals/ColorModals";
-import { ConfirmPopup } from "../../components/admin-area/admin-components";
+import { ConfirmPopup, LoadingSpinnerSmall } from "../../components/admin-area/admin-components";
 
 export default function TaxonomyPopup({
   taxonomy,
