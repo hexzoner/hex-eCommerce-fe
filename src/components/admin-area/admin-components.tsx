@@ -4,14 +4,12 @@ import Users from "./Users";
 import Orders from "./Orders";
 import Dashboard from "./Dashboard";
 import OrderDetails from "./OrderDetails";
-
 import { CreateProductModal } from "./modals/CreateProductModal";
 import ProductModal from "./modals/ProductModal";
 import OrderModal from "./modals/OrderModal";
 import UserModal from "./modals/UserModal";
 import ConfirmPopup from "./modals/ConfirmPopup";
 import Colors from "../../pages/admin/Colors";
-
 import { CreateSizeModal } from "./modals/SizeModals";
 import SizeModal from "./modals/SizeModals";
 import Sizes from "./Sizes";
