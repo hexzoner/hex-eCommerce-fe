@@ -149,7 +149,7 @@ export const createProduct = async (product: ProductProps) => {
 };
 
 export const updateProduct = async (product: ProductProps) => {
-  console.log(getBodyAPI(product));
+  // console.log(getBodyAPI(product));
   // console.log(product.id);
 
   const response = await axios
