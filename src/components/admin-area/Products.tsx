@@ -9,6 +9,7 @@ import { Size } from "./Sizes";
 import Pagination from "../Pagination";
 import { iRoom } from "../../utils/constants";
 import { iTaxonomy } from "../../pages/admin/Taxonomies";
+import { iPattern } from "./modals/CreateProductModal";
 
 export interface Product {
   id: number;
@@ -60,6 +61,7 @@ export interface Product {
   };
   new: boolean;
   bestSeller: boolean;
+  patterns: iPattern[];
 }
 
 export default function Products() {
@@ -115,6 +117,7 @@ export default function Products() {
     features: [],
     new: false,
     bestSeller: false,
+    patterns: [],
   };
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);

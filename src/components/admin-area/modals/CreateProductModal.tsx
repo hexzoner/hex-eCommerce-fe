@@ -14,11 +14,33 @@ import { iCreateReviewAPI } from "../../../api/reviews";
 import { useShop } from "../../../context";
 import { iRoom } from "../../../utils/constants";
 import { iTaxonomy } from "../../../pages/admin/Taxonomies";
+import { uploadImageToS3 } from "../../../api/image-upload";
 
 const dummyRug = "https://th.bing.com/th/id/OIP.MvnwHj_3a0ICmk72FNI5WQHaFR?rs=1&pid=ImgDetMain";
 
 const selectStyle = "select select-bordered w-full select-sm rounded-none";
 const inputStyle = "input input-bordered w-full rounded-none input-sm";
+
+export interface iPattern {
+  id: number;
+  name: string;
+  icon: string;
+  active: boolean;
+  images: iPatternImage[];
+  iconFile?: File;
+}
+
+interface iPatternImage {
+  id: number;
+  imageURL: string;
+  file: File;
+}
+
+enum PatternMode {
+  View,
+  Add,
+  Edit,
+}
 
 export function CreateProductModal({
   product,
@@ -41,6 +63,21 @@ export function CreateProductModal({
   const [detailsHtml, setDetailsHtml] = useState(""); // Local state for the WYSIWYG editor
   const [notesHtml, setNotesHtml] = useState(""); // Local state for the WYSIWYG editor
   const [instructionsHtml, setInstructionsHtml] = useState(""); // Local state for the WYSIWYG editor
+  const [patternMode, setPatternMode] = useState<PatternMode>(PatternMode.View);
+  const [pattern, setPattern] = useState<iPattern>({
+    id: Math.floor(Math.random() * 1000),
+    name: "",
+    icon: "",
+    active: true,
+    images: [],
+    // iconFile: new File([""], "filename"),
+  });
+  const [patterns, setPatterns] = useState<iPattern[]>(product.patterns);
+  const [patternErrors, setPatternErrors] = useState({
+    name: "",
+    icon: "",
+    images: "",
+  });
 
   const {
     register,
@@ -119,6 +156,9 @@ export function CreateProductModal({
       }
     };
 
+    setPatterns(product.patterns);
+    // console.log(product.patterns);
+
     fetchReviews();
   }, [product]);
 
@@ -192,6 +232,7 @@ export function CreateProductModal({
       materialId: material,
       new: data.new,
       bestSeller: data.bestSeller,
+      patterns,
     };
     if (!product.isEdit) {
       try {
@@ -203,7 +244,24 @@ export function CreateProductModal({
       }
     } else {
       try {
-        await updateProduct({ ...body, id: product.id });
+        const _patterns = patterns;
+        for (const p of _patterns) {
+          if (!p.icon.startsWith("https://")) {
+            const iconUrl = await uploadImageToS3(p.iconFile);
+            p.icon = iconUrl;
+          }
+          for (const i of p.images) {
+            if (i.imageURL.startsWith("https://")) continue;
+            const imageUrl = await uploadImageToS3(i.file);
+            i.imageURL = imageUrl;
+          }
+        }
+        setPatterns(_patterns);
+        await updateProduct({
+          ...body,
+          id: product.id,
+          patterns: _patterns,
+        });
         setUpdate((prev) => !prev);
         handleClose();
       } catch (err) {
@@ -212,14 +270,6 @@ export function CreateProductModal({
     }
 
     setLoading(false);
-
-    // function closing() {
-    //   const popup = document.getElementById("create_product_modal");
-    //   if (popup) (popup as HTMLDialogElement).close();
-    //   reset();
-    //   // window.location.reload(); //refresh the page
-    //   // setProducts(await getProducts(restoreToken()));
-    // }
   }
 
   function onDescriptionChange(e: any) {
@@ -278,6 +328,34 @@ export function CreateProductModal({
     // console.log(res);
   }
 
+  function handleAddPattern(e: any) {
+    e.preventDefault();
+    setPatternMode(PatternMode.Add);
+  }
+
+  function handleSavePattern(e: any) {
+    e.preventDefault();
+    const errors = { name: "", icon: "", images: "" };
+    if (pattern.name.length == 0) errors.name = "Pattern name is required";
+    if (pattern.icon.length == 0) errors.icon = "Pattern icon is required";
+    if (pattern.images.length == 0) errors.images = "Pattern images are required";
+    setPatternErrors(errors);
+    if (errors.name.length > 0 || errors.icon.length > 0 || errors.images.length > 0) return;
+
+    if (patternMode === PatternMode.Add) setPatterns((prev) => [...prev, pattern]);
+    else setPatterns((prev) => prev.map((x) => (x.id === pattern.id ? pattern : x)));
+
+    setPattern({
+      name: "",
+      icon: "",
+      active: true,
+      images: [],
+      id: Math.floor(Math.random() * 1000),
+    });
+    setPatternMode(PatternMode.View);
+    // console.log(pattern);
+  }
+
   return (
     <>
       <dialog id="create_product_modal" className="modal">
@@ -314,8 +392,8 @@ export function CreateProductModal({
                   </div>
                 </div>
                 <div role="tablist" className="tabs tabs-bordered">
-                  {/* Tab 1 */}
-                  <input type="radio" name="my_tabs_1" role="tab" className="tab" aria-label="Main" defaultChecked />
+                  {/* Tab 1 - Main*/}
+                  <input type="radio" name="my_tabs_1" role="tab" className="tab" aria-label="Main" />
                   <div role="tabpanel" className="tab-content p-10">
                     <div className="flex gap-6">
                       <div className="w-1/2 flex flex-col gap-6 ">
@@ -563,7 +641,7 @@ export function CreateProductModal({
                     </div>
                   </div>
 
-                  {/* Tab 2 */}
+                  {/* Tab 2 - Details */}
                   <input type="radio" name="my_tabs_1" role="tab" className="tab" aria-label="Details" />
                   <div role="tabpanel" className="tab-content p-10 w-full ">
                     <div className=" grid grid-cols-2 gap-3">
@@ -677,33 +755,163 @@ export function CreateProductModal({
                     </div>
                   </div>
 
-                  {/* Tab 3 */}
-                  <input type="radio" name="my_tabs_1" role="tab" className="tab" aria-label="Images" />
+                  {/* Tab 3 - Patterns */}
+                  <input type="radio" name="my_tabs_1" role="tab" className="tab" aria-label="Images" defaultChecked />
                   <div role="tabpanel" className="tab-content p-10">
-                    <div className="flex flex-col gap-4">
-                      <div className="flex justify-center">
-                        <img
-                          src={product.image?.length > 0 ? product.image : imageInput && imageInput.length > 0 ? imageInput : dummyRug}
-                          alt="product"
-                          className="h-64"
-                        />
-                      </div>
-                      <div>
-                        <input
-                          type="text"
-                          className="input input-bordered w-full "
-                          placeholder="Image URL"
-                          autoComplete="off"
-                          {...register("image", {
-                            required: "Image is required",
-                          })}
-                        />
-                        {errors.image && <p className="font-semibold text-error text-xs text-left ">{errors.image.message?.toString()}</p>}
-                      </div>
+                    <div className="flex flex-col gap-4 max-w-screen-lg m-auto">
+                      {patternMode == PatternMode.View ? (
+                        <button onClick={handleAddPattern} className="btn btn-primary max-w-sm self-end rounded-none">
+                          Add Pattern
+                        </button>
+                      ) : (
+                        <div className="flex self-end">
+                          <button onClick={handleSavePattern} className="btn btn-success max-w-sm self-end rounded-none">
+                            Save
+                          </button>
+                          <button onClick={() => setPatternMode(PatternMode.View)} className="btn max-w-sm self-end rounded-none">
+                            Cancel
+                          </button>
+                        </div>
+                      )}
+                      {patternMode === PatternMode.View ? (
+                        <table className="table rounded-md table-zebra table-sm w-full shadow-md mb-12">
+                          <thead className="text-sm bg-base-300">
+                            <tr>
+                              <th className="font-bold">Image</th>
+                              <th className="font-bold">Name</th>
+                              <th className="font-bold">Icon</th>
+                              <th className="font-bold">Active</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {patterns.map((pattern: iPattern) => (
+                              <tr
+                                onClick={() => {
+                                  setPattern(pattern);
+                                  setPatternMode(PatternMode.Edit);
+                                }}
+                                className="hover cursor-pointer"
+                                key={pattern.id}>
+                                <td>
+                                  <img
+                                    src={pattern.images.length > 0 ? pattern.images[0].imageURL : "https://placehold.co/300"}
+                                    alt={"Image"}
+                                    className="h-24 w-24 object-cover"
+                                  />
+                                </td>
+                                <td>{pattern.name}</td>
+                                <td>
+                                  <img src={pattern.icon} alt={"Icon"} className="h-16 w-16 rounded-full object-cover" />
+                                </td>
+                                <td>
+                                  <p>{pattern.active ? "Active" : "Inactive"}</p>
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      ) : (
+                        <div className="flex flex-col gap-8 text-sm font-semibold">
+                          <label htmlFor="patternName">Pattern Name</label>
+                          <div>
+                            <input
+                              type="text"
+                              className="input input-bordered w-full input-sm"
+                              placeholder="Pattern Name"
+                              autoComplete="off"
+                              id="patternName"
+                              onChange={(e) => {
+                                setPatternErrors({ ...patternErrors, name: "" });
+                                setPattern({ ...pattern, name: e.target.value });
+                              }}
+                              value={pattern.name}
+                            />
+                            {patternErrors.name.length > 0 && <p className="font-semibold text-error text-xs text-left ">{patternErrors.name}</p>}
+                          </div>
+
+                          <label htmlFor="patternIcon">Pattern Icon</label>
+                          {pattern.icon && <img className="h-24 w-24 rounded-full object-cover" src={pattern.icon} alt="Pattern icon" />}
+                          <div>
+                            <input
+                              id="patternIcon"
+                              type="file"
+                              accept="image/*"
+                              className="file-input file-input-xs file-input-bordered w-full max-w-xs rounded-none"
+                              onChange={(e) => {
+                                const file = e.target.files?.[0];
+                                if (file) {
+                                  setPatternErrors({ ...patternErrors, icon: "" });
+                                  setPattern({
+                                    ...pattern,
+                                    icon: URL.createObjectURL(file),
+                                    iconFile: file, // Store the File object for later use (e.g., for upload)
+                                  });
+                                }
+                              }}
+                            />
+                            {patternErrors.icon.length > 0 && <p className="font-semibold text-error text-xs text-left ">{patternErrors.icon}</p>}
+                          </div>
+
+                          <div>
+                            {patternErrors.images.length > 0 && <p className="font-semibold text-error text-xs text-left ">{patternErrors.images}</p>}
+                            <p className="w-full border-b-[1.5px] border-black">Pattern Images</p>
+                            <div className="flex gap-4 flex-wrap py-4">
+                              {pattern.images.map((image, index) => (
+                                <div key={index} className="relative">
+                                  <img src={image.imageURL} alt="Pattern" className="h-48 w-48 rounded-none object-cover" />
+                                  <button
+                                    onClick={(e: any) => {
+                                      e.preventDefault();
+                                      setPattern({ ...pattern, images: pattern.images.filter((x) => x !== image) });
+                                    }}
+                                    className="absolute top-0 right-0 btn btn-neutral w-8 h-6 btn-sm rounded-none p-0 text-white">
+                                    X
+                                  </button>
+                                </div>
+                              ))}
+                              <label htmlFor="pattern_image" className="btn btn-neutral rounded-none btn-lg w-48 h-48 text-3xl">
+                                +
+                              </label>
+                              <input
+                                id="pattern_image"
+                                type="file"
+                                accept="image/*"
+                                className="file-input file-input-sm file-input-bordered opacity-0"
+                                onChange={(e) => {
+                                  const file = e.target.files?.[0];
+                                  if (file) {
+                                    setPatternErrors({ ...patternErrors, images: "" });
+                                    setPattern({
+                                      ...pattern,
+                                      images: [
+                                        ...pattern.images,
+                                        {
+                                          id: Math.floor(Math.random() * 1000),
+                                          imageURL: URL.createObjectURL(file),
+                                          file: file, // Store the File object for later use (e.g., for upload)
+                                        },
+                                      ],
+                                    });
+                                    // const reader = new FileReader();
+                                    // reader.onload = (e) => {
+                                    //   const newImage = e.target?.result?.toString();
+                                    //   if (newImage) {
+                                    //     const newImageObj = { id: Math.floor(Math.random() * 1000), imageURL: newImage };
+                                    //     setPattern({ ...pattern, images: [...pattern.images, newImageObj] });
+                                    //   }
+                                    // };
+                                    // reader.readAsDataURL(file);
+                                  }
+                                }}
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      )}
                     </div>
                   </div>
 
-                  {/* Tab 4 */}
+                  {/* Tab 4 - Reviews */}
                   <input type="radio" name="my_tabs_1" role="tab" className="tab" aria-label="Reviews" />
                   <div role="tabpanel" className="tab-content p-10">
                     <div>
@@ -853,6 +1061,32 @@ export function CreateProductModal({
                           ))}
                         </tbody>
                       </table>
+                    </div>
+                  </div>
+
+                  {/* Tab 5 */}
+                  <input type="radio" name="my_tabs_1" role="tab" className="tab " aria-label="Old_Image" />
+                  <div role="tabpanel" className="tab-content p-10">
+                    <div className="flex flex-col gap-4">
+                      <div className="flex justify-center">
+                        <img
+                          src={product.image?.length > 0 ? product.image : imageInput && imageInput.length > 0 ? imageInput : dummyRug}
+                          alt="product"
+                          className="h-64"
+                        />
+                      </div>
+                      <div>
+                        <input
+                          type="text"
+                          className="input input-bordered w-full "
+                          placeholder="Image URL"
+                          autoComplete="off"
+                          {...register("image", {
+                            required: "Image is required",
+                          })}
+                        />
+                        {errors.image && <p className="font-semibold text-error text-xs text-left ">{errors.image.message?.toString()}</p>}
+                      </div>
                     </div>
                   </div>
                 </div>
