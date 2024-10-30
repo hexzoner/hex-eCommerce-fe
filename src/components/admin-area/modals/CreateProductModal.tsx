@@ -29,7 +29,6 @@ export interface iPattern {
   images: iPatternImage[];
   iconFile?: File;
   order: number;
-  changed: boolean;
 }
 
 interface iPatternImage {
@@ -75,7 +74,6 @@ export function CreateProductModal({
     active: true,
     images: [],
     order: patterns.length + 1,
-    changed: false,
     // iconFile: new File([""], "filename"),
   });
   const [patternErrors, setPatternErrors] = useState({
@@ -248,27 +246,27 @@ export function CreateProductModal({
       }
     } else {
       try {
-        let patternsChanged = false;
+        // let patternsChanged = false;
         const _patterns = patterns;
         for (const p of _patterns) {
           if (!p.icon.startsWith("https://")) {
             const iconUrl = await uploadImageToS3(p.iconFile);
             p.icon = iconUrl;
-            patternsChanged = true;
+            // patternsChanged = true;
           }
           const _images = p.images;
           for (const i of _images) {
             if (i.imageURL.startsWith("https://")) {
               continue;
             }
-            if (i.imageURL === "deleted") {
-              patternsChanged = true;
-              p.images = p.images.filter((x) => x.id !== i.id);
-              continue;
-            }
+            // if (i.imageURL === "deleted") {
+            //   patternsChanged = true;
+            //   p.images = p.images.filter((x) => x.id !== i.id);
+            //   continue;
+            // }
             const imageUrl = await uploadImageToS3(i.file);
             i.imageURL = imageUrl;
-            patternsChanged = true;
+            // patternsChanged = true;
           }
         }
         // if (patternsChanged) {
@@ -316,6 +314,7 @@ export function CreateProductModal({
 
   function handleClose() {
     resetFormToDefault();
+    setPatternMode(PatternMode.View);
     const createProductModal = document.getElementById("create_product_modal");
     if (createProductModal) (createProductModal as HTMLDialogElement).close();
   }
@@ -1034,6 +1033,72 @@ const DraggableRow = ({
   );
 };
 
+const DraggableImage = ({
+  image,
+  index,
+  moveRow,
+  draggingIndex,
+  setDraggingIndex,
+  setPattern,
+}: {
+  image: iPatternImage;
+  index: number;
+  moveRow: (fromIndex: number, toIndex: number) => void;
+  setPattern: React.Dispatch<React.SetStateAction<iPattern>>;
+  // setPatternMode: React.Dispatch<React.SetStateAction<PatternMode>>;
+  draggingIndex: number | null;
+  setDraggingIndex: React.Dispatch<React.SetStateAction<number | null>>;
+}) => {
+  const initialIndexRef = useRef(index);
+  const [, ref] = useDrag({
+    type: "ROW",
+    item: () => {
+      setDraggingIndex(index);
+      initialIndexRef.current = index;
+      return { index };
+    },
+    end: () => {
+      setDraggingIndex(null);
+    },
+  });
+
+  const [, drop] = useDrop({
+    accept: "ROW",
+    hover(item: { index: number }) {
+      if (item.index !== index && draggingIndex !== index) {
+        // console.log("item.index:", item.index, "index:", index, "draggingIndex:", draggingIndex, "initialIndexRef:", initialIndexRef.current);
+        moveRow(item.index, index);
+        item.index = index; // Update to the new index
+        setDraggingIndex(index); // Set the current dragging index
+      }
+    },
+  });
+
+  function handDeletePatternImage(e: any, image: iPatternImage) {
+    e.preventDefault();
+
+    setPattern((prevPattern) => {
+      return {
+        ...prevPattern,
+        images: prevPattern.images.filter((img) => img.id !== image.id),
+      };
+    });
+  }
+
+  return (
+    <div ref={(node) => ref(drop(node))} key={index} className="relative">
+      <div>
+        <img src={image.imageURL} alt="Pattern" className="h-48 w-48 rounded-none object-cover" />
+        <button
+          onClick={(e: any) => handDeletePatternImage(e, image)}
+          className="absolute top-0 right-0 btn btn-neutral w-8 h-6 btn-sm rounded-none p-0 text-white">
+          X
+        </button>
+      </div>
+    </div>
+  );
+};
+
 function PatternsTab({
   pattern,
   patterns,
@@ -1055,6 +1120,14 @@ function PatternsTab({
   patternErrors: { name: string; icon: string; images: string };
 }) {
   function handleAddPattern(e: any) {
+    setPattern({
+      name: "",
+      icon: "",
+      active: true,
+      images: [],
+      id: Math.floor(Math.random() * 1000),
+      order: patterns.length,
+    });
     e.preventDefault();
     setPatternMode(PatternMode.Add);
   }
@@ -1079,29 +1152,9 @@ function PatternsTab({
       images: [],
       id: Math.floor(Math.random() * 1000),
       order: patterns.length,
-      changed: false,
     });
     setPatternMode(PatternMode.View);
     // console.log(pattern);
-  }
-
-  function handDeletePatternImage(e: any, image: iPatternImage) {
-    e.preventDefault();
-    if (image.imageURL.startsWith("https://"))
-      // If the image is already uploaded to S3, mark it for deletion from S3
-      setPattern((prevPattern) => {
-        return {
-          ...prevPattern,
-          images: prevPattern.images.map((img) => (img.id === image.id ? { ...img, imageURL: "deleted" } : img)),
-        };
-      });
-    else
-      setPattern((prevPattern) => {
-        return {
-          ...prevPattern,
-          images: prevPattern.images.filter((img) => img.id !== image.id),
-        };
-      });
   }
 
   const [draggingIndex, setDraggingIndex] = useState<number | null>(null);
@@ -1114,6 +1167,16 @@ function PatternsTab({
     updatedPatterns.splice(toIndex, 0, movedItem[0]);
 
     setPatterns(updatedPatterns);
+  };
+
+  const moveImage = (fromIndex: number, toIndex: number) => {
+    if (fromIndex === toIndex) return;
+    const updatedImages = [...pattern.images];
+    const movedItem = updatedImages.splice(fromIndex, 1);
+    movedItem[0].order = toIndex;
+    updatedImages.splice(toIndex, 0, movedItem[0]);
+
+    setPattern({ ...pattern, images: updatedImages });
   };
 
   return (
@@ -1133,6 +1196,7 @@ function PatternsTab({
             </button>
           </div>
         )}
+        {/* View Mode */}
         {patternMode === PatternMode.View ? (
           <table className="table rounded-md table-zebra table-sm w-full shadow-md mb-12">
             <thead className="text-sm bg-base-300">
@@ -1162,6 +1226,7 @@ function PatternsTab({
             </tbody>
           </table>
         ) : (
+          // Edit Mode
           <div className="flex flex-col gap-8 text-sm font-semibold">
             <label htmlFor="patternName">Pattern Name</label>
             <div>
@@ -1207,20 +1272,30 @@ function PatternsTab({
               {patternErrors.images.length > 0 && <p className="font-semibold text-error text-xs text-left ">{patternErrors.images}</p>}
               <p className="w-full border-b-[1.5px] border-black">Pattern Images</p>
               <div className="flex gap-4 flex-wrap py-4">
-                {pattern.images.map((image, index) => (
-                  <div key={index} className="relative">
-                    {image.imageURL !== "deleted" && (
-                      <div>
-                        <img src={image.imageURL} alt="Pattern" className="h-48 w-48 rounded-none object-cover" />
-                        <button
-                          onClick={(e: any) => handDeletePatternImage(e, image)}
-                          className="absolute top-0 right-0 btn btn-neutral w-8 h-6 btn-sm rounded-none p-0 text-white">
-                          X
-                        </button>
-                      </div>
-                    )}
-                  </div>
-                ))}
+                {pattern.images.map((image, index) => {
+                  image.order = index;
+                  return (
+                    // <div key={index} className="relative">
+                    //   <div>
+                    //     <img src={image.imageURL} alt="Pattern" className="h-48 w-48 rounded-none object-cover" />
+                    //     <button
+                    //       onClick={(e: any) => handDeletePatternImage(e, image)}
+                    //       className="absolute top-0 right-0 btn btn-neutral w-8 h-6 btn-sm rounded-none p-0 text-white">
+                    //       X
+                    //     </button>
+                    //   </div>
+                    // </div>
+                    <DraggableImage
+                      key={index}
+                      image={image}
+                      index={index}
+                      moveRow={moveImage}
+                      draggingIndex={draggingIndex}
+                      setDraggingIndex={setDraggingIndex}
+                      setPattern={setPattern}
+                    />
+                  );
+                })}
                 <label htmlFor="pattern_image" className="btn btn-neutral rounded-none btn-lg w-48 h-48 text-3xl">
                   +
                 </label>
@@ -1241,6 +1316,7 @@ function PatternsTab({
                             id: Math.floor(Math.random() * 1000),
                             imageURL: URL.createObjectURL(file),
                             file: file, // Store the File object for later use (e.g., for upload)
+                            order: pattern.images.length,
                           },
                         ],
                       });
