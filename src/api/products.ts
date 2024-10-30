@@ -101,7 +101,7 @@ interface ProductProps {
   features: number[];
   new: boolean;
   bestSeller: boolean;
-  patterns: iPattern[];
+  patterns?: iPattern[];
 }
 
 function getBodyAPI(product: ProductProps) {

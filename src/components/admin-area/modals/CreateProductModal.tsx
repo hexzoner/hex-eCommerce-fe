@@ -232,11 +232,10 @@ export function CreateProductModal({
       materialId: material,
       new: data.new,
       bestSeller: data.bestSeller,
-      patterns,
     };
     if (!product.isEdit) {
       try {
-        await createProduct(body);
+        await createProduct({ ...body, patterns });
         setUpdate((prev) => !prev);
         handleClose();
       } catch (err) {
@@ -244,24 +243,39 @@ export function CreateProductModal({
       }
     } else {
       try {
+        let patternsChanged = false;
         const _patterns = patterns;
         for (const p of _patterns) {
           if (!p.icon.startsWith("https://")) {
             const iconUrl = await uploadImageToS3(p.iconFile);
             p.icon = iconUrl;
+            patternsChanged = true;
           }
-          for (const i of p.images) {
-            if (i.imageURL.startsWith("https://")) continue;
+          const _images = p.images;
+          for (const i of _images) {
+            if (i.imageURL.startsWith("https://")) {
+              continue;
+            }
+            if (i.imageURL === "deleted") {
+              patternsChanged = true;
+              p.images = p.images.filter((x) => x.id !== i.id);
+              continue;
+            }
             const imageUrl = await uploadImageToS3(i.file);
             i.imageURL = imageUrl;
+            patternsChanged = true;
           }
         }
-        setPatterns(_patterns);
-        await updateProduct({
-          ...body,
-          id: product.id,
-          patterns: _patterns,
-        });
+        if (patternsChanged) {
+          console.log("Patterns changed");
+          setPatterns(_patterns);
+          await updateProduct({
+            ...body,
+            id: product.id,
+            patterns: _patterns,
+          });
+        } else await updateProduct({ ...body, id: product.id });
+
         setUpdate((prev) => !prev);
         handleClose();
       } catch (err) {
@@ -336,9 +350,10 @@ export function CreateProductModal({
   function handleSavePattern(e: any) {
     e.preventDefault();
     const errors = { name: "", icon: "", images: "" };
+    const patternImages = pattern.images.filter((x) => x.imageURL !== "deleted");
     if (pattern.name.length == 0) errors.name = "Pattern name is required";
     if (pattern.icon.length == 0) errors.icon = "Pattern icon is required";
-    if (pattern.images.length == 0) errors.images = "Pattern images are required";
+    if (patternImages.length == 0) errors.images = "Pattern images are required";
     setPatternErrors(errors);
     if (errors.name.length > 0 || errors.icon.length > 0 || errors.images.length > 0) return;
 
@@ -354,6 +369,24 @@ export function CreateProductModal({
     });
     setPatternMode(PatternMode.View);
     // console.log(pattern);
+  }
+
+  function handDeletePatternImage(e: any, image: iPatternImage) {
+    e.preventDefault();
+    if (image.imageURL.startsWith("https://"))
+      setPattern((prevPattern) => {
+        return {
+          ...prevPattern,
+          images: prevPattern.images.map((img) => (img.id === image.id ? { ...img, imageURL: "deleted" } : img)),
+        };
+      });
+    else
+      setPattern((prevPattern) => {
+        return {
+          ...prevPattern,
+          images: prevPattern.images.filter((img) => img.id !== image.id),
+        };
+      });
   }
 
   return (
@@ -858,15 +891,16 @@ export function CreateProductModal({
                             <div className="flex gap-4 flex-wrap py-4">
                               {pattern.images.map((image, index) => (
                                 <div key={index} className="relative">
-                                  <img src={image.imageURL} alt="Pattern" className="h-48 w-48 rounded-none object-cover" />
-                                  <button
-                                    onClick={(e: any) => {
-                                      e.preventDefault();
-                                      setPattern({ ...pattern, images: pattern.images.filter((x) => x !== image) });
-                                    }}
-                                    className="absolute top-0 right-0 btn btn-neutral w-8 h-6 btn-sm rounded-none p-0 text-white">
-                                    X
-                                  </button>
+                                  {image.imageURL !== "deleted" && (
+                                    <div>
+                                      <img src={image.imageURL} alt="Pattern" className="h-48 w-48 rounded-none object-cover" />
+                                      <button
+                                        onClick={(e: any) => handDeletePatternImage(e, image)}
+                                        className="absolute top-0 right-0 btn btn-neutral w-8 h-6 btn-sm rounded-none p-0 text-white">
+                                        X
+                                      </button>
+                                    </div>
+                                  )}
                                 </div>
                               ))}
                               <label htmlFor="pattern_image" className="btn btn-neutral rounded-none btn-lg w-48 h-48 text-3xl">
@@ -892,15 +926,6 @@ export function CreateProductModal({
                                         },
                                       ],
                                     });
-                                    // const reader = new FileReader();
-                                    // reader.onload = (e) => {
-                                    //   const newImage = e.target?.result?.toString();
-                                    //   if (newImage) {
-                                    //     const newImageObj = { id: Math.floor(Math.random() * 1000), imageURL: newImage };
-                                    //     setPattern({ ...pattern, images: [...pattern.images, newImageObj] });
-                                    //   }
-                                    // };
-                                    // reader.readAsDataURL(file);
                                   }
                                 }}
                               />
