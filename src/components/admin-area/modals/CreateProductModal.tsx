@@ -28,7 +28,8 @@ export interface iPattern {
   active: boolean;
   images: iPatternImage[];
   iconFile?: File;
-  order?: number;
+  order: number;
+  changed: boolean;
 }
 
 interface iPatternImage {
@@ -66,15 +67,17 @@ export function CreateProductModal({
   const [notesHtml, setNotesHtml] = useState(""); // Local state for the WYSIWYG editor
   const [instructionsHtml, setInstructionsHtml] = useState(""); // Local state for the WYSIWYG editor
   const [patternMode, setPatternMode] = useState<PatternMode>(PatternMode.View);
+  const [patterns, setPatterns] = useState<iPattern[]>(product.patterns);
   const [pattern, setPattern] = useState<iPattern>({
     id: Math.floor(Math.random() * 1000),
     name: "",
     icon: "",
     active: true,
     images: [],
+    order: patterns.length + 1,
+    changed: false,
     // iconFile: new File([""], "filename"),
   });
-  const [patterns, setPatterns] = useState<iPattern[]>(product.patterns);
   const [patternErrors, setPatternErrors] = useState({
     name: "",
     icon: "",
@@ -268,15 +271,21 @@ export function CreateProductModal({
             patternsChanged = true;
           }
         }
-        if (patternsChanged) {
-          // console.log("Patterns changed");
-          setPatterns(_patterns);
-          await updateProduct({
-            ...body,
-            id: product.id,
-            patterns: _patterns,
-          });
-        } else await updateProduct({ ...body, id: product.id });
+        // if (patternsChanged) {
+        //   // console.log("Patterns changed");
+        //   setPatterns(_patterns);
+        //   await updateProduct({
+        //     ...body,
+        //     id: product.id,
+        //     patterns: _patterns,
+        //   });
+        // } else await updateProduct({ ...body, id: product.id });
+
+        await updateProduct({
+          ...body,
+          id: product.id,
+          patterns: _patterns,
+        });
 
         setUpdate((prev) => !prev);
         handleClose();
@@ -1069,6 +1078,8 @@ function PatternsTab({
       active: true,
       images: [],
       id: Math.floor(Math.random() * 1000),
+      order: patterns.length,
+      changed: false,
     });
     setPatternMode(PatternMode.View);
     // console.log(pattern);
@@ -1094,13 +1105,14 @@ function PatternsTab({
   }
 
   const [draggingIndex, setDraggingIndex] = useState<number | null>(null);
-  const moveRow = (fromIndex: number, toIndex: number) => {
-    // console.log("moveRow -Moving item", fromIndex, "to", toIndex);
-    if (fromIndex === toIndex) return;
 
+  const moveRow = (fromIndex: number, toIndex: number) => {
+    if (fromIndex === toIndex) return;
     const updatedPatterns = [...patterns];
-    const [movedItem] = updatedPatterns.splice(fromIndex, 1);
-    updatedPatterns.splice(toIndex, 0, movedItem);
+    const movedItem = updatedPatterns.splice(fromIndex, 1);
+    movedItem[0].order = toIndex;
+    updatedPatterns.splice(toIndex, 0, movedItem[0]);
+
     setPatterns(updatedPatterns);
   };
 
@@ -1132,18 +1144,21 @@ function PatternsTab({
               </tr>
             </thead>
             <tbody>
-              {patterns.map((pattern: iPattern, index) => (
-                <DraggableRow
-                  key={pattern.id}
-                  pattern={pattern}
-                  index={index}
-                  moveRow={moveRow}
-                  setPattern={setPattern}
-                  setPatternMode={setPatternMode}
-                  draggingIndex={draggingIndex}
-                  setDraggingIndex={setDraggingIndex}
-                />
-              ))}
+              {patterns.map((pattern: iPattern, index) => {
+                pattern.order = index;
+                return (
+                  <DraggableRow
+                    key={pattern.id}
+                    pattern={pattern}
+                    index={index}
+                    moveRow={moveRow}
+                    setPattern={setPattern}
+                    setPatternMode={setPatternMode}
+                    draggingIndex={draggingIndex}
+                    setDraggingIndex={setDraggingIndex}
+                  />
+                );
+              })}
             </tbody>
           </table>
         ) : (
