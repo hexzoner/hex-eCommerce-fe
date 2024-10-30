@@ -28,12 +28,14 @@ export interface iPattern {
   active: boolean;
   images: iPatternImage[];
   iconFile?: File;
+  order?: number;
 }
 
 interface iPatternImage {
   id: number;
   imageURL: string;
   file: File;
+  order?: number;
 }
 
 enum PatternMode {
@@ -267,7 +269,7 @@ export function CreateProductModal({
           }
         }
         if (patternsChanged) {
-          console.log("Patterns changed");
+          // console.log("Patterns changed");
           setPatterns(_patterns);
           await updateProduct({
             ...body,
@@ -340,53 +342,6 @@ export function CreateProductModal({
     );
     await updateReview(body, review.id);
     // console.log(res);
-  }
-
-  function handleAddPattern(e: any) {
-    e.preventDefault();
-    setPatternMode(PatternMode.Add);
-  }
-
-  function handleSavePattern(e: any) {
-    e.preventDefault();
-    const errors = { name: "", icon: "", images: "" };
-    const patternImages = pattern.images.filter((x) => x.imageURL !== "deleted");
-    if (pattern.name.length == 0) errors.name = "Pattern name is required";
-    if (pattern.icon.length == 0) errors.icon = "Pattern icon is required";
-    if (patternImages.length == 0) errors.images = "Pattern images are required";
-    setPatternErrors(errors);
-    if (errors.name.length > 0 || errors.icon.length > 0 || errors.images.length > 0) return;
-
-    if (patternMode === PatternMode.Add) setPatterns((prev) => [...prev, pattern]);
-    else setPatterns((prev) => prev.map((x) => (x.id === pattern.id ? pattern : x)));
-
-    setPattern({
-      name: "",
-      icon: "",
-      active: true,
-      images: [],
-      id: Math.floor(Math.random() * 1000),
-    });
-    setPatternMode(PatternMode.View);
-    // console.log(pattern);
-  }
-
-  function handDeletePatternImage(e: any, image: iPatternImage) {
-    e.preventDefault();
-    if (image.imageURL.startsWith("https://"))
-      setPattern((prevPattern) => {
-        return {
-          ...prevPattern,
-          images: prevPattern.images.map((img) => (img.id === image.id ? { ...img, imageURL: "deleted" } : img)),
-        };
-      });
-    else
-      setPattern((prevPattern) => {
-        return {
-          ...prevPattern,
-          images: prevPattern.images.filter((img) => img.id !== image.id),
-        };
-      });
   }
 
   return (
@@ -791,149 +746,17 @@ export function CreateProductModal({
                   {/* Tab 3 - Patterns */}
                   <input type="radio" name="my_tabs_1" role="tab" className="tab" aria-label="Images" defaultChecked />
                   <div role="tabpanel" className="tab-content p-10">
-                    <div className="flex flex-col gap-4 max-w-screen-lg m-auto">
-                      {patternMode == PatternMode.View ? (
-                        <button onClick={handleAddPattern} className="btn btn-primary max-w-sm self-end rounded-none">
-                          Add Pattern
-                        </button>
-                      ) : (
-                        <div className="flex self-end">
-                          <button onClick={handleSavePattern} className="btn btn-success max-w-sm self-end rounded-none">
-                            Save
-                          </button>
-                          <button onClick={() => setPatternMode(PatternMode.View)} className="btn max-w-sm self-end rounded-none">
-                            Cancel
-                          </button>
-                        </div>
-                      )}
-                      {patternMode === PatternMode.View ? (
-                        <table className="table rounded-md table-zebra table-sm w-full shadow-md mb-12">
-                          <thead className="text-sm bg-base-300">
-                            <tr>
-                              <th className="font-bold">Image</th>
-                              <th className="font-bold">Name</th>
-                              <th className="font-bold">Icon</th>
-                              <th className="font-bold">Active</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {patterns.map((pattern: iPattern) => (
-                              <tr
-                                onClick={() => {
-                                  setPattern(pattern);
-                                  setPatternMode(PatternMode.Edit);
-                                }}
-                                className="hover cursor-pointer"
-                                key={pattern.id}>
-                                <td>
-                                  <img
-                                    src={pattern.images.length > 0 ? pattern.images[0].imageURL : "https://placehold.co/300"}
-                                    alt={"Image"}
-                                    className="h-24 w-24 object-cover"
-                                  />
-                                </td>
-                                <td>{pattern.name}</td>
-                                <td>
-                                  <img src={pattern.icon} alt={"Icon"} className="h-16 w-16 rounded-full object-cover" />
-                                </td>
-                                <td>
-                                  <p>{pattern.active ? "Active" : "Inactive"}</p>
-                                </td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      ) : (
-                        <div className="flex flex-col gap-8 text-sm font-semibold">
-                          <label htmlFor="patternName">Pattern Name</label>
-                          <div>
-                            <input
-                              type="text"
-                              className="input input-bordered w-full input-sm"
-                              placeholder="Pattern Name"
-                              autoComplete="off"
-                              id="patternName"
-                              onChange={(e) => {
-                                setPatternErrors({ ...patternErrors, name: "" });
-                                setPattern({ ...pattern, name: e.target.value });
-                              }}
-                              value={pattern.name}
-                            />
-                            {patternErrors.name.length > 0 && <p className="font-semibold text-error text-xs text-left ">{patternErrors.name}</p>}
-                          </div>
-
-                          <label htmlFor="patternIcon">Pattern Icon</label>
-                          {pattern.icon && <img className="h-24 w-24 rounded-full object-cover" src={pattern.icon} alt="Pattern icon" />}
-                          <div>
-                            <input
-                              id="patternIcon"
-                              type="file"
-                              accept="image/*"
-                              className="file-input file-input-xs file-input-bordered w-full max-w-xs rounded-none"
-                              onChange={(e) => {
-                                const file = e.target.files?.[0];
-                                if (file) {
-                                  setPatternErrors({ ...patternErrors, icon: "" });
-                                  setPattern({
-                                    ...pattern,
-                                    icon: URL.createObjectURL(file),
-                                    iconFile: file, // Store the File object for later use (e.g., for upload)
-                                  });
-                                }
-                              }}
-                            />
-                            {patternErrors.icon.length > 0 && <p className="font-semibold text-error text-xs text-left ">{patternErrors.icon}</p>}
-                          </div>
-
-                          <div>
-                            {patternErrors.images.length > 0 && <p className="font-semibold text-error text-xs text-left ">{patternErrors.images}</p>}
-                            <p className="w-full border-b-[1.5px] border-black">Pattern Images</p>
-                            <div className="flex gap-4 flex-wrap py-4">
-                              {pattern.images.map((image, index) => (
-                                <div key={index} className="relative">
-                                  {image.imageURL !== "deleted" && (
-                                    <div>
-                                      <img src={image.imageURL} alt="Pattern" className="h-48 w-48 rounded-none object-cover" />
-                                      <button
-                                        onClick={(e: any) => handDeletePatternImage(e, image)}
-                                        className="absolute top-0 right-0 btn btn-neutral w-8 h-6 btn-sm rounded-none p-0 text-white">
-                                        X
-                                      </button>
-                                    </div>
-                                  )}
-                                </div>
-                              ))}
-                              <label htmlFor="pattern_image" className="btn btn-neutral rounded-none btn-lg w-48 h-48 text-3xl">
-                                +
-                              </label>
-                              <input
-                                id="pattern_image"
-                                type="file"
-                                accept="image/*"
-                                className="file-input file-input-sm file-input-bordered opacity-0"
-                                onChange={(e) => {
-                                  const file = e.target.files?.[0];
-                                  if (file) {
-                                    setPatternErrors({ ...patternErrors, images: "" });
-                                    setPattern({
-                                      ...pattern,
-                                      images: [
-                                        ...pattern.images,
-                                        {
-                                          id: Math.floor(Math.random() * 1000),
-                                          imageURL: URL.createObjectURL(file),
-                                          file: file, // Store the File object for later use (e.g., for upload)
-                                        },
-                                      ],
-                                    });
-                                  }
-                                }}
-                              />
-                            </div>
-                          </div>
-                        </div>
-                      )}
-                    </div>
+                    <PatternsTab
+                      pattern={pattern}
+                      setPattern={setPattern}
+                      patterns={patterns}
+                      setPatterns={setPatterns}
+                      setPatternMode={setPatternMode}
+                      patternMode={patternMode}
+                      setPatternErrors={setPatternErrors}
+                      patternErrors={patternErrors}
+                      product={product}
+                    />
                   </div>
 
                   {/* Tab 4 - Reviews */}
@@ -1126,5 +949,294 @@ export function CreateProductModal({
       </dialog>
       <ConfirmPopup confirmText="Are you sure you want to delete this product?" deleteConfirmed={handleConfirmDelete} />
     </>
+  );
+}
+
+import { useDrag, useDrop, DndProvider } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
+import { useRef } from "react";
+
+const DraggableRow = ({
+  pattern,
+  index,
+  moveRow,
+  setPattern,
+  setPatternMode,
+  draggingIndex,
+  setDraggingIndex,
+}: {
+  pattern: iPattern;
+  index: number;
+  moveRow: (fromIndex: number, toIndex: number) => void;
+  setPattern: React.Dispatch<React.SetStateAction<iPattern>>;
+  setPatternMode: React.Dispatch<React.SetStateAction<PatternMode>>;
+  draggingIndex: number | null;
+  setDraggingIndex: React.Dispatch<React.SetStateAction<number | null>>;
+}) => {
+  const initialIndexRef = useRef(index);
+  const [, ref] = useDrag({
+    type: "ROW",
+    item: () => {
+      setDraggingIndex(index);
+      initialIndexRef.current = index;
+      return { index };
+    },
+    end: () => {
+      // console.log("useDrag - End dragging");
+      setDraggingIndex(null);
+    }, // Reset dragging index on drag end
+  });
+
+  const [, drop] = useDrop({
+    accept: "ROW",
+    hover(item: { index: number }) {
+      if (item.index !== index && draggingIndex !== index) {
+        // console.log("item.index:", item.index, "index:", index, "draggingIndex:", draggingIndex, "initialIndexRef:", initialIndexRef.current);
+        moveRow(item.index, index);
+        item.index = index; // Update to the new index
+        setDraggingIndex(index); // Set the current dragging index
+      }
+    },
+  });
+
+  return (
+    <tr
+      ref={(node) => ref(drop(node))}
+      className="hover cursor-pointer"
+      onClick={() => {
+        setPattern(pattern);
+        setPatternMode(PatternMode.Edit);
+      }}>
+      <td>
+        <img
+          src={pattern.images.length > 0 ? pattern.images[0].imageURL : "https://placehold.co/300"}
+          alt={"Image"}
+          className="h-24 w-24 object-cover"
+        />
+      </td>
+      <td>{pattern.name}</td>
+      <td>
+        <img src={pattern.icon} alt={"Icon"} className="h-16 w-16 rounded-full object-cover" />
+      </td>
+      <td>
+        <p>{pattern.active ? "Active" : "Inactive"}</p>
+      </td>
+    </tr>
+  );
+};
+
+function PatternsTab({
+  pattern,
+  patterns,
+  setPatterns,
+  setPattern,
+  setPatternMode,
+  patternMode,
+  setPatternErrors,
+  patternErrors,
+}: {
+  pattern: iPattern;
+  product: Product;
+  setPatterns: React.Dispatch<React.SetStateAction<iPattern[]>>;
+  patterns: iPattern[];
+  setPattern: React.Dispatch<React.SetStateAction<iPattern>>;
+  setPatternMode: React.Dispatch<React.SetStateAction<PatternMode>>;
+  patternMode: PatternMode;
+  setPatternErrors: React.Dispatch<React.SetStateAction<{ name: string; icon: string; images: string }>>;
+  patternErrors: { name: string; icon: string; images: string };
+}) {
+  function handleAddPattern(e: any) {
+    e.preventDefault();
+    setPatternMode(PatternMode.Add);
+  }
+
+  function handleSavePattern(e: any) {
+    e.preventDefault();
+    const errors = { name: "", icon: "", images: "" };
+    const patternImages = pattern.images.filter((x) => x.imageURL !== "deleted");
+    if (pattern.name.length == 0) errors.name = "Pattern name is required";
+    if (pattern.icon.length == 0) errors.icon = "Pattern icon is required";
+    if (patternImages.length == 0) errors.images = "Pattern images are required";
+    setPatternErrors(errors);
+    if (errors.name.length > 0 || errors.icon.length > 0 || errors.images.length > 0) return;
+
+    if (patternMode === PatternMode.Add) setPatterns((prev) => [...prev, pattern]);
+    else setPatterns((prev) => prev.map((x) => (x.id === pattern.id ? pattern : x)));
+
+    setPattern({
+      name: "",
+      icon: "",
+      active: true,
+      images: [],
+      id: Math.floor(Math.random() * 1000),
+    });
+    setPatternMode(PatternMode.View);
+    // console.log(pattern);
+  }
+
+  function handDeletePatternImage(e: any, image: iPatternImage) {
+    e.preventDefault();
+    if (image.imageURL.startsWith("https://"))
+      // If the image is already uploaded to S3, mark it for deletion from S3
+      setPattern((prevPattern) => {
+        return {
+          ...prevPattern,
+          images: prevPattern.images.map((img) => (img.id === image.id ? { ...img, imageURL: "deleted" } : img)),
+        };
+      });
+    else
+      setPattern((prevPattern) => {
+        return {
+          ...prevPattern,
+          images: prevPattern.images.filter((img) => img.id !== image.id),
+        };
+      });
+  }
+
+  const [draggingIndex, setDraggingIndex] = useState<number | null>(null);
+  const moveRow = (fromIndex: number, toIndex: number) => {
+    // console.log("moveRow -Moving item", fromIndex, "to", toIndex);
+    if (fromIndex === toIndex) return;
+
+    const updatedPatterns = [...patterns];
+    const [movedItem] = updatedPatterns.splice(fromIndex, 1);
+    updatedPatterns.splice(toIndex, 0, movedItem);
+    setPatterns(updatedPatterns);
+  };
+
+  return (
+    <DndProvider backend={HTML5Backend}>
+      <div className="flex flex-col gap-4 max-w-screen-lg m-auto">
+        {patternMode == PatternMode.View ? (
+          <button onClick={handleAddPattern} className="btn btn-primary max-w-sm self-end rounded-none">
+            Add Pattern
+          </button>
+        ) : (
+          <div className="flex self-end">
+            <button onClick={handleSavePattern} className="btn btn-success max-w-sm self-end rounded-none">
+              Save
+            </button>
+            <button onClick={() => setPatternMode(PatternMode.View)} className="btn max-w-sm self-end rounded-none">
+              Cancel
+            </button>
+          </div>
+        )}
+        {patternMode === PatternMode.View ? (
+          <table className="table rounded-md table-zebra table-sm w-full shadow-md mb-12">
+            <thead className="text-sm bg-base-300">
+              <tr>
+                <th className="font-bold">Image</th>
+                <th className="font-bold">Name</th>
+                <th className="font-bold">Icon</th>
+                <th className="font-bold">Active</th>
+              </tr>
+            </thead>
+            <tbody>
+              {patterns.map((pattern: iPattern, index) => (
+                <DraggableRow
+                  key={pattern.id}
+                  pattern={pattern}
+                  index={index}
+                  moveRow={moveRow}
+                  setPattern={setPattern}
+                  setPatternMode={setPatternMode}
+                  draggingIndex={draggingIndex}
+                  setDraggingIndex={setDraggingIndex}
+                />
+              ))}
+            </tbody>
+          </table>
+        ) : (
+          <div className="flex flex-col gap-8 text-sm font-semibold">
+            <label htmlFor="patternName">Pattern Name</label>
+            <div>
+              <input
+                type="text"
+                className="input input-bordered w-full input-sm"
+                placeholder="Pattern Name"
+                autoComplete="off"
+                id="patternName"
+                onChange={(e) => {
+                  setPatternErrors({ ...patternErrors, name: "" });
+                  setPattern({ ...pattern, name: e.target.value });
+                }}
+                value={pattern.name}
+              />
+              {patternErrors.name.length > 0 && <p className="font-semibold text-error text-xs text-left ">{patternErrors.name}</p>}
+            </div>
+
+            <label htmlFor="patternIcon">Pattern Icon</label>
+            {pattern.icon && <img className="h-24 w-24 rounded-full object-cover" src={pattern.icon} alt="Pattern icon" />}
+            <div>
+              <input
+                id="patternIcon"
+                type="file"
+                accept="image/*"
+                className="file-input file-input-xs file-input-bordered w-full max-w-xs rounded-none"
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) {
+                    setPatternErrors({ ...patternErrors, icon: "" });
+                    setPattern({
+                      ...pattern,
+                      icon: URL.createObjectURL(file),
+                      iconFile: file, // Store the File object for later use (e.g., for upload)
+                    });
+                  }
+                }}
+              />
+              {patternErrors.icon.length > 0 && <p className="font-semibold text-error text-xs text-left ">{patternErrors.icon}</p>}
+            </div>
+
+            <div>
+              {patternErrors.images.length > 0 && <p className="font-semibold text-error text-xs text-left ">{patternErrors.images}</p>}
+              <p className="w-full border-b-[1.5px] border-black">Pattern Images</p>
+              <div className="flex gap-4 flex-wrap py-4">
+                {pattern.images.map((image, index) => (
+                  <div key={index} className="relative">
+                    {image.imageURL !== "deleted" && (
+                      <div>
+                        <img src={image.imageURL} alt="Pattern" className="h-48 w-48 rounded-none object-cover" />
+                        <button
+                          onClick={(e: any) => handDeletePatternImage(e, image)}
+                          className="absolute top-0 right-0 btn btn-neutral w-8 h-6 btn-sm rounded-none p-0 text-white">
+                          X
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                ))}
+                <label htmlFor="pattern_image" className="btn btn-neutral rounded-none btn-lg w-48 h-48 text-3xl">
+                  +
+                </label>
+                <input
+                  id="pattern_image"
+                  type="file"
+                  accept="image/*"
+                  className="file-input file-input-sm file-input-bordered opacity-0"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) {
+                      setPatternErrors({ ...patternErrors, images: "" });
+                      setPattern({
+                        ...pattern,
+                        images: [
+                          ...pattern.images,
+                          {
+                            id: Math.floor(Math.random() * 1000),
+                            imageURL: URL.createObjectURL(file),
+                            file: file, // Store the File object for later use (e.g., for upload)
+                          },
+                        ],
+                      });
+                    }
+                  }}
+                />
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    </DndProvider>
   );
 }
