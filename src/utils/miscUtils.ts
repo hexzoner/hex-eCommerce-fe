@@ -24,3 +24,9 @@ export function calculatePriceRange(_product: Product) {
 
   return "€" + minPrice.toFixed(0) + " - " + "€" + maxPrice.toFixed(0);
 }
+
+export function getProductMainImageUrl(product: Product) {
+  const url = product.patterns.find((x) => x.order === 0)?.images.find((x) => x.order === 0)?.imageURL;
+  if (url) return url;
+  return "https://placehold.co/200";
+}

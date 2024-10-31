@@ -41,7 +41,7 @@ const ShopProvider = ({ children }: { children: ReactNode }) => {
   const [shopLoading, setShopLoading] = useState(true);
   const [cartLoading, setCartLoading] = useState(false);
 
-  function addToCart(product: any, quantity: number, size: number, color: number) {
+  function addToCart(product: any, quantity: number, size: number, pattern: number) {
     // if (!cart) return;
     if (!user || !isAuthenticated) {
       toast.error("Please login to add products to cart");
@@ -52,11 +52,18 @@ const ShopProvider = ({ children }: { children: ReactNode }) => {
     let _quantity = quantity;
     if (productInCart) _quantity = productInCart.cartProduct.quantity + quantity;
 
+    // console.log({
+    //   productId: product.id,
+    //   quantity: _quantity,
+    //   pattern,
+    //   size: size,
+    // });
+
     setCartLoading(true);
     updateCart({
       productId: product.id,
       quantity: _quantity,
-      color: color,
+      pattern,
       size: size,
     })
       .then((res) => {
@@ -69,12 +76,12 @@ const ShopProvider = ({ children }: { children: ReactNode }) => {
       .finally(() => setCartLoading(false));
   }
 
-  function updateCartQuantity(productId: number, quantity: number, color: number, size: number) {
+  function updateCartQuantity(productId: number, quantity: number, pattern: number, size: number) {
     setCartLoading(true);
     updateCart({
       productId: productId,
       quantity: quantity,
-      color: color,
+      pattern,
       size: size,
     })
       .then((res) => {

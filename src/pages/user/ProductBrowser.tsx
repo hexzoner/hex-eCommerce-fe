@@ -13,6 +13,7 @@ import Filters from "../../components/Filters";
 import { calculatePriceRange } from "../../utils/miscUtils";
 import Pagination from "../../components/Pagination";
 import { NewBestSellerBadge } from "../../components/components";
+import { getProductMainImageUrl } from "../../utils/miscUtils";
 
 export default function ProductBrowser() {
   // /products/room/Hallway
@@ -170,7 +171,7 @@ export const ProductCard = ({ product, wishlist, setWishlist }: { product: Produ
   return (
     <div className="card bg-base-100 w-72 mx-auto ">
       <figure className="relative tooltip">
-        <img onClick={handleClick} className="w-72 h-48 object-cover  cursor-pointer p-2" src={product.image} alt="Rug Image" />
+        <img onClick={handleClick} className="w-72 h-48 object-cover  cursor-pointer p-2" src={getProductMainImageUrl(product)} alt="Rug Image" />
         <NewBestSellerBadge isNew={product.new} isBestSeller={product.bestSeller} />
       </figure>
       <div className="card-body">

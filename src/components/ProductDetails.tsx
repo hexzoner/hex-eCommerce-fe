@@ -16,6 +16,7 @@ import { Rating } from "react-simple-star-rating";
 import RugsByProducer from "../pages/user/product-details-components/RugsByProducer";
 import FeaturedReviewsCarousel from "../pages/user/product-details-components/FeaturedReviewsCarousel";
 import { Review } from "../pages/admin/Reviews";
+import { getProductMainImageUrl } from "../utils/miscUtils";
 
 export default function ProductDetails() {
   const { id } = useParams<{ id: string }>();
@@ -52,7 +53,7 @@ export default function ProductDetails() {
       .then((res) => {
         setProduct(res);
         setSelectedSize(res.defaultSize);
-        setSelectedColor(res.defaultColor);
+        setSelectedColor(res.patterns.length > 0 ? res.patterns.find((x: any) => x.order == 0) : res.defaultColor);
 
         if (res.status && res.status == 404) {
           setResponseStatus(res.status);
@@ -138,7 +139,7 @@ export default function ProductDetails() {
         {/* Product Image, Name, Price, Category, Size, Color, Add to Cart Button */}
         <div className="flex-col lg:flex-row flex gap-0 items-start max-w-[80rem] m-auto h-full">
           <div className="w-full lg:w-1/2 px-24 lg:px-0  flex-1 self-stretch relative">
-            <img className="object-fill w-full py-4 px-2" src={product.image} alt="Product image" />
+            <img className="object-fill w-full py-4 px-2" src={getProductMainImageUrl(product)} alt="Product image" />
             <NewBestSellerBadge isNew={product.new} isBestSeller={product.bestSeller} />
             {/* Featured Reviews */}
             {featuredReviews.length > 0 && (
@@ -180,11 +181,12 @@ export default function ProductDetails() {
                 <ProductSize size={size} setSelectedSize={setSelectedSize} selectedSize={selectedSize} key={size.id} />
               ))}
             </div>
-            <p className="font-semibold text-lg">Color: {selectedColor.name}</p>
-            {product.colors.length > 1 && (
-              <div className="flex flex-wrap gap-3 items-center">
-                {product.colors.map((color: any) => (
-                  <ProductColor color={color} setSelectedColor={setSelectedColor} selectedColor={selectedColor} key={color.id} />
+            {product.patterns.length > 1 && <p className="font-semibold text-lg">Color: {selectedColor.name}</p>}
+            {product.patterns.length > 1 && (
+              <div className="flex flex-wrap gap-6 items-center ">
+                {/* flex-row-reverse mr-auto */}
+                {product.patterns.map((pattern: any) => (
+                  <ProductColor color={pattern} setSelectedColor={setSelectedColor} selectedColor={selectedColor} key={pattern.id} />
                 ))}
               </div>
             )}
@@ -291,14 +293,17 @@ function ProductSize({ size, setSelectedSize, selectedSize }: { size: any; setSe
 
 function ProductColor({ color, setSelectedColor, selectedColor }: { color: any; setSelectedColor: any; selectedColor: any }) {
   return (
-    <button
-      onClick={() => {
-        setSelectedColor(color);
-      }}
-      key={color.id}
-      className={`btn btn-sm py-0 px-5 ${selectedColor.id == color.id ? "btn-primary" : "btn-outline"}`}>
-      {color.name}
-    </button>
+    <div className="flex flex-col items-center justify-center gap-2">
+      <img className="h-16 w-16 rounded-full object-cover" src={color.icon} alt="" />
+      <button
+        onClick={() => {
+          setSelectedColor(color);
+        }}
+        key={color.id}
+        className={`btn btn-xs py-0 px-5 ${selectedColor.id == color.id ? "btn-primary" : "btn-outline"}`}>
+        {color.name}
+      </button>
+    </div>
   );
 }
 

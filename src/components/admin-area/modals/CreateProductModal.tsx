@@ -360,7 +360,7 @@ export function CreateProductModal({
             <div className="m-auto text-left w-full">
               <form autoComplete="off" onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-8 min-h-[85vh] relative">
                 <div className="mx-2 mb-4 text-lg flex justify-between">
-                  <p className="w-full">{product.isEdit ? "Editing product" : "Creating product"}</p>
+                  <p className="w-full">{product.isEdit ? "Editing product: " + product.name : "Creating product"}</p>
                   {/* Buttons */}
                   <div className="flex w-full justify-end relative bottom-0">
                     {product.isEdit ? (

@@ -27,7 +27,7 @@ export const getCart = async () => {
   return response;
 };
 
-export const updateCart = async (data: { productId: number; quantity: number; color: number; size: number }) => {
+export const updateCart = async (data: { productId: number; quantity: number; pattern: number; size: number }) => {
   // console.log(data);
   const token = restoreToken();
   if (!token) return;
@@ -40,7 +40,7 @@ export const updateCart = async (data: { productId: number; quantity: number; co
     })
     .then((res) => res.data)
     .catch((err) => {
-      console.log(err.response.data.message);
+      console.log(err);
       toast.error(err.response.data.message);
     });
   return response;

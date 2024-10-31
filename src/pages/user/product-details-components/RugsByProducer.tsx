@@ -7,6 +7,7 @@ import Slider from "react-slick";
 // import { Rating } from "react-simple-star-rating";
 import { useNavigate } from "react-router-dom";
 import { NextArrow, PrevArrow } from "../home-components/LatestArrivalsCarousel";
+import { getProductMainImageUrl } from "../../../utils/miscUtils";
 
 function RugsByProducer({ products }: { products: Product[] }) {
   // if (products.length == 0) return <></>;
@@ -61,7 +62,7 @@ function RugsByProducer({ products }: { products: Product[] }) {
                     window.scrollTo(0, 0);
                   }}
                   className="cursor-pointer object-cover"
-                  src={product.image}
+                  src={getProductMainImageUrl(product)}
                   alt="product image"
                 />
                 <div>

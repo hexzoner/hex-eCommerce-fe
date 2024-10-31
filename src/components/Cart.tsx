@@ -12,11 +12,13 @@ export default function Cart() {
 
   return (
     <div className="min-h-screen max-w-[70rem] m-auto">
-      <p className="text-left text-2xl mt-12 font-semibold">Shopping Cart</p>
+      <div className="flex justify-between items-center py-4">
+        <p className="text-left text-2xl font-semibold my-4">Shopping Cart</p>
+        <p className="text-3xl">Total: €{cart.total}</p>
+      </div>
       <div className="flex flex-col gap-4  min-h-[75vh] m-auto">
         {cart.products.length > 0 ? (
-          <div className="flex flex-col gap-6 items-center justify-between ">
-            <p className="text-3xl">Total: €{cart.total}</p>
+          <div className="flex flex-col gap-8 items-center justify-between ">
             {cart.products.map((item: any, index: number) => (
               <CartProduct key={index} item={item} setCart={setCart} updateCartQuantity={updateCartQuantity} cartLoading={cartLoading} />
             ))}
@@ -48,7 +50,7 @@ export const CartProduct = ({
 }) => {
   // console.log(item);
   function handleDelete() {
-    updateCart({ productId: item.product.id, quantity: 0, color: item.color.id, size: item.size.id })
+    updateCart({ productId: item.product.id, quantity: 0, pattern: item.pattern.id, size: item.size.id })
       .then((res) => {
         // console.log(res);
         toast.success("Product removed from cart");
@@ -69,10 +71,8 @@ export const CartProduct = ({
   }
 
   function handleUpdateCart(quantity: number) {
-    updateCartQuantity(item.product.id, quantity, item.color.id, item.size.id);
+    updateCartQuantity(item.product.id, quantity, item.pattern.id, item.size.id);
   }
-  // const colorName = colors.find((x: any) => x.id == item.color.id).name;
-  // const sizeName = item.sizes.find((x: any) => x.id == item.product.size).name;
 
   const navigate = useNavigate();
   function handleClick() {
@@ -80,41 +80,45 @@ export const CartProduct = ({
   }
 
   return (
-    <div className="w-full">
+    <div className="w-full max-w-5xl m-auto shadow bg-base-200 py-4">
       <div className="flex gap-4 items-center">
-        <img src={item.product.image} alt="Product" className="w-1/6" />
-        <div className="flex justify-between w-full">
-          <div className="flex flex-col gap-2 text-left w-1/3 ">
-            <p onClick={handleClick} className="font-semibold text-lg cursor-pointer hover:text-[#b04e2d]">
+        <div className="flex justify-evenly w-full gap-6">
+          <div className=" w-1/3 h-48 flex flex-col justify-center items-center">
+            <img className="object-cover  m-auto h-48 w-64" src={item.pattern.icon} alt="color" />
+            <div className="flex gap-4 text-sm px-4">
+              <button onClick={handleDelete} className="text-primary hover:underline">
+                Delete
+              </button>
+              <button className="text-primary hover:underline">Save for later</button>
+            </div>
+          </div>
+          <div className="flex flex-col gap-2 text-left w-1/2 ">
+            <p onClick={handleClick} className="font-semibold text-xl cursor-pointer hover:text-[#b04e2d]">
               {item.product.name}
             </p>
-            <p className="text-sm">Size: {item.size.name}</p>
-            <p className="text-sm">Color: {item.color.name}</p>
+            <p className="">Size: {item.size.name}</p>
+            <p className="">Color: {item.pattern.name}</p>
           </div>
-          <div className="text-left w-2/3 text-sm flex flex-col ">
-            <p>{item.product.description}</p>
-          </div>
-          <div className="w-1/4 flex flex-col items-center">
+          {/* <div className="text-left w-1/2 text-sm flex flex-col items-center"> */}
+          {/* <p>{item.product.description}</p> */}
+
+          {/* <p className="text-sm font-semibold">{item.pattern.name}</p> */}
+          {/* </div> */}
+          <div className="w-1/4 flex flex-col items-center gap-4">
             {/* {
               item.quantity > 1 && <span className="text-lg">{item.quantity} x </span>} */}
             <span className="font-semibold text-xl">€{item.product.price}</span>
             <div className="flex items-center gap-1">
-              <button disabled={cartLoading} onClick={handleDecrease} className="btn btn-sm text-xl">
+              <button disabled={cartLoading} onClick={handleDecrease} className="btn btn-sm text-xl btn-primary px-[10px]">
                 -
               </button>
               <p className="input input-sm input-bordered">{item.quantity}</p>
-              <button onClick={handeIncrease} className="btn btn-sm text-xl" disabled={cartLoading}>
+              <button onClick={handeIncrease} className="btn btn-sm text-xl btn-primary px-2" disabled={cartLoading}>
                 +
               </button>
             </div>
           </div>
         </div>
-      </div>
-      <div className="flex gap-4 text-sm px-4">
-        <button onClick={handleDelete} className="text-primary hover:underline">
-          Delete
-        </button>
-        <button className="text-primary hover:underline">Save for later</button>
       </div>
     </div>
   );
