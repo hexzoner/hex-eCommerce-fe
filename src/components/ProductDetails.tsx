@@ -16,7 +16,8 @@ import { Rating } from "react-simple-star-rating";
 import RugsByProducer from "../pages/user/product-details-components/RugsByProducer";
 import FeaturedReviewsCarousel from "../pages/user/product-details-components/FeaturedReviewsCarousel";
 import { Review } from "../pages/admin/Reviews";
-import { getProductMainImageUrl } from "../utils/miscUtils";
+// import { getProductMainImageUrl } from "../utils/miscUtils";
+import ImageGallery from "../pages/user/product-details-components/ImageGallery";
 
 export default function ProductDetails() {
   const { id } = useParams<{ id: string }>();
@@ -139,8 +140,11 @@ export default function ProductDetails() {
         {/* Product Image, Name, Price, Category, Size, Color, Add to Cart Button */}
         <div className="flex-col lg:flex-row flex gap-0 items-start max-w-[80rem] m-auto h-full">
           <div className="w-full lg:w-1/2 px-24 lg:px-0  flex-1 self-stretch relative">
-            <img className="object-fill w-full py-4 px-2" src={getProductMainImageUrl(product)} alt="Product image" />
+            {/* <img className="object-fill w-full py-4 px-2" src={getProductMainImageUrl(product)} alt="Product image" /> */}
+
+            <ImageGallery images={selectedColor.images.map((image: any) => image.imageURL)} />
             <NewBestSellerBadge isNew={product.new} isBestSeller={product.bestSeller} />
+
             {/* Featured Reviews */}
             {featuredReviews.length > 0 && (
               <section className="max-w-[70rem] m-auto ">

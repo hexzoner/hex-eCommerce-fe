@@ -30,7 +30,7 @@ export default function NavbarMenuDropdown({ name, options }: { name: string; op
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       ref={dropdownRef}
-      className={`dropdown dropdown-hover p-0 ${isHovered ? "dropdown-open" : ""}`}>
+      className={`dropdown dropdown-hover z-50 p-0 ${isHovered ? "dropdown-open" : ""}`}>
       <div tabIndex={0} role="button" className={`select select-ghost m-0 rounded-none items-center px-[1.75rem] hover:text-red-700 `}>
         <p className="font-semibold">{name}</p>
       </div>
