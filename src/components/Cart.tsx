@@ -16,13 +16,13 @@ export default function Cart() {
         <p className="text-left text-2xl font-semibold my-4">Shopping Cart</p>
         <p className="text-3xl">Total: €{cart.total}</p>
       </div>
-      <div className="flex flex-col gap-4  min-h-[75vh] m-auto">
+      <div className="flex flex-col gap-0 min-h-[75vh] m-auto">
         {cart.products.length > 0 ? (
-          <div className="flex flex-col gap-8 items-center justify-between ">
+          <div className="flex flex-col gap-1 items-center justify-between ">
             {cart.products.map((item: any, index: number) => (
               <CartProduct key={index} item={item} setCart={setCart} updateCartQuantity={updateCartQuantity} cartLoading={cartLoading} />
             ))}
-            <button className="btn btn-primary btn-lg mb-12">Checkout</button>
+            <button className="btn btn-primary btn-lg my-12">Checkout</button>
           </div>
         ) : (
           <>
@@ -80,12 +80,12 @@ export const CartProduct = ({
   }
 
   return (
-    <div className="w-full max-w-5xl m-auto shadow bg-base-200 py-4">
+    <div className="w-full max-w-5xl m-auto shadow bg-base-100 py-4">
       <div className="flex gap-4 items-center">
         <div className="flex justify-evenly w-full gap-6">
           <div className=" w-1/3 h-48 flex flex-col justify-center items-center">
             <img className="object-cover  m-auto h-48 w-64" src={item.pattern.icon} alt="color" />
-            <div className="flex gap-4 text-sm px-4">
+            <div className="flex gap-4 text-sm px-4 py-1">
               <button onClick={handleDelete} className="text-primary hover:underline">
                 Delete
               </button>
@@ -97,7 +97,7 @@ export const CartProduct = ({
               {item.product.name}
             </p>
             <p className="">Size: {item.size.name}</p>
-            <p className="">Color: {item.pattern.name}</p>
+            {item.pattern.name !== "Main" && item.pattern.name !== "Default" && <p className="">Color: {item.pattern.name}</p>}
           </div>
           {/* <div className="text-left w-1/2 text-sm flex flex-col items-center"> */}
           {/* <p>{item.product.description}</p> */}
