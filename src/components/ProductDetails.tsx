@@ -121,7 +121,7 @@ export default function ProductDetails() {
 
   return (
     <div className="">
-      <div className="breadcrumbs text-sm text-blue-600  text-left max-w-[80rem] m-auto mt-6">
+      <div className="breadcrumbs text-sm text-blue-600  text-left max-w-[85rem] m-auto mt-6">
         <ul>
           <li>
             <a onClick={() => navigate("/")}>Home</a>
@@ -138,7 +138,7 @@ export default function ProductDetails() {
       </div>
       <div className="flex flex-col min-h-screen mt-8 text-left">
         {/* Product Image, Name, Price, Category, Size, Color, Add to Cart Button */}
-        <div className="flex-col lg:flex-row flex gap-0 items-start max-w-[80rem] m-auto h-full">
+        <div className="flex-col lg:flex-row flex gap-0 items-start max-w-[85rem] m-auto h-full">
           <div className="w-full lg:w-1/2 px-24 lg:px-0  flex-1 self-stretch relative">
             {/* <img className="object-fill w-full py-4 px-2" src={getProductMainImageUrl(product)} alt="Product image" /> */}
 
@@ -205,7 +205,7 @@ export default function ProductDetails() {
         </div>
 
         {/* Description, Details, Notes, Instructions Tabs */}
-        <div className="w-full max-w-[80rem] m-auto border-b-2 border-black border-opacity-25 pb-12">
+        <div className="w-full max-w-[85rem] m-auto border-b-2 border-black border-opacity-25 pb-12">
           <div role="tablist" className="tabs tabs-bordered ">
             {/* Tab 1 */}
             <input type="radio" name="my_tabs_1" role="tab" className="tab" aria-label="Description" defaultChecked />

@@ -58,6 +58,7 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({ images }) => {
 
   return (
     <div className="w-full">
+      {/* Main Swiper */}
       <Swiper
         ref={mainSwiperRef}
         style={
@@ -85,26 +86,29 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({ images }) => {
             key={index}
             className="flex items-center justify-center">
             <div className="swiper-zoom-container">
-              <img src={src} alt={`Slide ${index + 1}`} className="w-full h-96" />
+              <img src={src} alt={`Slide ${index + 1}`} className="w-full h-[30rem] px-16" />
             </div>
           </SwiperSlide>
         ))}
       </Swiper>
 
-      <Swiper
-        onSwiper={(swiper) => setThumbsSwiper(swiper)} // Set Swiper instance
-        spaceBetween={10}
-        slidesPerView={4}
-        // freeMode={true}
-        watchSlidesProgress={true}
-        modules={[Thumbs]}
-        className="thumbs-carousel max-w-sm">
-        {images.map((src, index) => (
-          <SwiperSlide key={index}>
-            <img src={src} alt={`Thumbnail ${index + 1}`} className="rounded-md border border-gray-300 w-20 h-20 object-cover cursor-pointer" />
-          </SwiperSlide>
-        ))}
-      </Swiper>
+      {/* Thumbnails Swiper */}
+      {images.length > 1 && (
+        <Swiper
+          onSwiper={(swiper) => setThumbsSwiper(swiper)}
+          spaceBetween={10}
+          slidesPerView={4}
+          // freeMode={true}
+          watchSlidesProgress={true}
+          modules={[Thumbs]}
+          className="thumbs-carousel max-w-sm">
+          {images.map((src, index) => (
+            <SwiperSlide key={index}>
+              <img src={src} alt={`Thumbnail ${index + 1}`} className="rounded-md border border-gray-300 w-20 h-20 object-cover cursor-pointer" />
+            </SwiperSlide>
+          ))}
+        </Swiper>
+      )}
     </div>
   );
 };
