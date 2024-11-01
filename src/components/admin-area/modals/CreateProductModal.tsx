@@ -1353,7 +1353,7 @@ function PatternsTab({
                     const file = e.target.files?.[0];
                     if (file) {
                       setPatternErrors({ ...patternErrors, images: "" });
-                      setPattern({
+                      const newImage = {
                         ...pattern,
                         images: [
                           ...pattern.images,
@@ -1364,7 +1364,10 @@ function PatternsTab({
                             order: pattern.images.length,
                           },
                         ],
-                      });
+                      };
+                      // console.log(pattern.images.length);
+                      // console.log(newImage);
+                      setPattern(newImage);
                     }
                   }}
                 />

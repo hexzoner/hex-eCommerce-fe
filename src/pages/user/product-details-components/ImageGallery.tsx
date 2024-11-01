@@ -84,14 +84,9 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({ images }) => {
         modules={[Thumbs, Zoom, Navigation, Pagination]} // Modules for the main Swiper
         className="mb-4 mySwiper">
         {images.map((src, index) => (
-          <SwiperSlide
-            onMouseEnter={handleMouseEnter}
-            onMouseLeave={handleMouseLeave}
-            onMouseMove={handleMouseMove}
-            key={index}
-            className="flex items-center justify-center">
-            <div className="swiper-zoom-container">
-              <img src={src} alt={`Slide ${index + 1}`} className="w-full h-[30rem] px-6" />
+          <SwiperSlide onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} onMouseMove={handleMouseMove} key={index} className="">
+            <div className="swiper-zoom-container p-0">
+              <img src={src} alt={`Slide ${index + 1}`} className="w-full h-[30rem] px-0" />
             </div>
           </SwiperSlide>
         ))}

@@ -155,7 +155,7 @@ export default function ProductDetails() {
             )}
           </div>
 
-          <div className="flex flex-col w-full lg:w-1/2 px-4 lg:px-16 justify-between gap-6 pb-6 self-stretch flex-1 ">
+          <div className="flex flex-col  px-2 lg:px-8 justify-around gap-6 pb-6 self-stretch max-w-xl bg-[#eff2f6] ml-4 pt-4">
             <div className="flex justify-between items-center">
               <p className="text-3xl font-semibold">{product.name}</p>
               <FavIcon product={product} wishlist={wishlist} setWishlist={setWishlist} />
@@ -299,7 +299,7 @@ function ProductSize({ size, setSelectedSize, selectedSize }: { size: any; setSe
 function ProductColor({ color, setSelectedColor, selectedColor }: { color: any; setSelectedColor: any; selectedColor: any }) {
   return (
     <div className="flex flex-col items-center justify-center gap-2">
-      <img className="h-16 w-16 rounded-full object-cover" src={color.icon} alt="" />
+      <img className="h-16 w-16 rounded-full object-cover p-0" src={color.icon} alt="" />
       <button
         onClick={() => {
           setSelectedColor(color);
