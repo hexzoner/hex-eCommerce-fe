@@ -263,7 +263,7 @@ export function FilterDropdown({
 
   return (
     <div
-      className={`dropdown  ${isHovered ? "dropdown-open" : ""}`}
+      className={`dropdown z-50  ${isHovered ? "dropdown-open" : ""}`}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       ref={dropdownRef}>
