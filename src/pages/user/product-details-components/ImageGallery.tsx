@@ -108,11 +108,7 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({ images }) => {
             className="thumbs-carousel max-w-[40rem] relative">
             {images.map((src, index) => (
               <SwiperSlide key={index}>
-                <img
-                  src={src}
-                  alt={`Thumbnail ${index + 1}`}
-                  className="rounded-md border border-gray-300 w-24 h-20 object-cover cursor-pointer m-auto"
-                />
+                <img src={src} alt={`Thumbnail ${index + 1}`} className=" border border-gray-300 w-24 h-20 object-cover cursor-pointer m-auto" />
               </SwiperSlide>
             ))}
             {/* <NavButtons /> */}
