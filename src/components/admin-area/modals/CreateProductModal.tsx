@@ -15,6 +15,7 @@ import { useShop } from "../../../context";
 import { iRoom } from "../../../utils/constants";
 import { iTaxonomy } from "../../../pages/admin/Taxonomies";
 import { uploadImageToS3 } from "../../../api/image-upload";
+import { deletePattern } from "../../../api/patterns";
 
 const dummyRug = "https://th.bing.com/th/id/OIP.MvnwHj_3a0ICmk72FNI5WQHaFR?rs=1&pid=ImgDetMain";
 
@@ -210,6 +211,7 @@ export function CreateProductModal({
     const shape = typeof data.shape === "string" ? parseInt(data.shape) : data.shape;
     const technique = typeof data.technique === "string" ? parseInt(data.technique) : data.technique;
     const material = typeof data.material === "string" ? parseInt(data.material) : data.material;
+
     // console.log({ name: data.name, description: data.description, price, categoryId: category });
     setLoading(true);
     const body = {
@@ -982,6 +984,7 @@ const DraggableRow = ({
   setDraggingIndex: React.Dispatch<React.SetStateAction<number | null>>;
 }) => {
   const initialIndexRef = useRef(index);
+
   const [, ref] = useDrag({
     type: "ROW",
     item: () => {
@@ -1007,14 +1010,21 @@ const DraggableRow = ({
     },
   });
 
+  function handleDelete(e: any) {
+    e.preventDefault();
+    e.stopPropagation();
+    setPattern(pattern);
+    const deletePopup = document.getElementById("confirmDeletePattern");
+    if (deletePopup) (deletePopup as HTMLDialogElement).showModal();
+  }
+
+  function handleClick() {
+    setPattern(pattern);
+    setPatternMode(PatternMode.Edit);
+  }
+
   return (
-    <tr
-      ref={(node) => ref(drop(node))}
-      className="hover cursor-pointer"
-      onClick={() => {
-        setPattern(pattern);
-        setPatternMode(PatternMode.Edit);
-      }}>
+    <tr ref={(node) => ref(drop(node))} className="hover cursor-pointer" onClick={handleClick}>
       <td>
         <img
           src={pattern.images.length > 0 ? pattern.images[0].imageURL : "https://placehold.co/300"}
@@ -1028,6 +1038,11 @@ const DraggableRow = ({
       </td>
       <td>
         <p>{pattern.active ? "Active" : "Inactive"}</p>
+      </td>
+      <td className="w-1/12 pointer-events-none">
+        <button onClick={handleDelete} className="btn btn-sm btn-warning pointer-events-auto">
+          Delete
+        </button>
       </td>
     </tr>
   );
@@ -1179,6 +1194,14 @@ function PatternsTab({
     setPattern({ ...pattern, images: updatedImages });
   };
 
+  async function handleConfirmDeletePattern(e: any) {
+    e.preventDefault();
+    setPatterns((prev) => prev.filter((x) => x.id !== pattern.id));
+    await deletePattern(pattern.id);
+    const popup = document.getElementById("confirmDeletePattern");
+    if (popup) (popup as HTMLDialogElement).close();
+  }
+
   return (
     <DndProvider backend={HTML5Backend}>
       <div className="flex flex-col gap-4 max-w-screen-lg m-auto">
@@ -1198,51 +1221,73 @@ function PatternsTab({
         )}
         {/* View Mode */}
         {patternMode === PatternMode.View ? (
-          <table className="table rounded-md table-zebra table-sm w-full shadow-md mb-12">
-            <thead className="text-sm bg-base-300">
-              <tr>
-                <th className="font-bold">Image</th>
-                <th className="font-bold">Name</th>
-                <th className="font-bold">Icon</th>
-                <th className="font-bold">Active</th>
-              </tr>
-            </thead>
-            <tbody>
-              {patterns.map((pattern: iPattern, index) => {
-                pattern.order = index;
-                return (
-                  <DraggableRow
-                    key={pattern.id}
-                    pattern={pattern}
-                    index={index}
-                    moveRow={moveRow}
-                    setPattern={setPattern}
-                    setPatternMode={setPatternMode}
-                    draggingIndex={draggingIndex}
-                    setDraggingIndex={setDraggingIndex}
-                  />
-                );
-              })}
-            </tbody>
-          </table>
+          <div>
+            <table className="table rounded-md table-zebra table-sm w-full shadow-md mb-12">
+              <thead className="text-sm bg-base-300">
+                <tr>
+                  <th className="font-bold">Image</th>
+                  <th className="font-bold">Name</th>
+                  <th className="font-bold">Icon</th>
+                  <th className="font-bold">Active</th>
+                  <th className="font-bold"></th>
+                </tr>
+              </thead>
+              <tbody>
+                {patterns.map((pattern: iPattern, index) => {
+                  pattern.order = index;
+                  return (
+                    <DraggableRow
+                      key={pattern.id}
+                      pattern={pattern}
+                      index={index}
+                      moveRow={moveRow}
+                      setPattern={setPattern}
+                      setPatternMode={setPatternMode}
+                      draggingIndex={draggingIndex}
+                      setDraggingIndex={setDraggingIndex}
+                    />
+                  );
+                })}
+              </tbody>
+            </table>
+            <ConfirmPopup
+              popupId="confirmDeletePattern"
+              confirmText="Are you sure you want to delete this pattern?"
+              deleteConfirmed={handleConfirmDeletePattern}
+            />
+          </div>
         ) : (
           // Edit Mode
           <div className="flex flex-col gap-8 text-sm font-semibold">
             <label htmlFor="patternName">Pattern Name</label>
-            <div>
-              <input
-                type="text"
-                className="input input-bordered w-full input-sm"
-                placeholder="Pattern Name"
-                autoComplete="off"
-                id="patternName"
-                onChange={(e) => {
-                  setPatternErrors({ ...patternErrors, name: "" });
-                  setPattern({ ...pattern, name: e.target.value });
-                }}
-                value={pattern.name}
-              />
-              {patternErrors.name.length > 0 && <p className="font-semibold text-error text-xs text-left ">{patternErrors.name}</p>}
+            <div className="flex justify-between gap-4">
+              <div className="w-3/4">
+                <input
+                  type="text"
+                  className="input input-bordered w-full input-sm"
+                  placeholder="Pattern Name"
+                  autoComplete="off"
+                  id="patternName"
+                  onChange={(e) => {
+                    setPatternErrors({ ...patternErrors, name: "" });
+                    setPattern({ ...pattern, name: e.target.value });
+                  }}
+                  value={pattern.name}
+                />
+                {patternErrors.name.length > 0 && <p className="font-semibold text-error text-xs text-left ">{patternErrors.name}</p>}
+              </div>
+              <div className="flex items-center gap-4 w-1/4 m-auto">
+                <p className="text-sm">Is Active?</p>
+                <input
+                  checked={pattern.active}
+                  title="active"
+                  type="checkbox"
+                  className="h-5 w-5 text-primary checkbox-sm"
+                  onChange={(e) => {
+                    setPattern({ ...pattern, active: e.target.checked });
+                  }}
+                />
+              </div>
             </div>
 
             <label htmlFor="patternIcon">Pattern Icon</label>

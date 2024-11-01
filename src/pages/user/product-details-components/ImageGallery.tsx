@@ -1,11 +1,17 @@
 import React, { useState, useRef } from "react";
-import { Swiper, SwiperSlide, SwiperRef } from "swiper/react";
+import {
+  Swiper,
+  SwiperSlide,
+  SwiperRef,
+  // useSwiper
+} from "swiper/react";
 
 // Import Swiper styles
 import "swiper/css";
 import "swiper/css/zoom";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
+import "../../../css/ImageGallery.css";
 
 import { Swiper as SwiperType } from "swiper/types";
 import { Zoom, Thumbs, Navigation, Pagination } from "swiper/modules";
@@ -17,6 +23,10 @@ interface ImageGalleryProps {
 const ImageGallery: React.FC<ImageGalleryProps> = ({ images }) => {
   const [thumbsSwiper, setThumbsSwiper] = useState<SwiperType | null>(null);
   const mainSwiperRef = useRef<SwiperRef>(null);
+  const style = {
+    "--swiper-navigation-color": "#000",
+    "--swiper-pagination-color": "#000",
+  } as React.CSSProperties;
 
   const handleMouseEnter = () => {
     if (mainSwiperRef.current?.swiper && mainSwiperRef.current.swiper.zoom) {
@@ -61,17 +71,12 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({ images }) => {
       {/* Main Swiper */}
       <Swiper
         ref={mainSwiperRef}
-        style={
-          {
-            "--swiper-navigation-color": "#000",
-            "--swiper-pagination-color": "#000",
-          } as React.CSSProperties
-        }
+        style={style}
         spaceBetween={10}
         zoom={{
           maxRatio: 1.5,
         }}
-        navigation={true}
+        // navigation={true}
         // pagination={{
         //   clickable: true,
         // }}
@@ -86,7 +91,7 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({ images }) => {
             key={index}
             className="flex items-center justify-center">
             <div className="swiper-zoom-container">
-              <img src={src} alt={`Slide ${index + 1}`} className="w-full h-[30rem] px-16" />
+              <img src={src} alt={`Slide ${index + 1}`} className="w-full h-[30rem] px-6" />
             </div>
           </SwiperSlide>
         ))}
@@ -94,23 +99,47 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({ images }) => {
 
       {/* Thumbnails Swiper */}
       {images.length > 1 && (
-        <Swiper
-          onSwiper={(swiper) => setThumbsSwiper(swiper)}
-          spaceBetween={10}
-          slidesPerView={4}
-          // freeMode={true}
-          watchSlidesProgress={true}
-          modules={[Thumbs]}
-          className="thumbs-carousel max-w-sm">
-          {images.map((src, index) => (
-            <SwiperSlide key={index}>
-              <img src={src} alt={`Thumbnail ${index + 1}`} className="rounded-md border border-gray-300 w-20 h-20 object-cover cursor-pointer" />
-            </SwiperSlide>
-          ))}
-        </Swiper>
+        <div className="relative flex items-center w-full">
+          <Swiper
+            onSwiper={(swiper) => setThumbsSwiper(swiper)}
+            spaceBetween={0}
+            slidesPerView={4}
+            // freeMode={true}
+            watchSlidesProgress={true}
+            slidesPerGroup={4}
+            style={style}
+            navigation={images.length > 4}
+            modules={[Thumbs, Navigation, Pagination]}
+            className="thumbs-carousel max-w-[40rem] relative">
+            {images.map((src, index) => (
+              <SwiperSlide key={index}>
+                <img
+                  src={src}
+                  alt={`Thumbnail ${index + 1}`}
+                  className="rounded-md border border-gray-300 w-24 h-20 object-cover cursor-pointer m-auto"
+                />
+              </SwiperSlide>
+            ))}
+            {/* <NavButtons /> */}
+          </Swiper>
+        </div>
       )}
     </div>
   );
 };
 
 export default ImageGallery;
+
+// function NavButtons() {
+//   const swiper = useSwiper();
+//   return (
+//     <div className="flex justify-between text-sm absolute bottom-5 z-50 w-[42rem]">
+//       <button onClick={() => swiper.slidePrev()} className="btn btn-outline rounded-full btn-sm font-semibold text-lg px-[10px]">
+//         &lt;
+//       </button>
+//       <button onClick={() => swiper.slideNext()} className="btn btn-outline rounded-full btn-sm font-semibold text-lg px-[10px] mr-8">
+//         &gt;
+//       </button>
+//     </div>
+//   );
+// }

@@ -52,6 +52,7 @@ export default function ProductDetails() {
     setSort("desc");
     getProductById(Number(id))
       .then((res) => {
+        res = { ...res, patterns: res.patterns.filter((pattern: any) => pattern.active) };
         setProduct(res);
         setSelectedSize(res.defaultSize);
         setSelectedColor(res.patterns.length > 0 ? res.patterns.find((x: any) => x.order == 0) : res.defaultColor);
@@ -205,7 +206,7 @@ export default function ProductDetails() {
         </div>
 
         {/* Description, Details, Notes, Instructions Tabs */}
-        <div className="w-full max-w-[85rem] m-auto border-b-2 border-black border-opacity-25 pb-12">
+        <div className="w-full max-w-[85rem] m-auto border-b-2 border-black border-opacity-25 pb-12 mt-12">
           <div role="tablist" className="tabs tabs-bordered ">
             {/* Tab 1 */}
             <input type="radio" name="my_tabs_1" role="tab" className="tab" aria-label="Description" defaultChecked />
