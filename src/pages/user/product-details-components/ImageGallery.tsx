@@ -13,8 +13,9 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "../../../css/ImageGallery.css";
 
-import { Swiper as SwiperType } from "swiper/types";
+// import { Swiper as SwiperType } from "swiper/types";
 import { Zoom, Thumbs, Navigation, Pagination } from "swiper/modules";
+import type { Swiper as SwiperType } from "swiper";
 
 interface ImageGalleryProps {
   images: string[];
@@ -80,7 +81,13 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({ images }) => {
         // pagination={{
         //   clickable: true,
         // }}
-        thumbs={thumbsSwiper ? { swiper: thumbsSwiper } : undefined} // Thumbs connection with check
+        thumbs={
+          images.length > 1
+            ? {
+                swiper: thumbsSwiper && !thumbsSwiper.destroyed ? thumbsSwiper : null,
+              }
+            : undefined
+        }
         modules={[Thumbs, Zoom, Navigation, Pagination]} // Modules for the main Swiper
         className="mb-4 mySwiper">
         {images.map((src, index) => (
