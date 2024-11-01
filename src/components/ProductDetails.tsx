@@ -16,6 +16,8 @@ import { Rating } from "react-simple-star-rating";
 import RugsByProducer from "../pages/user/product-details-components/RugsByProducer";
 import FeaturedReviewsCarousel from "../pages/user/product-details-components/FeaturedReviewsCarousel";
 import { Review } from "../pages/admin/Reviews";
+// import { getProductMainImageUrl } from "../utils/miscUtils";
+import ImageGallery from "../pages/user/product-details-components/ImageGallery";
 
 export default function ProductDetails() {
   const { id } = useParams<{ id: string }>();
@@ -50,9 +52,10 @@ export default function ProductDetails() {
     setSort("desc");
     getProductById(Number(id))
       .then((res) => {
+        res = { ...res, patterns: res.patterns.filter((pattern: any) => pattern.active) };
         setProduct(res);
         setSelectedSize(res.defaultSize);
-        setSelectedColor(res.defaultColor);
+        setSelectedColor(res.patterns.length > 0 ? res.patterns.find((x: any) => x.order == 0) : res.defaultColor);
 
         if (res.status && res.status == 404) {
           setResponseStatus(res.status);
@@ -119,7 +122,7 @@ export default function ProductDetails() {
 
   return (
     <div className="">
-      <div className="breadcrumbs text-sm text-blue-600  text-left max-w-[80rem] m-auto mt-6">
+      <div className="breadcrumbs text-sm text-blue-600  text-left max-w-[85rem] m-auto mt-6">
         <ul>
           <li>
             <a onClick={() => navigate("/")}>Home</a>
@@ -136,10 +139,13 @@ export default function ProductDetails() {
       </div>
       <div className="flex flex-col min-h-screen mt-8 text-left">
         {/* Product Image, Name, Price, Category, Size, Color, Add to Cart Button */}
-        <div className="flex-col lg:flex-row flex gap-0 items-start max-w-[80rem] m-auto h-full">
+        <div className="flex-col lg:flex-row flex gap-0 items-start max-w-[85rem] m-auto h-full">
           <div className="w-full lg:w-1/2 px-24 lg:px-0  flex-1 self-stretch relative">
-            <img className="object-fill w-full py-4 px-2" src={product.image} alt="Product image" />
+            {/* <img className="object-fill w-full py-4 px-2" src={getProductMainImageUrl(product)} alt="Product image" /> */}
+
+            <ImageGallery images={selectedColor.images.map((image: any) => image.imageURL)} />
             <NewBestSellerBadge isNew={product.new} isBestSeller={product.bestSeller} />
+
             {/* Featured Reviews */}
             {featuredReviews.length > 0 && (
               <section className="max-w-[70rem] m-auto ">
@@ -149,7 +155,7 @@ export default function ProductDetails() {
             )}
           </div>
 
-          <div className="flex flex-col w-full lg:w-1/2 px-4 lg:px-16 justify-between gap-6 pb-6 self-stretch flex-1 ">
+          <div className="flex flex-col  px-2 lg:px-8 justify-around gap-6 pb-6 self-stretch max-w-xl bg-[#eff2f6] ml-4 pt-4">
             <div className="flex justify-between items-center">
               <p className="text-3xl font-semibold">{product.name}</p>
               <FavIcon product={product} wishlist={wishlist} setWishlist={setWishlist} />
@@ -180,11 +186,12 @@ export default function ProductDetails() {
                 <ProductSize size={size} setSelectedSize={setSelectedSize} selectedSize={selectedSize} key={size.id} />
               ))}
             </div>
-            <p className="font-semibold text-lg">Color: {selectedColor.name}</p>
-            {product.colors.length > 1 && (
-              <div className="flex flex-wrap gap-3 items-center">
-                {product.colors.map((color: any) => (
-                  <ProductColor color={color} setSelectedColor={setSelectedColor} selectedColor={selectedColor} key={color.id} />
+            {product.patterns.length > 1 && <p className="font-semibold text-lg">Color: {selectedColor.name}</p>}
+            {product.patterns.length > 1 && (
+              <div className="flex flex-wrap gap-6 items-center ">
+                {/* flex-row-reverse mr-auto */}
+                {product.patterns.map((pattern: any) => (
+                  <ProductColor color={pattern} setSelectedColor={setSelectedColor} selectedColor={selectedColor} key={pattern.id} />
                 ))}
               </div>
             )}
@@ -199,7 +206,7 @@ export default function ProductDetails() {
         </div>
 
         {/* Description, Details, Notes, Instructions Tabs */}
-        <div className="w-full max-w-[80rem] m-auto border-b-2 border-black border-opacity-25 pb-12">
+        <div className="w-full max-w-[85rem] m-auto border-b-2 border-black border-opacity-25 pb-12 mt-12">
           <div role="tablist" className="tabs tabs-bordered ">
             {/* Tab 1 */}
             <input type="radio" name="my_tabs_1" role="tab" className="tab" aria-label="Description" defaultChecked />
@@ -291,14 +298,17 @@ function ProductSize({ size, setSelectedSize, selectedSize }: { size: any; setSe
 
 function ProductColor({ color, setSelectedColor, selectedColor }: { color: any; setSelectedColor: any; selectedColor: any }) {
   return (
-    <button
-      onClick={() => {
-        setSelectedColor(color);
-      }}
-      key={color.id}
-      className={`btn btn-sm py-0 px-5 ${selectedColor.id == color.id ? "btn-primary" : "btn-outline"}`}>
-      {color.name}
-    </button>
+    <div className="flex flex-col items-center justify-center gap-2">
+      <img className="h-16 w-16 rounded-full object-cover p-0" src={color.icon} alt="" />
+      <button
+        onClick={() => {
+          setSelectedColor(color);
+        }}
+        key={color.id}
+        className={`btn btn-xs py-0 px-5 ${selectedColor.id == color.id ? "btn-primary" : "btn-outline"}`}>
+        {color.name}
+      </button>
+    </div>
   );
 }
 

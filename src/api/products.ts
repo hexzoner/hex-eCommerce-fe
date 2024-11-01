@@ -3,6 +3,7 @@ import axios from "axios";
 // import { Product } from "../components/admin-area/Products";
 import { toast } from "react-toastify";
 import { restoreToken } from "../utils/storage";
+import { iPattern } from "../components/admin-area/modals/CreateProductModal";
 
 const API_URL = import.meta.env.VITE_API_URL;
 if (!API_URL) throw new Error("API URL is required, are you missing a .env file?");
@@ -100,6 +101,7 @@ interface ProductProps {
   features: number[];
   new: boolean;
   bestSeller: boolean;
+  patterns?: iPattern[];
 }
 
 function getBodyAPI(product: ProductProps) {
@@ -126,6 +128,7 @@ function getBodyAPI(product: ProductProps) {
     features: product.features,
     new: product.new,
     bestSeller: product.bestSeller,
+    patterns: product.patterns,
   };
 }
 

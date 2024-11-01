@@ -14,11 +14,36 @@ import { iCreateReviewAPI } from "../../../api/reviews";
 import { useShop } from "../../../context";
 import { iRoom } from "../../../utils/constants";
 import { iTaxonomy } from "../../../pages/admin/Taxonomies";
+import { uploadImageToS3 } from "../../../api/image-upload";
+import { deletePattern } from "../../../api/patterns";
 
 const dummyRug = "https://th.bing.com/th/id/OIP.MvnwHj_3a0ICmk72FNI5WQHaFR?rs=1&pid=ImgDetMain";
 
 const selectStyle = "select select-bordered w-full select-sm rounded-none";
 const inputStyle = "input input-bordered w-full rounded-none input-sm";
+
+export interface iPattern {
+  id: number;
+  name: string;
+  icon: string;
+  active: boolean;
+  images: iPatternImage[];
+  iconFile?: File;
+  order: number;
+}
+
+interface iPatternImage {
+  id: number;
+  imageURL: string;
+  file: File;
+  order?: number;
+}
+
+enum PatternMode {
+  View,
+  Add,
+  Edit,
+}
 
 export function CreateProductModal({
   product,
@@ -41,6 +66,22 @@ export function CreateProductModal({
   const [detailsHtml, setDetailsHtml] = useState(""); // Local state for the WYSIWYG editor
   const [notesHtml, setNotesHtml] = useState(""); // Local state for the WYSIWYG editor
   const [instructionsHtml, setInstructionsHtml] = useState(""); // Local state for the WYSIWYG editor
+  const [patternMode, setPatternMode] = useState<PatternMode>(PatternMode.View);
+  const [patterns, setPatterns] = useState<iPattern[]>(product.patterns);
+  const [pattern, setPattern] = useState<iPattern>({
+    id: Math.floor(Math.random() * 1000),
+    name: "",
+    icon: "",
+    active: true,
+    images: [],
+    order: patterns.length + 1,
+    // iconFile: new File([""], "filename"),
+  });
+  const [patternErrors, setPatternErrors] = useState({
+    name: "",
+    icon: "",
+    images: "",
+  });
 
   const {
     register,
@@ -119,6 +160,9 @@ export function CreateProductModal({
       }
     };
 
+    setPatterns(product.patterns);
+    // console.log(product.patterns);
+
     fetchReviews();
   }, [product]);
 
@@ -167,6 +211,7 @@ export function CreateProductModal({
     const shape = typeof data.shape === "string" ? parseInt(data.shape) : data.shape;
     const technique = typeof data.technique === "string" ? parseInt(data.technique) : data.technique;
     const material = typeof data.material === "string" ? parseInt(data.material) : data.material;
+
     // console.log({ name: data.name, description: data.description, price, categoryId: category });
     setLoading(true);
     const body = {
@@ -195,7 +240,7 @@ export function CreateProductModal({
     };
     if (!product.isEdit) {
       try {
-        await createProduct(body);
+        await createProduct({ ...body, patterns });
         setUpdate((prev) => !prev);
         handleClose();
       } catch (err) {
@@ -203,7 +248,45 @@ export function CreateProductModal({
       }
     } else {
       try {
-        await updateProduct({ ...body, id: product.id });
+        // let patternsChanged = false;
+        const _patterns = patterns;
+        for (const p of _patterns) {
+          if (!p.icon.startsWith("https://")) {
+            const iconUrl = await uploadImageToS3(p.iconFile);
+            p.icon = iconUrl;
+            // patternsChanged = true;
+          }
+          const _images = p.images;
+          for (const i of _images) {
+            if (i.imageURL.startsWith("https://")) {
+              continue;
+            }
+            // if (i.imageURL === "deleted") {
+            //   patternsChanged = true;
+            //   p.images = p.images.filter((x) => x.id !== i.id);
+            //   continue;
+            // }
+            const imageUrl = await uploadImageToS3(i.file);
+            i.imageURL = imageUrl;
+            // patternsChanged = true;
+          }
+        }
+        // if (patternsChanged) {
+        //   // console.log("Patterns changed");
+        //   setPatterns(_patterns);
+        //   await updateProduct({
+        //     ...body,
+        //     id: product.id,
+        //     patterns: _patterns,
+        //   });
+        // } else await updateProduct({ ...body, id: product.id });
+
+        await updateProduct({
+          ...body,
+          id: product.id,
+          patterns: _patterns,
+        });
+
         setUpdate((prev) => !prev);
         handleClose();
       } catch (err) {
@@ -212,14 +295,6 @@ export function CreateProductModal({
     }
 
     setLoading(false);
-
-    // function closing() {
-    //   const popup = document.getElementById("create_product_modal");
-    //   if (popup) (popup as HTMLDialogElement).close();
-    //   reset();
-    //   // window.location.reload(); //refresh the page
-    //   // setProducts(await getProducts(restoreToken()));
-    // }
   }
 
   function onDescriptionChange(e: any) {
@@ -241,6 +316,7 @@ export function CreateProductModal({
 
   function handleClose() {
     resetFormToDefault();
+    setPatternMode(PatternMode.View);
     const createProductModal = document.getElementById("create_product_modal");
     if (createProductModal) (createProductModal as HTMLDialogElement).close();
   }
@@ -286,7 +362,7 @@ export function CreateProductModal({
             <div className="m-auto text-left w-full">
               <form autoComplete="off" onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-8 min-h-[85vh] relative">
                 <div className="mx-2 mb-4 text-lg flex justify-between">
-                  <p className="w-full">{product.isEdit ? "Editing product" : "Creating product"}</p>
+                  <p className="w-full">{product.isEdit ? "Editing product: " + product.name : "Creating product"}</p>
                   {/* Buttons */}
                   <div className="flex w-full justify-end relative bottom-0">
                     {product.isEdit ? (
@@ -314,8 +390,8 @@ export function CreateProductModal({
                   </div>
                 </div>
                 <div role="tablist" className="tabs tabs-bordered">
-                  {/* Tab 1 */}
-                  <input type="radio" name="my_tabs_1" role="tab" className="tab" aria-label="Main" defaultChecked />
+                  {/* Tab 1 - Main*/}
+                  <input type="radio" name="my_tabs_1" role="tab" className="tab" aria-label="Main" />
                   <div role="tabpanel" className="tab-content p-10">
                     <div className="flex gap-6">
                       <div className="w-1/2 flex flex-col gap-6 ">
@@ -563,7 +639,7 @@ export function CreateProductModal({
                     </div>
                   </div>
 
-                  {/* Tab 2 */}
+                  {/* Tab 2 - Details */}
                   <input type="radio" name="my_tabs_1" role="tab" className="tab" aria-label="Details" />
                   <div role="tabpanel" className="tab-content p-10 w-full ">
                     <div className=" grid grid-cols-2 gap-3">
@@ -677,33 +753,23 @@ export function CreateProductModal({
                     </div>
                   </div>
 
-                  {/* Tab 3 */}
-                  <input type="radio" name="my_tabs_1" role="tab" className="tab" aria-label="Images" />
+                  {/* Tab 3 - Patterns */}
+                  <input type="radio" name="my_tabs_1" role="tab" className="tab" aria-label="Images" defaultChecked />
                   <div role="tabpanel" className="tab-content p-10">
-                    <div className="flex flex-col gap-4">
-                      <div className="flex justify-center">
-                        <img
-                          src={product.image?.length > 0 ? product.image : imageInput && imageInput.length > 0 ? imageInput : dummyRug}
-                          alt="product"
-                          className="h-64"
-                        />
-                      </div>
-                      <div>
-                        <input
-                          type="text"
-                          className="input input-bordered w-full "
-                          placeholder="Image URL"
-                          autoComplete="off"
-                          {...register("image", {
-                            required: "Image is required",
-                          })}
-                        />
-                        {errors.image && <p className="font-semibold text-error text-xs text-left ">{errors.image.message?.toString()}</p>}
-                      </div>
-                    </div>
+                    <PatternsTab
+                      pattern={pattern}
+                      setPattern={setPattern}
+                      patterns={patterns}
+                      setPatterns={setPatterns}
+                      setPatternMode={setPatternMode}
+                      patternMode={patternMode}
+                      setPatternErrors={setPatternErrors}
+                      patternErrors={patternErrors}
+                      product={product}
+                    />
                   </div>
 
-                  {/* Tab 4 */}
+                  {/* Tab 4 - Reviews */}
                   <input type="radio" name="my_tabs_1" role="tab" className="tab" aria-label="Reviews" />
                   <div role="tabpanel" className="tab-content p-10">
                     <div>
@@ -855,6 +921,32 @@ export function CreateProductModal({
                       </table>
                     </div>
                   </div>
+
+                  {/* Tab 5 */}
+                  <input type="radio" name="my_tabs_1" role="tab" className="tab " aria-label="Old_Image" />
+                  <div role="tabpanel" className="tab-content p-10">
+                    <div className="flex flex-col gap-4">
+                      <div className="flex justify-center">
+                        <img
+                          src={product.image?.length > 0 ? product.image : imageInput && imageInput.length > 0 ? imageInput : dummyRug}
+                          alt="product"
+                          className="h-64"
+                        />
+                      </div>
+                      <div>
+                        <input
+                          type="text"
+                          className="input input-bordered w-full "
+                          placeholder="Image URL"
+                          autoComplete="off"
+                          {...register("image", {
+                            required: "Image is required",
+                          })}
+                        />
+                        {errors.image && <p className="font-semibold text-error text-xs text-left ">{errors.image.message?.toString()}</p>}
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </form>
             </div>
@@ -867,5 +959,423 @@ export function CreateProductModal({
       </dialog>
       <ConfirmPopup confirmText="Are you sure you want to delete this product?" deleteConfirmed={handleConfirmDelete} />
     </>
+  );
+}
+
+import { useDrag, useDrop, DndProvider } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
+import { useRef } from "react";
+
+const DraggableRow = ({
+  pattern,
+  index,
+  moveRow,
+  setPattern,
+  setPatternMode,
+  draggingIndex,
+  setDraggingIndex,
+}: {
+  pattern: iPattern;
+  index: number;
+  moveRow: (fromIndex: number, toIndex: number) => void;
+  setPattern: React.Dispatch<React.SetStateAction<iPattern>>;
+  setPatternMode: React.Dispatch<React.SetStateAction<PatternMode>>;
+  draggingIndex: number | null;
+  setDraggingIndex: React.Dispatch<React.SetStateAction<number | null>>;
+}) => {
+  const initialIndexRef = useRef(index);
+
+  const [, ref] = useDrag({
+    type: "ROW",
+    item: () => {
+      setDraggingIndex(index);
+      initialIndexRef.current = index;
+      return { index };
+    },
+    end: () => {
+      // console.log("useDrag - End dragging");
+      setDraggingIndex(null);
+    }, // Reset dragging index on drag end
+  });
+
+  const [, drop] = useDrop({
+    accept: "ROW",
+    hover(item: { index: number }) {
+      if (item.index !== index && draggingIndex !== index) {
+        // console.log("item.index:", item.index, "index:", index, "draggingIndex:", draggingIndex, "initialIndexRef:", initialIndexRef.current);
+        moveRow(item.index, index);
+        item.index = index; // Update to the new index
+        setDraggingIndex(index); // Set the current dragging index
+      }
+    },
+  });
+
+  function handleDelete(e: any) {
+    e.preventDefault();
+    e.stopPropagation();
+    setPattern(pattern);
+    const deletePopup = document.getElementById("confirmDeletePattern");
+    if (deletePopup) (deletePopup as HTMLDialogElement).showModal();
+  }
+
+  function handleClick() {
+    setPattern(pattern);
+    setPatternMode(PatternMode.Edit);
+  }
+
+  return (
+    <tr ref={(node) => ref(drop(node))} className="hover cursor-pointer" onClick={handleClick}>
+      <td>
+        <img
+          src={pattern.images.length > 0 ? pattern.images[0].imageURL : "https://placehold.co/300"}
+          alt={"Image"}
+          className="h-24 w-24 object-cover"
+        />
+      </td>
+      <td>{pattern.name}</td>
+      <td>
+        <img src={pattern.icon} alt={"Icon"} className="h-16 w-16 rounded-full object-cover" />
+      </td>
+      <td>
+        <p>{pattern.active ? "Active" : "Inactive"}</p>
+      </td>
+      <td className="w-1/12 pointer-events-none">
+        <button onClick={handleDelete} className="btn btn-sm btn-warning pointer-events-auto">
+          Delete
+        </button>
+      </td>
+    </tr>
+  );
+};
+
+const DraggableImage = ({
+  image,
+  index,
+  moveRow,
+  draggingIndex,
+  setDraggingIndex,
+  setPattern,
+}: {
+  image: iPatternImage;
+  index: number;
+  moveRow: (fromIndex: number, toIndex: number) => void;
+  setPattern: React.Dispatch<React.SetStateAction<iPattern>>;
+  // setPatternMode: React.Dispatch<React.SetStateAction<PatternMode>>;
+  draggingIndex: number | null;
+  setDraggingIndex: React.Dispatch<React.SetStateAction<number | null>>;
+}) => {
+  const initialIndexRef = useRef(index);
+  const [, ref] = useDrag({
+    type: "ROW",
+    item: () => {
+      setDraggingIndex(index);
+      initialIndexRef.current = index;
+      return { index };
+    },
+    end: () => {
+      setDraggingIndex(null);
+    },
+  });
+
+  const [, drop] = useDrop({
+    accept: "ROW",
+    hover(item: { index: number }) {
+      if (item.index !== index && draggingIndex !== index) {
+        // console.log("item.index:", item.index, "index:", index, "draggingIndex:", draggingIndex, "initialIndexRef:", initialIndexRef.current);
+        moveRow(item.index, index);
+        item.index = index; // Update to the new index
+        setDraggingIndex(index); // Set the current dragging index
+      }
+    },
+  });
+
+  function handDeletePatternImage(e: any, image: iPatternImage) {
+    e.preventDefault();
+
+    setPattern((prevPattern) => {
+      return {
+        ...prevPattern,
+        images: prevPattern.images.filter((img) => img.id !== image.id),
+      };
+    });
+  }
+
+  return (
+    <div ref={(node) => ref(drop(node))} key={index} className="relative">
+      <div>
+        <img src={image.imageURL} alt="Pattern" className="h-48 w-48 rounded-none object-cover" />
+        <button
+          onClick={(e: any) => handDeletePatternImage(e, image)}
+          className="absolute top-0 right-0 btn btn-neutral w-8 h-6 btn-sm rounded-none p-0 text-white">
+          X
+        </button>
+      </div>
+    </div>
+  );
+};
+
+function PatternsTab({
+  pattern,
+  patterns,
+  setPatterns,
+  setPattern,
+  setPatternMode,
+  patternMode,
+  setPatternErrors,
+  patternErrors,
+}: {
+  pattern: iPattern;
+  product: Product;
+  setPatterns: React.Dispatch<React.SetStateAction<iPattern[]>>;
+  patterns: iPattern[];
+  setPattern: React.Dispatch<React.SetStateAction<iPattern>>;
+  setPatternMode: React.Dispatch<React.SetStateAction<PatternMode>>;
+  patternMode: PatternMode;
+  setPatternErrors: React.Dispatch<React.SetStateAction<{ name: string; icon: string; images: string }>>;
+  patternErrors: { name: string; icon: string; images: string };
+}) {
+  function handleAddPattern(e: any) {
+    setPattern({
+      name: "",
+      icon: "",
+      active: true,
+      images: [],
+      id: Math.floor(Math.random() * 1000),
+      order: patterns.length,
+    });
+    e.preventDefault();
+    setPatternMode(PatternMode.Add);
+  }
+
+  function handleSavePattern(e: any) {
+    e.preventDefault();
+    const errors = { name: "", icon: "", images: "" };
+    const patternImages = pattern.images.filter((x) => x.imageURL !== "deleted");
+    if (pattern.name.length == 0) errors.name = "Pattern name is required";
+    if (pattern.icon.length == 0) errors.icon = "Pattern icon is required";
+    if (patternImages.length == 0) errors.images = "Pattern images are required";
+    setPatternErrors(errors);
+    if (errors.name.length > 0 || errors.icon.length > 0 || errors.images.length > 0) return;
+
+    if (patternMode === PatternMode.Add) setPatterns((prev) => [...prev, pattern]);
+    else setPatterns((prev) => prev.map((x) => (x.id === pattern.id ? pattern : x)));
+
+    setPattern({
+      name: "",
+      icon: "",
+      active: true,
+      images: [],
+      id: Math.floor(Math.random() * 1000),
+      order: patterns.length,
+    });
+    setPatternMode(PatternMode.View);
+    // console.log(pattern);
+  }
+
+  const [draggingIndex, setDraggingIndex] = useState<number | null>(null);
+
+  const moveRow = (fromIndex: number, toIndex: number) => {
+    if (fromIndex === toIndex) return;
+    const updatedPatterns = [...patterns];
+    const movedItem = updatedPatterns.splice(fromIndex, 1);
+    movedItem[0].order = toIndex;
+    updatedPatterns.splice(toIndex, 0, movedItem[0]);
+
+    setPatterns(updatedPatterns);
+  };
+
+  const moveImage = (fromIndex: number, toIndex: number) => {
+    if (fromIndex === toIndex) return;
+    const updatedImages = [...pattern.images];
+    const movedItem = updatedImages.splice(fromIndex, 1);
+    movedItem[0].order = toIndex;
+    updatedImages.splice(toIndex, 0, movedItem[0]);
+
+    setPattern({ ...pattern, images: updatedImages });
+  };
+
+  async function handleConfirmDeletePattern(e: any) {
+    e.preventDefault();
+    setPatterns((prev) => prev.filter((x) => x.id !== pattern.id));
+    await deletePattern(pattern.id);
+    const popup = document.getElementById("confirmDeletePattern");
+    if (popup) (popup as HTMLDialogElement).close();
+  }
+
+  return (
+    <DndProvider backend={HTML5Backend}>
+      <div className="flex flex-col gap-4 max-w-screen-lg m-auto">
+        {patternMode == PatternMode.View ? (
+          <button onClick={handleAddPattern} className="btn btn-primary max-w-sm self-end rounded-none">
+            Add Pattern
+          </button>
+        ) : (
+          <div className="flex self-end">
+            <button onClick={handleSavePattern} className="btn btn-success max-w-sm self-end rounded-none">
+              Save
+            </button>
+            <button onClick={() => setPatternMode(PatternMode.View)} className="btn max-w-sm self-end rounded-none">
+              Cancel
+            </button>
+          </div>
+        )}
+        {/* View Mode */}
+        {patternMode === PatternMode.View ? (
+          <div>
+            <table className="table rounded-md table-zebra table-sm w-full shadow-md mb-12">
+              <thead className="text-sm bg-base-300">
+                <tr>
+                  <th className="font-bold">Image</th>
+                  <th className="font-bold">Name</th>
+                  <th className="font-bold">Icon</th>
+                  <th className="font-bold">Active</th>
+                  <th className="font-bold"></th>
+                </tr>
+              </thead>
+              <tbody>
+                {patterns.map((pattern: iPattern, index) => {
+                  pattern.order = index;
+                  return (
+                    <DraggableRow
+                      key={pattern.id}
+                      pattern={pattern}
+                      index={index}
+                      moveRow={moveRow}
+                      setPattern={setPattern}
+                      setPatternMode={setPatternMode}
+                      draggingIndex={draggingIndex}
+                      setDraggingIndex={setDraggingIndex}
+                    />
+                  );
+                })}
+              </tbody>
+            </table>
+            <ConfirmPopup
+              popupId="confirmDeletePattern"
+              confirmText="Are you sure you want to delete this pattern?"
+              deleteConfirmed={handleConfirmDeletePattern}
+            />
+          </div>
+        ) : (
+          // Edit Mode
+          <div className="flex flex-col gap-8 text-sm font-semibold">
+            <label htmlFor="patternName">Pattern Name</label>
+            <div className="flex justify-between gap-4">
+              <div className="w-3/4">
+                <input
+                  type="text"
+                  className="input input-bordered w-full input-sm"
+                  placeholder="Pattern Name"
+                  autoComplete="off"
+                  id="patternName"
+                  onChange={(e) => {
+                    setPatternErrors({ ...patternErrors, name: "" });
+                    setPattern({ ...pattern, name: e.target.value });
+                  }}
+                  value={pattern.name}
+                />
+                {patternErrors.name.length > 0 && <p className="font-semibold text-error text-xs text-left ">{patternErrors.name}</p>}
+              </div>
+              <div className="flex items-center gap-4 w-1/4 m-auto">
+                <p className="text-sm">Is Active?</p>
+                <input
+                  checked={pattern.active}
+                  title="active"
+                  type="checkbox"
+                  className="h-5 w-5 text-primary checkbox-sm"
+                  onChange={(e) => {
+                    setPattern({ ...pattern, active: e.target.checked });
+                  }}
+                />
+              </div>
+            </div>
+
+            <label htmlFor="patternIcon">Pattern Icon</label>
+            {pattern.icon && <img className="h-24 w-24 rounded-full object-cover" src={pattern.icon} alt="Pattern icon" />}
+            <div>
+              <input
+                id="patternIcon"
+                type="file"
+                accept="image/*"
+                className="file-input file-input-xs file-input-bordered w-full max-w-xs rounded-none"
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) {
+                    setPatternErrors({ ...patternErrors, icon: "" });
+                    setPattern({
+                      ...pattern,
+                      icon: URL.createObjectURL(file),
+                      iconFile: file, // Store the File object for later use (e.g., for upload)
+                    });
+                  }
+                }}
+              />
+              {patternErrors.icon.length > 0 && <p className="font-semibold text-error text-xs text-left ">{patternErrors.icon}</p>}
+            </div>
+
+            <div>
+              {patternErrors.images.length > 0 && <p className="font-semibold text-error text-xs text-left ">{patternErrors.images}</p>}
+              <p className="w-full border-b-[1.5px] border-black">Pattern Images</p>
+              <div className="flex gap-4 flex-wrap py-4">
+                {pattern.images.map((image, index) => {
+                  image.order = index;
+                  return (
+                    // <div key={index} className="relative">
+                    //   <div>
+                    //     <img src={image.imageURL} alt="Pattern" className="h-48 w-48 rounded-none object-cover" />
+                    //     <button
+                    //       onClick={(e: any) => handDeletePatternImage(e, image)}
+                    //       className="absolute top-0 right-0 btn btn-neutral w-8 h-6 btn-sm rounded-none p-0 text-white">
+                    //       X
+                    //     </button>
+                    //   </div>
+                    // </div>
+                    <DraggableImage
+                      key={index}
+                      image={image}
+                      index={index}
+                      moveRow={moveImage}
+                      draggingIndex={draggingIndex}
+                      setDraggingIndex={setDraggingIndex}
+                      setPattern={setPattern}
+                    />
+                  );
+                })}
+                <label htmlFor="pattern_image" className="btn btn-neutral rounded-none btn-lg w-48 h-48 text-3xl">
+                  +
+                </label>
+                <input
+                  id="pattern_image"
+                  type="file"
+                  accept="image/*"
+                  className="file-input file-input-sm file-input-bordered opacity-0"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) {
+                      setPatternErrors({ ...patternErrors, images: "" });
+                      const newImage = {
+                        ...pattern,
+                        images: [
+                          ...pattern.images,
+                          {
+                            id: Math.floor(Math.random() * 1000),
+                            imageURL: URL.createObjectURL(file),
+                            file: file, // Store the File object for later use (e.g., for upload)
+                            order: pattern.images.length,
+                          },
+                        ],
+                      };
+                      // console.log(pattern.images.length);
+                      // console.log(newImage);
+                      setPattern(newImage);
+                    }
+                  }}
+                />
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    </DndProvider>
   );
 }
