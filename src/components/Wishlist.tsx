@@ -6,6 +6,8 @@ import { useShop } from "../context";
 import LoadingSpinner from "./LoadingSpinner";
 import { useNavigate } from "react-router-dom";
 import { calculatePriceRange } from "../utils/miscUtils";
+import { getProductMainImageUrl } from "../utils/miscUtils";
+import { storeWishlist } from "../utils/storage";
 
 export default function Wishlist() {
   const { wishlist, setWishlist, shopLoading, addToCart, cartLoading } = useShop();
@@ -21,7 +23,14 @@ export default function Wishlist() {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mt-4 max-w-[75rem] m-auto ">
               {wishlist.map((item) => (
-                <WishlistCard key={item.id} item={item} setWishlist={setWishlist} addToCart={addToCart} cartLoading={cartLoading} />
+                <WishlistCard
+                  key={item.id}
+                  item={item}
+                  setWishlist={setWishlist}
+                  addToCart={addToCart}
+                  cartLoading={cartLoading}
+                  wishlist={wishlist}
+                />
               ))}
             </div>
           )}
@@ -31,10 +40,27 @@ export default function Wishlist() {
   );
 }
 
-export function WishlistCard({ item, setWishlist, addToCart, cartLoading }: { item: any; setWishlist: any; addToCart: any; cartLoading: boolean }) {
+export function WishlistCard({
+  item,
+  setWishlist,
+  addToCart,
+  cartLoading,
+  wishlist,
+}: {
+  item: any;
+  setWishlist: any;
+  addToCart: any;
+  cartLoading: boolean;
+  wishlist: any;
+}) {
   function handleRemoveClick() {
     const token = restoreToken();
-    if (!token) return;
+    if (!token) {
+      const newWishlist = wishlist.filter((i: any) => i.id !== item.id);
+      setWishlist(newWishlist);
+      storeWishlist(newWishlist);
+      return;
+    }
     removeFromWishlist(token, item.id)
       .then((res) => {
         // console.log(res);
@@ -61,7 +87,7 @@ export function WishlistCard({ item, setWishlist, addToCart, cartLoading }: { it
       <p onClick={handleRemoveClick} className="text-right font-bold cursor-pointer">
         ✕
       </p>
-      <img onClick={handleNavigate} src={item.image} alt={item.name} className=" h-36 w-72 object-cover px-4 cursor-pointer" />
+      <img onClick={handleNavigate} src={getProductMainImageUrl(item)} alt={item.name} className=" h-36 w-72 object-cover px-4 cursor-pointer" />
       <div className="grid grid-col gap-3">
         <p onClick={handleNavigate} className="text-lg font-semibold cursor-pointer hover:text-[#b04e2d]">
           {item.name}

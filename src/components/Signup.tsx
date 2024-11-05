@@ -1,17 +1,19 @@
-import { useAuth } from "../context";
+import { useShop } from "../context";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { LoadingSpinner } from "./components";
 import { toast } from "react-toastify";
 import { signUpApiCall } from "../api/auth";
-import { storeToken } from "../utils/storage";
+// import { storeToken } from "../utils/storage";
+
 export const inputMarkup = "input input-bordered flex items-center gap-2  border-neutral border-opacity-40";
 
 export default function Signup() {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-  const { setUser, setIsAuthenticated, setAuthLoading } = useAuth();
+  // const { setUser, setIsAuthenticated, setAuthLoading } = useAuth();
+  const { login } = useShop();
   const {
     register,
     handleSubmit,
@@ -27,11 +29,8 @@ export default function Signup() {
     setIsLoading(true);
     try {
       const res = await signUpApiCall(data);
-      setUser(res.user);
-      setIsAuthenticated(true);
-      setAuthLoading(false);
+      login(res);
       setIsLoading(false);
-      storeToken(res.token);
       navigate("/");
     } catch (err) {
       setIsLoading(false);

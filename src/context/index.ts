@@ -36,6 +36,7 @@ const useAuth = () => {
 
 // ShopContext -----------------------------------------------------
 interface ShopContextProps {
+  login: (res: any) => void;
   wishlist: any[];
   setWishlist: React.Dispatch<React.SetStateAction<any[]>>;
   shopLoading: boolean;
@@ -73,6 +74,7 @@ interface ShopContextProps {
 }
 
 const ShopContext = createContext<ShopContextProps>({
+  login: () => {},
   wishlist: [],
   setWishlist: () => {},
   shopLoading: true,

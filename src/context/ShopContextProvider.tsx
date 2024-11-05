@@ -1,6 +1,6 @@
 import { useState, ReactNode, useEffect } from "react";
-import { restoreToken } from "../utils/storage";
-import { getWishlist } from "../api/wishlist";
+import { restoreToken, storeToken } from "../utils/storage";
+import { getWishlist, addToWishlist } from "../api/wishlist";
 import { ShopContext } from ".";
 import { useAuth } from "../context";
 import { getCategories } from "../api/categories";
@@ -16,9 +16,10 @@ import { getProducers } from "../api/producers";
 import { getRooms } from "../api/rooms";
 import { getFeatures } from "../api/features";
 import { iFilter } from ".";
+import { restoreWishlist, storeWishlist } from "../utils/storage";
 
 const ShopProvider = ({ children }: { children: ReactNode }) => {
-  const { user, isAuthenticated } = useAuth();
+  const { user, setUser, isAuthenticated, setIsAuthenticated, setAuthLoading } = useAuth();
   const [wishlist, setWishlist] = useState<any[]>([]);
 
   const [categories, setCategories] = useState<any[]>([]);
@@ -125,7 +126,7 @@ const ShopProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     if (!user) {
-      setWishlist([]);
+      setWishlist(restoreWishlist());
       setShopLoading(false);
       return;
     }
@@ -142,7 +143,40 @@ const ShopProvider = ({ children }: { children: ReactNode }) => {
       .finally(() =>
         getWishlist(restoreToken())
           .then((res) => {
-            setWishlist(res);
+            // console.log(res);
+            const wishlistFromStorage = restoreWishlist();
+
+            const newItemsFromStorage = wishlistFromStorage.filter((item: any) => !res.find((i: any) => i.id === item.id));
+            // console.log(newItemsFromStorage);
+            // console.log("-----------------");
+            if (newItemsFromStorage.length > 0) {
+              newItemsFromStorage.forEach((item: any) => {
+                addToWishlist(restoreToken(), item.id)
+                  .then(() => {
+                    // if (res.status === "success") {
+                    //   // toast.success(res.message);
+                    //   storeWishlist(wishlistFromStorage.filter((i: any) => i.id !== item.id));
+                    // }
+                  })
+                  .catch((err) => {
+                    console.log(err);
+                  });
+              });
+            }
+
+            const combinedWithlist = [...wishlistFromStorage, ...res].reduce((acc, current) => {
+              // Check if the current item is already in the accumulator array
+              const x = acc.find((item: any) => item.id === current.id);
+              if (!x) {
+                // If not found, add the current item to the accumulator array
+                acc.push(current);
+              }
+              // Return the accumulator array
+              return acc;
+            }, []); // Initial value for the accumulator is an empty array
+
+            storeWishlist([]);
+            setWishlist(combinedWithlist);
             // console.log(res);
           })
           .catch((err) => {
@@ -152,9 +186,17 @@ const ShopProvider = ({ children }: { children: ReactNode }) => {
       );
   }, [user, isAuthenticated]);
 
+  function login(res: any) {
+    setUser(res.user);
+    setIsAuthenticated(true);
+    setAuthLoading(false);
+    storeToken(res.token);
+  }
+
   return (
     <ShopContext.Provider
       value={{
+        login,
         addToCart,
         cart,
         setCart,
