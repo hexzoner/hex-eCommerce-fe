@@ -18,6 +18,7 @@ import FeaturedReviewsCarousel from "../pages/user/product-details-components/Fe
 import { Review } from "../pages/admin/Reviews";
 // import { getProductMainImageUrl } from "../utils/miscUtils";
 import ImageGallery from "../pages/user/product-details-components/ImageGallery";
+import { getProductMainImageUrl } from "../utils/miscUtils";
 
 export default function ProductDetails() {
   const { id } = useParams<{ id: string }>();
@@ -54,8 +55,9 @@ export default function ProductDetails() {
       .then((res) => {
         res = { ...res, patterns: res.patterns.filter((pattern: any) => pattern.active) };
         setProduct(res);
+        // console.log(res);
         setSelectedSize(res.defaultSize);
-        setSelectedColor(res.patterns.length > 0 ? res.patterns.find((x: any) => x.order == 0) : res.defaultColor);
+        setSelectedColor(res.patterns.length > 0 ? res.patterns.find((x: any) => x.order == 0) : []);
 
         if (res.status && res.status == 404) {
           setResponseStatus(res.status);
@@ -140,23 +142,25 @@ export default function ProductDetails() {
       <div className="flex flex-col min-h-screen mt-8 text-left">
         {/* Product Image, Name, Price, Category, Size, Color, Add to Cart Button */}
         <div className="flex-col lg:flex-row flex gap-0 items-start max-w-[85rem] m-auto h-full">
-          <div className="w-full lg:w-1/2 px-24 lg:px-0  flex-1 self-stretch relative">
-            {/* <img className="object-fill w-full py-4 px-2" src={getProductMainImageUrl(product)} alt="Product image" /> */}
-
-            <ImageGallery images={selectedColor.images.map((image: any) => image.imageURL)} />
-            <NewBestSellerBadge isNew={product.new} isBestSeller={product.bestSeller} />
+          <div className="w-full lg:w-1/2  lg:px-0  flex-1 self-stretch relative">
+            <div className="max-w-80 m-auto md:max-w-xl lg:max-w-full">
+              <ImageGallery
+                images={selectedColor.images ? selectedColor.images.map((image: any) => image.imageURL) : [getProductMainImageUrl(product)]}
+              />
+              <NewBestSellerBadge isNew={product.new} isBestSeller={product.bestSeller} />
+            </div>
 
             {/* Featured Reviews */}
             {featuredReviews.length > 0 && (
-              <section className="max-w-[70rem] m-auto ">
+              <section className="max-w-xs md:max-w-[70rem] m-auto ">
                 <p className="font-semibold text-xl pt-6">Featured Reviews</p>
                 <FeaturedReviewsCarousel reviews={featuredReviews} />
               </section>
             )}
           </div>
 
-          <div className="flex flex-col  px-2 lg:px-8 justify-around gap-6 pb-6 self-stretch max-w-xl bg-[#eff2f6] ml-4 pt-4">
-            <div className="flex justify-between items-center">
+          <div className="flex flex-col  self-stretch justify-around w-full bg-[#eff2f6] pt-4 lg:w-[40%] mx-auto mt-6 lg:mt-0 px-5 lg:px-8  gap-6 pb-6 ">
+            <div className="flex justify-between items-center w-full">
               <p className="text-3xl font-semibold">{product.name}</p>
               <FavIcon product={product} wishlist={wishlist} setWishlist={setWishlist} />
             </div>
@@ -164,7 +168,6 @@ export default function ProductDetails() {
             <div className="flex gap-4 italic">
               <p>{product.category.name}</p>
             </div>
-
             {/* Features section */}
             <div className="flex gap-4 flex-wrap ">
               {product.features &&
@@ -177,7 +180,6 @@ export default function ProductDetails() {
                   );
                 })}
             </div>
-
             <div className="font-semibold text-lg">
               <span>Size:</span> <span className="ml-1 ">{selectedSize.name}</span>
             </div>
@@ -187,7 +189,7 @@ export default function ProductDetails() {
               ))}
             </div>
             {product.patterns.length > 1 && <p className="font-semibold text-lg">Color: {selectedColor.name}</p>}
-            {product.patterns.length > 1 && (
+            {product.patterns?.length > 1 && (
               <div className="flex flex-wrap gap-6 items-center ">
                 {/* flex-row-reverse mr-auto */}
                 {product.patterns.map((pattern: any) => (
@@ -197,7 +199,7 @@ export default function ProductDetails() {
             )}
             <button
               onClick={handleAddToCart}
-              className={`btn btn-primary mt-2 ${cartLoading ? "btn-disabled" : ""}`}
+              className={`btn btn-primary w-full rounded-none mt-2 ${cartLoading ? "btn-disabled" : ""}`}
               // disabled={cartLoading}
             >
               {cartLoading ? "ADDING TO CART..." : "ADD TO CART"}
@@ -247,7 +249,7 @@ export default function ProductDetails() {
         </section>
 
         {/* Customer Reviews */}
-        <section className="bg-[#fcfaf5] w-full text-center">
+        <section className="bg-[#fcfaf5] w-full text-center px-4">
           <div className="max-w-[40rem] m-auto py-20 border-b-[2.5px] border-black border-opacity-15 mb-4">
             <p className="font-semibold text-2xl">Customer Reviews</p>
             <p className="">{totalReviews} Reviews</p>

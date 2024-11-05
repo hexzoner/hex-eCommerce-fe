@@ -262,15 +262,11 @@ export function FilterDropdown({
   else if (width === 3) filterMarkup = "w-[40rem]";
 
   return (
-    <div
-      className={`dropdown z-50  ${isHovered ? "dropdown-open" : ""}`}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-      ref={dropdownRef}>
+    <div className={`dropdown ${isHovered ? "dropdown-open" : ""}`} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} ref={dropdownRef}>
       <div tabIndex={0} role="button" className="border-[1.5px] select-bordered w-full pl-6 br-8 select select-sm rounded-none">
         {name}
       </div>
-      <ul tabIndex={0} className={`dropdown-content menu bg-base-100 rounded-box z-[1] p-2 shadow max-h-72 ` + filterMarkup}>
+      <ul tabIndex={0} className={`dropdown-content menu bg-base-100 rounded-box z-[30] p-2 shadow max-h-72 ` + filterMarkup}>
         {options.map((option) => {
           return (
             <li key={option.id}>

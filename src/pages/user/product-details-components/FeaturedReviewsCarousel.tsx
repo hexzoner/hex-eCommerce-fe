@@ -54,7 +54,7 @@ export default function FeaturedReviewsCarousel({ reviews }: { reviews: Review[]
         <Slider {...settings}>
           {reviews.map((review, index) => (
             <div key={index} className="text-sm m-auto ">
-              <div className="flex gap-2 flex-col justify-between px-6 py-8  ">
+              <div className="flex gap-2 flex-col justify-between px-6 py-8 flex-wrap ">
                 {/* <img
                   onClick={() => {
                     navigate(`/product/${review.id}`);
