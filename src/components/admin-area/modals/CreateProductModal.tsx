@@ -17,7 +17,7 @@ import { iTaxonomy } from "../../../pages/admin/Taxonomies";
 import { uploadImageToS3 } from "../../../api/image-upload";
 import { deletePattern } from "../../../api/patterns";
 
-const dummyRug = "https://th.bing.com/th/id/OIP.MvnwHj_3a0ICmk72FNI5WQHaFR?rs=1&pid=ImgDetMain";
+// const dummyRug = "https://th.bing.com/th/id/OIP.MvnwHj_3a0ICmk72FNI5WQHaFR?rs=1&pid=ImgDetMain";
 
 const selectStyle = "select select-bordered w-full select-sm rounded-none";
 const inputStyle = "input input-bordered w-full rounded-none input-sm";
@@ -87,7 +87,7 @@ export function CreateProductModal({
     register,
     handleSubmit,
     formState: { errors },
-    watch,
+    // watch,
     reset,
     setValue,
     // getValues,
@@ -112,7 +112,7 @@ export function CreateProductModal({
     bestSeller: boolean;
   }>();
 
-  const imageInput = watch("image");
+  // const imageInput = watch("image");
 
   function resetFormToDefault() {
     // console.log(product);
@@ -168,15 +168,17 @@ export function CreateProductModal({
 
   function handleDelete(e: React.MouseEvent) {
     e.preventDefault();
-    const deletePopup = document.getElementById("confirmPopup");
+    const deletePopup = document.getElementById("confirmPopupDeleteProduct");
     if (deletePopup) (deletePopup as HTMLDialogElement).showModal();
   }
 
   async function handleConfirmDelete() {
     // console.log("Deleting product " + product.id);
     await deleteProduct(product.id);
-    const deletePopup = document.getElementById("create_product_modal");
+    const deletePopup = document.getElementById("confirmPopupDeleteProduct");
     if (deletePopup) (deletePopup as HTMLDialogElement).close();
+    const productModal = document.getElementById("create_product_modal");
+    if (productModal) (productModal as HTMLDialogElement).close();
     setProducts((prev) => prev.filter((x) => x.id != product.id));
   }
 
@@ -238,11 +240,25 @@ export function CreateProductModal({
       new: data.new,
       bestSeller: data.bestSeller,
     };
+
     if (!product.isEdit) {
       try {
-        await createProduct({ ...body, patterns });
-        setUpdate((prev) => !prev);
-        handleClose();
+        const _patterns = patterns;
+        for (const p of _patterns) {
+          const iconUrl = await uploadImageToS3(p.iconFile);
+          p.icon = iconUrl;
+          const _images = p.images;
+          for (const i of _images) {
+            const imageUrl = await uploadImageToS3(i.file);
+            i.imageURL = imageUrl;
+          }
+        }
+
+        const res = await createProduct({ ...body, patterns });
+        if (res.id) {
+          setUpdate((prev) => !prev);
+          handleClose();
+        }
       } catch (err) {
         console.log(err);
       }
@@ -356,8 +372,8 @@ export function CreateProductModal({
 
   return (
     <>
-      <dialog id="create_product_modal" className="modal">
-        <div className="modal-box w-full max-w-[90%]">
+      <dialog id="create_product_modal" className="modal ">
+        <div className="modal-box w-full max-w-[90%] ">
           {!loading ? (
             <div className="m-auto text-left w-full">
               <form autoComplete="off" onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-8 min-h-[85vh] relative">
@@ -391,7 +407,7 @@ export function CreateProductModal({
                 </div>
                 <div role="tablist" className="tabs tabs-bordered">
                   {/* Tab 1 - Main*/}
-                  <input type="radio" name="my_tabs_1" role="tab" className="tab" aria-label="Main" />
+                  <input type="radio" name="my_tabs_1" role="tab" className="tab" aria-label="Main" defaultChecked />
                   <div role="tabpanel" className="tab-content p-10">
                     <div className="flex gap-6">
                       <div className="w-1/2 flex flex-col gap-6 ">
@@ -754,7 +770,7 @@ export function CreateProductModal({
                   </div>
 
                   {/* Tab 3 - Patterns */}
-                  <input type="radio" name="my_tabs_1" role="tab" className="tab" aria-label="Images" defaultChecked />
+                  <input type="radio" name="my_tabs_1" role="tab" className="tab" aria-label="Images" />
                   <div role="tabpanel" className="tab-content p-10">
                     <PatternsTab
                       pattern={pattern}
@@ -923,7 +939,7 @@ export function CreateProductModal({
                   </div>
 
                   {/* Tab 5 */}
-                  <input type="radio" name="my_tabs_1" role="tab" className="tab " aria-label="Old_Image" />
+                  {/* <input type="radio" name="my_tabs_1" role="tab" className="tab " aria-label="Old_Image" />
                   <div role="tabpanel" className="tab-content p-10">
                     <div className="flex flex-col gap-4">
                       <div className="flex justify-center">
@@ -946,7 +962,7 @@ export function CreateProductModal({
                         {errors.image && <p className="font-semibold text-error text-xs text-left ">{errors.image.message?.toString()}</p>}
                       </div>
                     </div>
-                  </div>
+                  </div> */}
                 </div>
               </form>
             </div>
@@ -957,7 +973,11 @@ export function CreateProductModal({
           )}
         </div>
       </dialog>
-      <ConfirmPopup confirmText="Are you sure you want to delete this product?" deleteConfirmed={handleConfirmDelete} />
+      <ConfirmPopup
+        popupId="confirmPopupDeleteProduct"
+        confirmText="Are you sure you want to delete this product?"
+        deleteConfirmed={handleConfirmDelete}
+      />
     </>
   );
 }

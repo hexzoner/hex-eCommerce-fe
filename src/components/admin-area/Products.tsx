@@ -68,7 +68,7 @@ export default function Products() {
   const emptyProduct = {
     id: 0,
     name: "",
-    description: "",
+    description: "No description available",
     price: 0,
     quantity: 0,
     category: {
@@ -90,9 +90,9 @@ export default function Products() {
     },
     colors: [],
     active: false,
-    details: "",
-    notes: "",
-    instructions: "",
+    details: "No details available",
+    notes: "No notes available",
+    instructions: "No instructions available",
     producer: {
       id: 0,
       name: "",

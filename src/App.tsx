@@ -58,10 +58,10 @@ const router = createBrowserRouter(
       <Route path="rug-types" element={<RugTypes />} />
       <Route path="sales" element={<Sales />} />
       <Route path="product/:id" element={<ProductDetails />} />
+      <Route path="wishlist" element={<Wishlist />} />
+      <Route path="cart" element={<Cart />} />
       <Route element={<ProtectedLayout />}>
-        <Route path="cart" element={<Cart />} />
         <Route path="profile" element={<Profile />} />
-        <Route path="wishlist" element={<Wishlist />} />
 
         <Route path="/admin" element={<Authorize roles={["admin"]} />}>
           {/* <Route path="dashboard" element={<Dashboard />} /> */}

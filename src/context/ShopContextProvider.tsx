@@ -1,6 +1,6 @@
 import { useState, ReactNode, useEffect } from "react";
-import { restoreToken } from "../utils/storage";
-import { getWishlist } from "../api/wishlist";
+import { restoreToken, storeToken } from "../utils/storage";
+import { getWishlist, addToWishlist } from "../api/wishlist";
 import { ShopContext } from ".";
 import { useAuth } from "../context";
 import { getCategories } from "../api/categories";
@@ -9,16 +9,46 @@ import { getMaterials } from "../api/material";
 import { getTechniques } from "../api/technique";
 import { getShapes } from "../api/shapes";
 import { getColors } from "../api/colors";
-import { getSizes } from "../api/sizes";
+import { getSizes, getSizeById } from "../api/sizes";
 import { getCart, updateCart } from "../api/cart";
 import { toast } from "react-toastify";
 import { getProducers } from "../api/producers";
 import { getRooms } from "../api/rooms";
 import { getFeatures } from "../api/features";
 import { iFilter } from ".";
+import { restoreWishlist, storeCart, restoreCart } from "../utils/storage";
+import { getPatternById } from "../api/patterns";
+
+interface iCartProductItem {
+  id: number;
+  name: string;
+  price: number;
+  image: string;
+  description: string;
+  priceTotal: number;
+}
+
+interface iShopCartProduct {
+  product: iCartProductItem;
+  quantity: number;
+  size: {
+    id: number;
+    name: string;
+  };
+  pattern: {
+    id: number;
+    name: string;
+    icon: string;
+  };
+}
+
+interface iShopCart {
+  products: iShopCartProduct[];
+  total: number;
+}
 
 const ShopProvider = ({ children }: { children: ReactNode }) => {
-  const { user, isAuthenticated } = useAuth();
+  const { user, setUser, isAuthenticated, setIsAuthenticated, setAuthLoading } = useAuth();
   const [wishlist, setWishlist] = useState<any[]>([]);
 
   const [categories, setCategories] = useState<any[]>([]);
@@ -36,28 +66,76 @@ const ShopProvider = ({ children }: { children: ReactNode }) => {
     id: 0,
     value: "",
   });
-  const [cart, setCart] = useState<any>({ products: [], total: 0 });
+  const [cart, setCart] = useState<iShopCart>({ products: [], total: 0 });
 
   const [shopLoading, setShopLoading] = useState(true);
   const [cartLoading, setCartLoading] = useState(false);
 
-  function addToCart(product: any, quantity: number, size: number, pattern: number) {
+  function calcCart(userCart: iShopCartProduct[]) {
+    for (let i = 0; i < userCart.length; i++) {
+      const heightWidth = userCart[i].size.name.split("x");
+      if (heightWidth.length === 2)
+        userCart[i].product.priceTotal = Number((userCart[i].product.price * Number(heightWidth[0]) * Number(heightWidth[1])).toFixed(2));
+    }
+
+    // Calculate the total price
+    const totalPrice = userCart.reduce((total, item) => {
+      return total + item.product.priceTotal * item.quantity;
+    }, 0);
+
+    return { products: userCart, total: Number(totalPrice.toFixed(2)) };
+  }
+
+  async function addToCart(product: any, quantity: number, size: number, pattern: number) {
     // if (!cart) return;
     if (!user || !isAuthenticated) {
-      toast.error("Please login to add products to cart");
+      const productInCart = cart.products.find((p: any) => p.product.id === product.id && p.size.id === size && p.pattern.id === pattern);
+      if (productInCart) {
+        const products = cart.products.map((p: any) => {
+          if (p.product.id === product.id && p.size.id === size && p.pattern.id === pattern) {
+            if (quantity === 0) return null;
+            if (quantity > 0) {
+              return {
+                ...p,
+                quantity: p.quantity + quantity,
+              };
+            }
+          }
+          return p;
+        });
+        const newCart = calcCart(products.filter((p: any) => p !== null));
+        const newSize = await getSizeById(size);
+        const newPattern = await getPatternById(pattern);
+        setCart(newCart);
+        storeCart(newCart);
+        toast.success(`Product ${product.name} (${newSize.name}, ${newPattern.name}) added to cart`);
+      } else {
+        const newSize = await getSizeById(size);
+        const newPattern = await getPatternById(pattern);
+        const newProduct: iShopCartProduct = {
+          product: {
+            id: product.id,
+            name: product.name,
+            price: product.price,
+            image: product.image,
+            description: product.description,
+            priceTotal: 0, // This will be calculated later
+          },
+          quantity: quantity,
+          size: newSize,
+          pattern: newPattern,
+        };
+
+        const newCart = calcCart([...cart.products, newProduct]);
+
+        setCart(newCart);
+        storeCart(newCart);
+        toast.success(`Product ${product.name} (${newSize.name}, ${newPattern.name}) added to cart`);
+      }
       return;
     }
-    const productInCart = cart.products.find((p: any) => p.id === product.id);
 
     let _quantity = quantity;
-    if (productInCart) _quantity = productInCart.cartProduct.quantity + quantity;
-
-    // console.log({
-    //   productId: product.id,
-    //   quantity: _quantity,
-    //   pattern,
-    //   size: size,
-    // });
 
     setCartLoading(true);
     updateCart({
@@ -76,21 +154,57 @@ const ShopProvider = ({ children }: { children: ReactNode }) => {
       .finally(() => setCartLoading(false));
   }
 
+  async function deleteFromCart(productId: number, pattern: number, size: number) {
+    if (user && isAuthenticated) {
+      updateCart({ productId, quantity: 0, pattern, size: size })
+        .then((res) => {
+          // console.log(res);
+          toast.success("Product removed from cart");
+          setCart(res);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } else {
+      const updatedCartProducts = cart.products.filter((p: any) => p.product.id !== productId || p.size.id !== size || p.pattern.id !== pattern);
+      const updatedCart = calcCart(updatedCartProducts);
+      setCart(updatedCart);
+      storeCart(updatedCart);
+      toast.success("Product removed from cart");
+    }
+  }
+
   function updateCartQuantity(productId: number, quantity: number, pattern: number, size: number) {
-    setCartLoading(true);
-    updateCart({
-      productId: productId,
-      quantity: quantity,
-      pattern,
-      size: size,
-    })
-      .then((res) => {
-        setCart(res);
+    if (user && isAuthenticated) {
+      setCartLoading(true);
+      updateCart({
+        productId: productId,
+        quantity: quantity,
+        pattern,
+        size: size,
       })
-      .catch((err) => {
-        console.log(err);
-      })
-      .finally(() => setCartLoading(false));
+        .then((res) => {
+          setCart(res);
+        })
+        .catch((err) => {
+          console.log(err);
+        })
+        .finally(() => setCartLoading(false));
+    } else {
+      const updatedCart = cart.products.map((p: any) => {
+        if (p.product.id === productId && p.size.id === size && p.pattern.id === pattern) {
+          return {
+            ...p,
+            quantity: p.quantity + quantity,
+          };
+        }
+        return p;
+      });
+      const newCart = calcCart(updatedCart);
+      setCart(newCart);
+      storeCart(newCart);
+      toast.success("Cart updated");
+    }
   }
 
   useEffect(() => {
@@ -125,7 +239,8 @@ const ShopProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     if (!user) {
-      setWishlist([]);
+      setWishlist(restoreWishlist());
+      setCart(restoreCart());
       setShopLoading(false);
       return;
     }
@@ -142,7 +257,40 @@ const ShopProvider = ({ children }: { children: ReactNode }) => {
       .finally(() =>
         getWishlist(restoreToken())
           .then((res) => {
-            setWishlist(res);
+            // console.log(res);
+            const wishlistFromStorage = restoreWishlist();
+
+            const newItemsFromStorage = wishlistFromStorage.filter((item: any) => !res.find((i: any) => i.id === item.id));
+            // console.log(newItemsFromStorage);
+            // console.log("-----------------");
+            if (newItemsFromStorage.length > 0) {
+              newItemsFromStorage.forEach((item: any) => {
+                addToWishlist(restoreToken(), item.id)
+                  .then(() => {
+                    // if (res.status === "success") {
+                    //   // toast.success(res.message);
+                    //   storeWishlist(wishlistFromStorage.filter((i: any) => i.id !== item.id));
+                    // }
+                  })
+                  .catch((err) => {
+                    console.log(err);
+                  });
+              });
+            }
+
+            const combinedWithlist = [...wishlistFromStorage, ...res].reduce((acc, current) => {
+              // Check if the current item is already in the accumulator array
+              const x = acc.find((item: any) => item.id === current.id);
+              if (!x) {
+                // If not found, add the current item to the accumulator array
+                acc.push(current);
+              }
+              // Return the accumulator array
+              return acc;
+            }, []); // Initial value for the accumulator is an empty array
+
+            // storeWishlist([]);
+            setWishlist(combinedWithlist);
             // console.log(res);
           })
           .catch((err) => {
@@ -152,9 +300,17 @@ const ShopProvider = ({ children }: { children: ReactNode }) => {
       );
   }, [user, isAuthenticated]);
 
+  function login(res: any) {
+    setUser(res.user);
+    setIsAuthenticated(true);
+    setAuthLoading(false);
+    storeToken(res.token);
+  }
+
   return (
     <ShopContext.Provider
       value={{
+        login,
         addToCart,
         cart,
         setCart,
@@ -186,6 +342,7 @@ const ShopProvider = ({ children }: { children: ReactNode }) => {
         setFeatures,
         filter,
         setFilter,
+        deleteFromCart,
       }}>
       {children}
     </ShopContext.Provider>

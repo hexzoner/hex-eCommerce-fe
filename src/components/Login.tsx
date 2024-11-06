@@ -4,15 +4,16 @@ import { useState } from "react";
 import { LoadingSpinner } from "./components";
 import { loginApiCall } from "../api/auth";
 // import { toast } from "react-toastify";
-import { useAuth } from "../context";
-import { storeToken } from "../utils/storage";
+import { useShop } from "../context";
+// import { storeToken } from "../utils/storage";
 // import { toast } from "react-toastify";
 // import { mainMakrupColors } from "./Home";
 
 export default function Login() {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-  const { setUser, setIsAuthenticated, setAuthLoading } = useAuth();
+  // const { setUser, setIsAuthenticated, setAuthLoading } = useAuth();
+  const { login } = useShop();
   const {
     register,
     handleSubmit,
@@ -23,11 +24,8 @@ export default function Login() {
     setIsLoading(true);
     try {
       const res = await loginApiCall(data.email, data.password);
-      setUser(res.user);
-      setIsAuthenticated(true);
-      setAuthLoading(false);
+      login(res);
       setIsLoading(false);
-      storeToken(res.token);
       if (res.user.role === "admin") navigate("/admin/dashboard");
       else navigate("/");
     } catch (err) {

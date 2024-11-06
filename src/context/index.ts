@@ -36,6 +36,7 @@ const useAuth = () => {
 
 // ShopContext -----------------------------------------------------
 interface ShopContextProps {
+  login: (res: any) => void;
   wishlist: any[];
   setWishlist: React.Dispatch<React.SetStateAction<any[]>>;
   shopLoading: boolean;
@@ -70,9 +71,11 @@ interface ShopContextProps {
   setFeatures: React.Dispatch<React.SetStateAction<any[]>>;
   filter: iFilter;
   setFilter: React.Dispatch<React.SetStateAction<iFilter>>;
+  deleteFromCart: (productId: number, color: number, size: number) => void;
 }
 
 const ShopContext = createContext<ShopContextProps>({
+  login: () => {},
   wishlist: [],
   setWishlist: () => {},
   shopLoading: true,
@@ -111,6 +114,7 @@ const ShopContext = createContext<ShopContextProps>({
     value: "",
   },
   setFilter: () => {},
+  deleteFromCart: () => {},
 });
 
 const useShop = () => {

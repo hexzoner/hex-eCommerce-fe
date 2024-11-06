@@ -14,6 +14,7 @@ import { calculatePriceRange } from "../../utils/miscUtils";
 import Pagination from "../../components/Pagination";
 import { NewBestSellerBadge } from "../../components/components";
 import { getProductMainImageUrl } from "../../utils/miscUtils";
+import { storeWishlist } from "../../utils/storage";
 
 export default function ProductBrowser() {
   // /products/room/Hallway
@@ -210,7 +211,17 @@ export function FavIcon({ product, wishlist, setWishlist }: { product: Product; 
   function handleAddtoWishlist() {
     const token = restoreToken();
     if (!token) {
-      toast.error("Please login to add products to wishlist");
+      // toast.error("Please login to add products to wishlist");
+      if (favorited) {
+        const newWishlist = wishlist.filter((i: any) => i.id !== product.id);
+        setWishlist(newWishlist);
+        storeWishlist(newWishlist);
+      } else {
+        const newWishlist = [...wishlist, product];
+        setWishlist(newWishlist);
+        storeWishlist(newWishlist);
+      }
+      setFavorited(!favorited);
       return;
     }
 
