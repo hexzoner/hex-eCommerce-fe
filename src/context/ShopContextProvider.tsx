@@ -19,15 +19,17 @@ import { iFilter } from ".";
 import { restoreWishlist, storeCart, restoreCart } from "../utils/storage";
 import { getPatternById } from "../api/patterns";
 
+interface iCartProductItem {
+  id: number;
+  name: string;
+  price: number;
+  image: string;
+  description: string;
+  priceTotal: number;
+}
+
 interface iShopCartProduct {
-  product: {
-    id: number;
-    name: string;
-    price: number;
-    image: string;
-    description: string;
-    priceTotal: number;
-  };
+  product: iCartProductItem;
   quantity: number;
   size: {
     id: number;
@@ -102,13 +104,23 @@ const ShopProvider = ({ children }: { children: ReactNode }) => {
           return p;
         });
         const newCart = calcCart(products.filter((p: any) => p !== null));
+        const newSize = await getSizeById(size);
+        const newPattern = await getPatternById(pattern);
         setCart(newCart);
         storeCart(newCart);
+        toast.success(`Product ${product.name} (${newSize.name}, ${newPattern.name}) added to cart`);
       } else {
         const newSize = await getSizeById(size);
         const newPattern = await getPatternById(pattern);
         const newProduct: iShopCartProduct = {
-          product: product,
+          product: {
+            id: product.id,
+            name: product.name,
+            price: product.price,
+            image: product.image,
+            description: product.description,
+            priceTotal: 0, // This will be calculated later
+          },
           quantity: quantity,
           size: newSize,
           pattern: newPattern,
@@ -118,6 +130,7 @@ const ShopProvider = ({ children }: { children: ReactNode }) => {
 
         setCart(newCart);
         storeCart(newCart);
+        toast.success(`Product ${product.name} (${newSize.name}, ${newPattern.name}) added to cart`);
       }
       return;
     }
@@ -157,6 +170,7 @@ const ShopProvider = ({ children }: { children: ReactNode }) => {
       const updatedCart = calcCart(updatedCartProducts);
       setCart(updatedCart);
       storeCart(updatedCart);
+      toast.success("Product removed from cart");
     }
   }
 
@@ -189,6 +203,7 @@ const ShopProvider = ({ children }: { children: ReactNode }) => {
       const newCart = calcCart(updatedCart);
       setCart(newCart);
       storeCart(newCart);
+      toast.success("Cart updated");
     }
   }
 
