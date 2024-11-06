@@ -42,3 +42,21 @@ export const deletePattern = async (id: number) => {
     });
   return response;
 };
+
+export const getPatternById = async (id: number) => {
+  const response = await axios
+    .get(`${baseURL}?id=${id}`, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+    .then((res) => {
+      //   console.log(res.data);
+      return res.data;
+    })
+    .catch((err) => {
+      toast.error(err.response.data.message);
+      console.log(err);
+    });
+  return response;
+};

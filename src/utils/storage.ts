@@ -26,7 +26,7 @@ export function storeWishlist(wishlist: any) {
 
 export function restoreCart() {
   const cart = localStorage.getItem(cartKey);
-  if (!cart) return [];
+  if (!cart) return { products: [], total: 0 };
   else return JSON.parse(cart);
 }
 

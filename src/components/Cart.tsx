@@ -1,11 +1,13 @@
 import { useNavigate } from "react-router-dom";
 import { useShop } from "../context";
-import { toast } from "react-toastify";
-import { updateCart } from "../api/cart";
+// import { toast } from "react-toastify";
+// import { updateCart } from "../api/cart";
+
 import LoadingSpinner from "./LoadingSpinner";
 
 export default function Cart() {
-  const { cart, setCart, shopLoading, updateCartQuantity, cartLoading } = useShop();
+  const { cart, shopLoading, updateCartQuantity, cartLoading, deleteFromCart } = useShop();
+
   const navigate = useNavigate();
 
   if (shopLoading) return <LoadingSpinner />;
@@ -20,7 +22,13 @@ export default function Cart() {
         {cart.products.length > 0 ? (
           <div className="flex flex-col gap-1 items-center justify-between ">
             {cart.products.map((item: any, index: number) => (
-              <CartProduct key={index} item={item} setCart={setCart} updateCartQuantity={updateCartQuantity} cartLoading={cartLoading} />
+              <CartProduct
+                key={index}
+                item={item}
+                deleteFromCart={deleteFromCart}
+                updateCartQuantity={updateCartQuantity}
+                cartLoading={cartLoading}
+              />
             ))}
             <button className="btn btn-primary btn-lg my-12">Checkout</button>
           </div>
@@ -39,26 +47,18 @@ export default function Cart() {
 
 export const CartProduct = ({
   item,
-  setCart,
+  deleteFromCart,
   updateCartQuantity,
   cartLoading,
 }: {
   item: any;
-  setCart: any;
+  deleteFromCart: any;
   updateCartQuantity: any;
   cartLoading: any;
 }) => {
   // console.log(item);
   function handleDelete() {
-    updateCart({ productId: item.product.id, quantity: 0, pattern: item.pattern.id, size: item.size.id })
-      .then((res) => {
-        // console.log(res);
-        toast.success("Product removed from cart");
-        setCart(res);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    deleteFromCart(item.product.id, item.pattern.id, item.size.id);
   }
 
   function handeIncrease() {
@@ -107,7 +107,7 @@ export const CartProduct = ({
           <div className="w-1/4 flex flex-col items-center gap-4">
             {/* {
               item.quantity > 1 && <span className="text-lg">{item.quantity} x </span>} */}
-            <span className="font-semibold text-xl">€{item.product.price}</span>
+            <span className="font-semibold text-xl">€{item.product.priceTotal ? item.product.priceTotal : item.product.price}</span>
             <div className="flex items-center gap-1">
               <button disabled={cartLoading} onClick={handleDecrease} className="btn btn-sm text-xl btn-primary px-[10px]">
                 -

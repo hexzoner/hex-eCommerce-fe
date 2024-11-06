@@ -92,6 +92,7 @@ export default function Navbar() {
                 <NavLink to="/wishlist" className={navLinkClass}>
                   Wishlist
                 </NavLink>
+                <CartIcon cart={cart} />
                 <NavLink to="/login" className={navLinkClass}>
                   Login
                 </NavLink>
@@ -162,7 +163,7 @@ export const CartIcon = ({
     total: number;
   };
 }) => {
-  if (!cart || !cart.products) return <></>;
+  // if (!cart || !cart.products) return <></>;
 
   const [isActive, setIsActive] = useState(false);
   const location = useLocation();
@@ -182,13 +183,21 @@ export const CartIcon = ({
               d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
             />
           </svg>
-          <span className={`badge badge-md indicator-item ${isActive ? `text-[${activeColor}]` : ""}`}>{cart.products.length}</span>
+          {cart.products && (
+            <span className={`badge badge-md indicator-item ${isActive ? `text-[${activeColor}]` : ""}`}>{cart.products.length}</span>
+          )}
         </div>
       </div>
       <div tabIndex={0} className="card card-compact dropdown-content bg-base-200 z-[1] mt-3 w-52 shadow">
         <div className="card-body">
-          <span className="text-lg font-bold text-neutral">{cart.products.length} Items</span>
-          <span className="text-neutral">Subtotal: €{cart.total}</span>
+          {cart?.total ? (
+            <>
+              <span className="text-lg font-bold text-neutral">{cart?.products?.length} Items</span>
+              <span className="text-neutral">Subtotal: €{cart?.total}</span>
+            </>
+          ) : (
+            <span className="text-neutral font-semibold py-4">Your cart is empty</span>
+          )}
           <div className="card-actions">
             {/* <NavLink to="/cart" className="btn btn-primary btn-block"> */}
             <NavLink to="/cart" className={`btn btn-primary btn-block ${isActive ? "fill-[#b63c3e]" : "fill-current"}`}>

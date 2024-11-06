@@ -77,3 +77,18 @@ export const deleteSize = async (id: number) => {
     .catch((err) => console.log(err.data));
   return response;
 };
+
+export const getSizeById = async (id: number) => {
+  const response = await axios
+    .get(`${baseURL}/${id}`, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+    .then((res) => {
+      // console.log(res.data);
+      return res.data;
+    })
+    .catch((err) => console.log(err.data));
+  return response;
+};

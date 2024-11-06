@@ -71,6 +71,7 @@ interface ShopContextProps {
   setFeatures: React.Dispatch<React.SetStateAction<any[]>>;
   filter: iFilter;
   setFilter: React.Dispatch<React.SetStateAction<iFilter>>;
+  deleteFromCart: (productId: number, color: number, size: number) => void;
 }
 
 const ShopContext = createContext<ShopContextProps>({
@@ -113,6 +114,7 @@ const ShopContext = createContext<ShopContextProps>({
     value: "",
   },
   setFilter: () => {},
+  deleteFromCart: () => {},
 });
 
 const useShop = () => {
