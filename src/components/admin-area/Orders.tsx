@@ -6,6 +6,7 @@ import sortTables from "../../utils/sortTables";
 import { Product } from "./Products";
 import { formatDateFull } from "../../utils/dateUtils";
 import { OrderModal } from "./admin-components";
+import Pagination from "../Pagination";
 
 export interface Order {
   id: number;
@@ -38,15 +39,25 @@ export default function Orders() {
     },
   });
 
+  // Pagination
+  const [page, setPage] = useState(1);
+  const [perPage, setPerPage] = useState(25);
+  // const [sort, setSort] = useState("desc");
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalProducts, setTotalProducts] = useState(0);
+
   useEffect(() => {
     const fetchOrders = async () => {
       setLoading(true);
       try {
         const token = restoreToken();
         if (!token) return;
-        const orders = await getOrders(token);
+        const orders = await getOrders({ page, perPage });
         // console.log(orders);
-        setOrders(sortTables(orders, "id", "asc"));
+
+        setTotalProducts(orders.total);
+        setOrders(sortTables(orders.results, "id", "desc"));
+        setTotalPages(orders.totalPages);
         setLoading(false);
       } catch (err) {
         console.log(err);
@@ -54,7 +65,7 @@ export default function Orders() {
       }
     };
     fetchOrders();
-  }, []);
+  }, [page, perPage]);
 
   const [sortOrder, setSortOrder] = useState("asc");
   const handleSortClick = (key: string) => {
@@ -215,7 +226,15 @@ export default function Orders() {
           </tbody>
         </table>
 
-        {/* <Pagination page={page} setPage={setPage} totalPages={totalPages} perPage={perPage} setPerPage={setPerPage} totalResults={totalTasks} /> */}
+        <Pagination
+          page={page}
+          setPage={setPage}
+          totalPages={totalPages}
+          perPage={perPage}
+          setPerPage={setPerPage}
+          totalResults={totalProducts}
+          options={[10, 25, 50]}
+        />
 
         <OrderModal order={selectedOrder} />
       </div>
