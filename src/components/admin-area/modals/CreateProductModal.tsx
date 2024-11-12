@@ -54,6 +54,10 @@ export function CreateProductModal({
   setProducts: React.Dispatch<React.SetStateAction<Product[]>>;
   setUpdate: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
+  const markupTable = "table rounded-md table-zebra table-sm w-full shadow-md mb-12";
+  const markupTableHead = "text-sm bg-base-300";
+  const markupTableHeadCell = "font-bold";
+
   const { categories, techniques, shapes, producers, colors, sizes, materials, styles, rooms, features } = useShop();
 
   const [reviews, setReviews] = useState<Review[]>([]);
@@ -113,7 +117,6 @@ export function CreateProductModal({
   }>();
 
   // const imageInput = watch("image");
-
   function resetFormToDefault() {
     // console.log(product);
     reset({
@@ -136,11 +139,10 @@ export function CreateProductModal({
       new: product.isEdit ? product.new : false,
       bestSeller: product.isEdit ? product.bestSeller : false,
     });
-    setSelectedSizes(product.isEdit ? product.sizes.map((x) => ({ id: x.id, name: x.name })) : []);
+    setSelectedSizes(product.isEdit ? product.sizes.map((x) => ({ id: x.id, name: x.name, squareMeters: x.squareMeters })) : []);
     setSelectedColors(product.isEdit ? product.colors.map((x) => ({ id: x.id, name: x.name, image: x.image })) : []);
     setSelectedRooms(product.isEdit ? product.rooms.map((x) => ({ id: x.id, name: x.name })) : []);
     setSelectedFeatures(product.isEdit ? product.features.map((x) => ({ id: x.id, name: x.name, image: x.image })) : []);
-
     setDescriptionHtml(product.description);
     setDetailsHtml(product.details);
     setNotesHtml(product.notes);
@@ -789,7 +791,7 @@ export function CreateProductModal({
                   <input type="radio" name="my_tabs_1" role="tab" className="tab" aria-label="Reviews" />
                   <div role="tabpanel" className="tab-content p-10">
                     <div>
-                      <table className="table rounded-md table-zebra table-sm w-full shadow-md mb-12">
+                      <table className={markupTable}>
                         <thead className="text-sm bg-base-300">
                           <tr>
                             <th className="font-bold">
@@ -939,30 +941,63 @@ export function CreateProductModal({
                   </div>
 
                   {/* Tab 5 */}
-                  {/* <input type="radio" name="my_tabs_1" role="tab" className="tab " aria-label="Old_Image" />
+                  <input type="radio" name="my_tabs_1" role="tab" className="tab " aria-label="Prices" />
                   <div role="tabpanel" className="tab-content p-10">
                     <div className="flex flex-col gap-4">
-                      <div className="flex justify-center">
-                        <img
-                          src={product.image?.length > 0 ? product.image : imageInput && imageInput.length > 0 ? imageInput : dummyRug}
-                          alt="product"
-                          className="h-64"
-                        />
-                      </div>
-                      <div>
-                        <input
-                          type="text"
-                          className="input input-bordered w-full "
-                          placeholder="Image URL"
-                          autoComplete="off"
-                          {...register("image", {
-                            required: "Image is required",
-                          })}
-                        />
-                        {errors.image && <p className="font-semibold text-error text-xs text-left ">{errors.image.message?.toString()}</p>}
-                      </div>
+                      <table className={markupTable}>
+                        <thead className={markupTableHead + " text-center"}>
+                          <tr>
+                            <th className={markupTableHeadCell}>
+                              <div className="flex gap-1 items-center">
+                                <span>Size</span>
+                                {/* <button
+                                  title="Sort"
+                                  className="hover:cursor-pointer"
+                                  onClick={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => handleSortClick("sizes.name", e)}>
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    strokeWidth="1.5"
+                                    stroke="currentColor"
+                                    className="size-6">
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 15 12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9" />
+                                  </svg>
+                                </button> */}
+                              </div>
+                            </th>
+                            <th className={markupTableHeadCell}>
+                              <div className="flex gap-1 items-center ">
+                                <span>Price</span>
+                                {/* <button
+                                  title="Sort"
+                                  className="hover:cursor-pointer"
+                                  onClick={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => handleSortClick("sizes.squareMeters", e)}>
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    strokeWidth="1.5"
+                                    stroke="currentColor"
+                                    className="size-6">
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 15 12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9" />
+                                  </svg>
+                                </button> */}
+                              </div>
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody className="">
+                          {selectedSizes.map((size) => (
+                            <tr key={size.id}>
+                              <td>{size.name}</td>
+                              <td>€{size.squareMeters * product.price}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
                     </div>
-                  </div> */}
+                  </div>
                 </div>
               </form>
             </div>

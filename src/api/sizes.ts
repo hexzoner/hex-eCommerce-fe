@@ -26,7 +26,7 @@ export const updateSize = async (size: Size) => {
   const response = await axios
     .put(
       `${baseURL}/${size.id}`,
-      { name: size.name },
+      { name: size.name, squareMeters: size.squareMeters },
       {
         headers: {
           "Content-Type": "application/json",
@@ -38,7 +38,7 @@ export const updateSize = async (size: Size) => {
       // console.log(res.data);
       return res.data;
     })
-    .catch((err) => console.log(err.data));
+    .catch((err) => console.log(err));
   return response;
 };
 
@@ -46,7 +46,7 @@ export const createSize = async (size: Size) => {
   const response = await axios
     .post(
       `${baseURL}`,
-      { name: size.name },
+      { name: size.name, squareMeters: size.squareMeters },
       {
         headers: {
           "Content-Type": "application/json",

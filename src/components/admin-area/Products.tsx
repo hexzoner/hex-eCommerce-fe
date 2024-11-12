@@ -87,6 +87,7 @@ export default function Products() {
     defaultSize: {
       id: 0,
       name: "",
+      squareMeters: 0,
     },
     colors: [],
     active: false,

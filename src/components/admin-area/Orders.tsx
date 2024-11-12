@@ -3,36 +3,54 @@ import { useState, useEffect } from "react";
 import { restoreToken } from "../../utils/storage";
 import LoadingSpinner from "../LoadingSpinner";
 import sortTables from "../../utils/sortTables";
-import { Product } from "./Products";
 import { formatDateFull } from "../../utils/dateUtils";
 import { OrderModal } from "./admin-components";
 import Pagination from "../Pagination";
 
-export interface Order {
+export interface iOrder {
   id: number;
-  userId: number;
-  products: Product[];
-  total: number;
-  createdAt: string;
-  updatedAt: string;
+  name: string;
   user: {
+    id: number;
     firstName: string;
     lastName: string;
     email: string;
   };
+  products: iOrderProduct[];
+  total: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface iOrderProduct {
+  id: number;
+  quantity: number;
+  name: string;
+  price: number;
+  pattern: {
+    id: number;
+    name: string;
+    icon: string;
+  };
+  size: {
+    id: number;
+    name: string;
+  };
+  priceTotal: number;
 }
 
 export default function Orders() {
-  const [orders, setOrders] = useState<Order[]>([]);
+  const [orders, setOrders] = useState<iOrder[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedOrder, setSelectedOrder] = useState<Order>({
+  const [selectedOrder, setSelectedOrder] = useState<iOrder>({
     id: 0,
-    userId: 0,
+    name: "",
     products: [],
     total: 0,
     createdAt: "",
     updatedAt: "",
     user: {
+      id: 0,
       firstName: "",
       lastName: "",
       email: "",
@@ -203,7 +221,7 @@ export default function Orders() {
             </tr>
           </thead>
           <tbody>
-            {orders.map((order: Order) => {
+            {orders.map((order: iOrder) => {
               return (
                 <tr
                   key={order.id}
@@ -214,7 +232,7 @@ export default function Orders() {
                     if (orderModal) (orderModal as HTMLDialogElement).showModal();
                   }}>
                   <td className={borderMarkup}>{order.id}</td>
-                  <td className={borderMarkup}>{order.userId}</td>
+                  <td className={borderMarkup}>{order.user.id}</td>
                   <td className={borderMarkup}>{order.user.email}</td>
                   <td className={borderMarkup}>{order.products.length}</td>
                   <td className={borderMarkup}>${order.total}</td>
