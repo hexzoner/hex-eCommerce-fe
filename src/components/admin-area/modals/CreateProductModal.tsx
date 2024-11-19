@@ -16,6 +16,7 @@ import { iRoom } from "../../../utils/constants";
 import { iTaxonomy } from "../../../pages/admin/Taxonomies";
 import { uploadImageToS3 } from "../../../api/image-upload";
 import { deletePattern } from "../../../api/patterns";
+import { getProductPricesByProductId } from "../../../api/productPrices";
 
 // const dummyRug = "https://th.bing.com/th/id/OIP.MvnwHj_3a0ICmk72FNI5WQHaFR?rs=1&pid=ImgDetMain";
 
@@ -60,6 +61,7 @@ export function CreateProductModal({
 
   const { categories, techniques, shapes, producers, colors, sizes, materials, styles, rooms, features } = useShop();
 
+  const [productPrices, setProductPrices] = useState<any[]>([]);
   const [reviews, setReviews] = useState<Review[]>([]);
   const [selectedSizes, setSelectedSizes] = useState<Size[]>([]);
   const [selectedColors, setSelectedColors] = useState<iTaxonomy[]>([]);
@@ -150,13 +152,16 @@ export function CreateProductModal({
   }
 
   useEffect(() => {
+    setLoading(true);
     resetFormToDefault();
     if (product.id === 0) return;
     const fetchReviews = async () => {
       try {
         const response = await getReviews({ productId: product.id });
         setReviews(response.reviews);
-        // console.log(response);
+        const productPrices = await getProductPricesByProductId(product.id);
+        setProductPrices(productPrices);
+        setLoading(false);
       } catch (err) {
         console.log(err);
       }
@@ -944,26 +949,18 @@ export function CreateProductModal({
                   <input type="radio" name="my_tabs_1" role="tab" className="tab " aria-label="Prices" />
                   <div role="tabpanel" className="tab-content p-10">
                     <div className="flex flex-col gap-4">
+                      {/* <p>{product.stripeProductId}</p> */}
                       <table className={markupTable}>
                         <thead className={markupTableHead + " text-center"}>
                           <tr>
                             <th className={markupTableHeadCell}>
                               <div className="flex gap-1 items-center">
                                 <span>Size</span>
-                                {/* <button
-                                  title="Sort"
-                                  className="hover:cursor-pointer"
-                                  onClick={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => handleSortClick("sizes.name", e)}>
-                                  <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                    strokeWidth="1.5"
-                                    stroke="currentColor"
-                                    className="size-6">
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 15 12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9" />
-                                  </svg>
-                                </button> */}
+                              </div>
+                            </th>
+                            <th className={markupTableHeadCell}>
+                              <div className="flex gap-1 items-center ">
+                                <span>SquareMeters</span>
                               </div>
                             </th>
                             <th className={markupTableHeadCell}>
@@ -985,13 +982,32 @@ export function CreateProductModal({
                                 </button> */}
                               </div>
                             </th>
+                            <th className={markupTableHeadCell}>
+                              <div className="flex gap-1 items-center ">
+                                <span>StripePriceId</span>
+                              </div>
+                            </th>
+                            <th className={markupTableHeadCell}>
+                              <div className="flex gap-1 items-center ">
+                                <span>StripeProductId</span>
+                              </div>
+                            </th>
                           </tr>
                         </thead>
                         <tbody className="">
-                          {selectedSizes.map((size) => (
+                          {/* {selectedSizes.map((size) => (
                             <tr key={size.id}>
                               <td>{size.name}</td>
                               <td>€{size.squareMeters * product.price}</td>
+                            </tr>
+                          ))}  */}
+                          {productPrices.map((price) => (
+                            <tr key={price.id}>
+                              <td>{price.size.name}</td>
+                              <td>{price.size.squareMeters}</td>
+                              <td>€{price.price > 0 ? price.price / 100 : 0}</td>
+                              <td>€{price.stripePriceId}</td>
+                              <td>€{price.stripeProductId}</td>
                             </tr>
                           ))}
                         </tbody>
