@@ -159,7 +159,7 @@ export function CreateProductModal({
       try {
         const response = await getReviews({ productId: product.id });
         setReviews(response.reviews);
-        const productPrices = await getProductPricesByProductId(product.id);
+        const productPrices = await getProductPricesByProductId({ productId: product.id });
         setProductPrices(productPrices);
         setLoading(false);
       } catch (err) {

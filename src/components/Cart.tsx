@@ -2,6 +2,8 @@ import { useNavigate } from "react-router-dom";
 import { useShop } from "../context";
 // import { toast } from "react-toastify";
 // import { updateCart } from "../api/cart";
+import { createCheckout } from "../api/checkout";
+import { getProductPricesByProductId } from "../api/productPrices";
 
 import LoadingSpinner from "./LoadingSpinner";
 
@@ -9,6 +11,27 @@ export default function Cart() {
   const { cart, shopLoading, updateCartQuantity, cartLoading, deleteFromCart } = useShop();
 
   const navigate = useNavigate();
+
+  async function handleCheckout() {
+    const items = await Promise.all(
+      cart.products.map(async (item: any) => {
+        const productPrice = await getProductPricesByProductId({ productId: item.product.id, sizeId: item.size.id });
+        console.log(productPrice);
+        if (productPrice.length == 1) {
+          return {
+            price: productPrice[0].stripePriceId,
+            quantity: item.quantity,
+          };
+        } else throw new Error("Error getting product price");
+      })
+    );
+    console.log(items);
+    createCheckout(items).then((res) => {
+      // console.log(res);
+      // navigate(res.url);
+      window.location.href = res.url;
+    });
+  }
 
   if (shopLoading) return <LoadingSpinner />;
 
@@ -30,7 +53,9 @@ export default function Cart() {
                 cartLoading={cartLoading}
               />
             ))}
-            <button className="btn btn-primary btn-lg my-12">Checkout</button>
+            <button onClick={handleCheckout} className="btn btn-primary btn-lg my-12">
+              Checkout
+            </button>
           </div>
         ) : (
           <>

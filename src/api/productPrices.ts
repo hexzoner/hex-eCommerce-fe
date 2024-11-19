@@ -12,9 +12,9 @@ const headers = {
   Authorization: `Bearer ${restoreToken()}`,
 };
 
-export const getProductPricesByProductId = async (productId: number) => {
+export const getProductPricesByProductId = async ({ productId, sizeId }: { productId: number; sizeId?: number }) => {
   const response = await axios
-    .get(`${baseURL}/${productId}`, {
+    .get(`${baseURL}/${productId}?sizeId=${sizeId}`, {
       headers,
     })
     .then((res) => {
