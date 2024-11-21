@@ -16,7 +16,7 @@ export default function Cart() {
     const items = await Promise.all(
       cart.products.map(async (item: any) => {
         const productPrice = await getProductPricesByProductId({ productId: item.product.id, sizeId: item.size.id });
-        console.log(productPrice);
+        // console.log(productPrice);
         if (productPrice.length == 1) {
           return {
             price: productPrice[0].stripePriceId,
@@ -25,8 +25,14 @@ export default function Cart() {
         } else throw new Error("Error getting product price");
       })
     );
-    console.log(items);
-    createCheckout(items).then((res) => {
+    // console.log(items);
+
+    createCheckout({
+      items,
+      success_url: `${window.location.origin}/checkout-result?success=true`,
+      // success_url: window.location.origin,
+      cancel_url: `${window.location.origin}/checkout-result?canceled=true`,
+    }).then((res) => {
       // console.log(res);
       // navigate(res.url);
       window.location.href = res.url;

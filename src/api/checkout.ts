@@ -11,13 +11,13 @@ export interface iCheckoutItem {
   quantity: number;
 }
 
-export async function createCheckout(items: iCheckoutItem[]) {
+export async function createCheckout({ items, success_url, cancel_url }: { items: iCheckoutItem[]; success_url: string; cancel_url: string }) {
   const token = restoreToken();
   if (!token) return;
   const response = await axios
     .post(
       `${baseURL}`,
-      { items },
+      { items, success_url, cancel_url },
       {
         headers: {
           "Content-Type": "application/json",
@@ -28,7 +28,7 @@ export async function createCheckout(items: iCheckoutItem[]) {
     .then((res) => res.data)
     .catch((err) => {
       console.log(err);
-      toast.error(err.response.data.message);
+      toast.error(err.message);
     });
   return response;
 }

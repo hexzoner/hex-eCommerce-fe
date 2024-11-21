@@ -17,6 +17,7 @@ import {
   RugSizes,
   RugTypes,
   Sales,
+  CheckoutResult,
 } from "./components/components";
 import {
   Dashboard,
@@ -60,6 +61,7 @@ const router = createBrowserRouter(
       <Route path="product/:id" element={<ProductDetails />} />
       <Route path="wishlist" element={<Wishlist />} />
       <Route path="cart" element={<Cart />} />
+      <Route path="/checkout-result" element={<CheckoutResult />} />
       <Route element={<ProtectedLayout />}>
         <Route path="profile" element={<Profile />} />
 
