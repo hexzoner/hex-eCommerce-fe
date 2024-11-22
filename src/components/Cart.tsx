@@ -35,6 +35,8 @@ export default function Cart() {
     }).then((res) => {
       // console.log(res);
       // navigate(res.url);
+      const successUrlWithSession = `${res.url}&session_id=${res.sessionId}`;
+      console.log(successUrlWithSession);
       window.location.href = res.url;
     });
   }
