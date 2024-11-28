@@ -13,8 +13,9 @@ const headers = {
 };
 
 export const getProductPricesByProductId = async ({ productId, sizeId }: { productId: number; sizeId?: number }) => {
+  const url = sizeId ? `${baseURL}/${productId}?sizeId=${sizeId}` : `${baseURL}/${productId}`;
   const response = await axios
-    .get(`${baseURL}/${productId}?sizeId=${sizeId}`, {
+    .get(url, {
       headers,
     })
     .then((res) => {

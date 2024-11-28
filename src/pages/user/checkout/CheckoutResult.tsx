@@ -1,42 +1,41 @@
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-
-// import axios from "axios";
+import { verifyCheckoutSession } from "../../../api/checkout";
 
 export const CheckoutResult = () => {
   const [searchParams] = useSearchParams();
   const [paymentStatus, setPaymentStatus] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
 
   const isSuccess = searchParams.get("success") === "true";
   const isCanceled = searchParams.get("canceled") === "true";
   const sessionId = searchParams.get("session_id");
 
   useEffect(() => {
-    if (sessionId) {
-      setPaymentStatus("SUCCESS");
-      // axios
-      //   .get(`/verify-checkout-session?session_id=${sessionId}`)
-      //   .then((response) => {
-      //     console.log(response.data);
-      //     if (response.data.success) {
-      //       setPaymentStatus("SUCCESS");
-      //     } else {
-      //       setPaymentStatus("FAILED");
-      //       setErrorMessage(response.data.error);
-      //     }
-      //   })
-      //   .catch((error) => {
-      //     setPaymentStatus("Error fetching payment status.");
-      //     console.error(error);
-      //   });
-    } else {
-      setPaymentStatus("FAILED");
-      setErrorMessage("No session ID provided.");
+    setLoading(true);
+    async function verySession() {
+      if (sessionId) {
+        // setPaymentStatus("SUCCESS");
+        const sessionData = await verifyCheckoutSession({ sessionId });
+        if (sessionData && sessionData.paymentStatus === "paid") {
+          //check if order exists in db with this session id else show error "Payment already processed"
+          setPaymentStatus("SUCCESS");
+        } else {
+          setPaymentStatus("FAILED");
+        }
+      } else {
+        setPaymentStatus("FAILED");
+        setErrorMessage("No session ID provided.");
+      }
+      setLoading(false);
     }
+
+    verySession();
   }, [searchParams]);
 
   // console.log({ isSuccess, isCanceled, paymentStatus, errorMessage, sessionId });
+  if (loading) return <Loading />;
 
   if (isSuccess && paymentStatus === "SUCCESS") {
     return <Success />;
@@ -62,7 +61,7 @@ function Cancelled({ errorMessage }: { errorMessage: string | null }) {
   return (
     <div className="h-screen flex justify-center items-center">
       <div className="flex flex-col gap-4">
-        <p>Payment was canceled. Please try again.</p>
+        <p>Something went wrong or the payment was cancelled.</p>
         {errorMessage && <p>{errorMessage}</p>}
         <ReturnToCartButton />
       </div>
