@@ -2,18 +2,21 @@ import { iOrder, iOrderProduct } from "../Orders";
 import { formatDateFull } from "../../../utils/dateUtils";
 
 export default function OrderModal({ order }: { order: iOrder }) {
+  // console.log(order);
   return (
     <>
       <dialog id="order_modal" className="modal text-left ">
         <div className="modal-box max-w-screen-lg">
           <div className="max-w-screen-lg m-auto">
             <div className="flex items-center justify-center gap-4">
-              <h3 className="font-bold text-lg">Order {order.id}</h3>
-              <p className="py-4">[Id = {order.user.id}]</p>
+              <h3 className="font-bold text-lg">Order #{order.id}</h3>
+              {/* <p className="py-4">[Id = {order.stripeSessionId}]</p> */}
             </div>
+            <p className="py-4 italic text-sm opacity-60">Stripe Session Id = {order.stripeSessionId}</p>
             <div className="py-4">
               <p className="">
-                Customer: {order.user.firstName} {order.user.lastName} - {order.user.email}
+                Customer: {order.user.firstName} {order.user.lastName} - {order.user.email}{" "}
+                <span className="opacity-70 italic">(Id: {order.user.id})</span>
               </p>
               <p className="">Order Total: €{order.total}</p>
               <p className="">Created at: {formatDateFull(order.createdAt)}</p>

@@ -17,6 +17,7 @@ export interface iOrder {
     email: string;
   };
   products: iOrderProduct[];
+  stripeSessionId: string;
   total: number;
   createdAt: string;
   updatedAt: string;
@@ -49,6 +50,7 @@ export default function Orders() {
     total: 0,
     createdAt: "",
     updatedAt: "",
+    stripeSessionId: "",
     user: {
       id: 0,
       firstName: "",

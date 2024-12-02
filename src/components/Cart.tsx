@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useShop } from "../context";
-// import { toast } from "react-toastify";
+import { toast } from "react-toastify";
 // import { updateCart } from "../api/cart";
 import { createCheckout } from "../api/checkout";
 import { getProductPricesByProductId } from "../api/productPrices";
@@ -15,6 +15,7 @@ export default function Cart() {
   async function handleCheckout() {
     const items = await Promise.all(
       cart.products.map(async (item: any) => {
+        // console.log({ productId: item.product.id, sizeId: item.size.id });
         const productPrice = await getProductPricesByProductId({ productId: item.product.id, sizeId: item.size.id });
         // console.log(productPrice);
         if (productPrice.length == 1) {
@@ -34,6 +35,11 @@ export default function Cart() {
       cancel_url: `${window.location.origin}/checkout-result?canceled=true`,
     }).then((res) => {
       // console.log(res);
+      if (!res) {
+        toast.info("Please create account or login to checkout.");
+        return;
+      }
+
       // navigate(res.url);
       const successUrlWithSession = `${res.url}&session_id=${res.sessionId}`;
       console.log(successUrlWithSession);

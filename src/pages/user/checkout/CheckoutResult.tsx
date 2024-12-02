@@ -1,6 +1,8 @@
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { verifyCheckoutSession } from "../../../api/checkout";
+import { createOrder } from "../../../api/orders";
+import { getCart } from "../../../api/cart";
 
 export const CheckoutResult = () => {
   const [searchParams] = useSearchParams();
@@ -13,18 +15,41 @@ export const CheckoutResult = () => {
   const sessionId = searchParams.get("session_id");
 
   useEffect(() => {
+    let isMounted = true;
     setLoading(true);
     async function verySession() {
+      if (!isMounted) return;
       if (sessionId) {
         // setPaymentStatus("SUCCESS");
         const sessionData = await verifyCheckoutSession({ sessionId });
-        if (sessionData && sessionData.paymentStatus === "paid") {
-          //check if order exists in db with this session id else show error "Payment already processed"
-          setPaymentStatus("SUCCESS");
-        } else {
+        if (sessionData && sessionData.paymentStatus === "paid" && isMounted) {
+          // console.log(sessionData);
+          //creating new oreder and check if order exists in db with this session id
+          const cartData = await getCart();
+          // console.log(cartData);
+          if (!cartData) {
+            setPaymentStatus("FAILED");
+            setErrorMessage("Something went wrong - No cart data found.");
+            setLoading(false);
+            return;
+          }
+          const products = cartData.products.map((product: any) => ({
+            productId: product.product.id,
+            patternId: product.pattern.id,
+            sizeId: product.size.id,
+            quantity: product.quantity,
+          }));
+          const orderData = await createOrder({ products, stripeSessionId: sessionId });
+          // console.log(orderData);
+          if (orderData.status && orderData.status === 400) {
+            // Trying to create order with the same stripe session id
+            setPaymentStatus("FAILED");
+            setErrorMessage(orderData.message);
+          } else setPaymentStatus("SUCCESS");
+        } else if (isMounted) {
           setPaymentStatus("FAILED");
         }
-      } else {
+      } else if (isMounted) {
         setPaymentStatus("FAILED");
         setErrorMessage("No session ID provided.");
       }
@@ -32,6 +57,10 @@ export const CheckoutResult = () => {
     }
 
     verySession();
+
+    return () => {
+      isMounted = false;
+    };
   }, [searchParams]);
 
   // console.log({ isSuccess, isCanceled, paymentStatus, errorMessage, sessionId });

@@ -18,9 +18,31 @@ export const getOrders = async ({ page, perPage }: { page?: number; perPage?: nu
       },
     })
     .then((res) => {
-      //   console.log(res.data);
+      // console.log(res.data);
       return res.data;
     })
-    .catch((err) => console.log(err.data.message));
+    .catch((err) => console.log(err));
+  return response;
+};
+
+export interface iOrderProduct {
+  productId: number;
+  patternId: number;
+  sizeId: number;
+  quantity: number;
+}
+
+export const createOrder = async ({ products, stripeSessionId }: { products: iOrderProduct[]; stripeSessionId: string }) => {
+  const body = { products, stripeSessionId };
+  // console.log(body);
+  const response = await axios
+    .post(`${baseURL}`, body, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${restoreToken()}`,
+      },
+    })
+    .then((res) => res.data)
+    .catch((err) => console.log(err));
   return response;
 };

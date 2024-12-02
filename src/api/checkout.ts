@@ -20,7 +20,10 @@ function getHeader() {
 
 export async function createCheckout({ items, success_url, cancel_url }: { items: iCheckoutItem[]; success_url: string; cancel_url: string }) {
   const token = restoreToken();
-  if (!token) return;
+  if (!token) {
+    // console.log("No token");
+    return;
+  }
   const response = await axios
     .post(
       `${baseURL}`,
@@ -40,7 +43,7 @@ export async function createCheckout({ items, success_url, cancel_url }: { items
 export async function verifyCheckoutSession({ sessionId }: { sessionId: string }) {
   const token = restoreToken();
   if (!token) return;
-  console.log(sessionId);
+  // console.log(sessionId);
   const response = await axios
     .get(`${baseURL}/${sessionId}`, {
       headers: getHeader(),
