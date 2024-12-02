@@ -3,8 +3,10 @@ import { useState, useEffect } from "react";
 import { verifyCheckoutSession } from "../../../api/checkout";
 import { createOrder } from "../../../api/orders";
 import { getCart } from "../../../api/cart";
+import { useShop } from "../../../context";
 
 export const CheckoutResult = () => {
+  const { setCart } = useShop();
   const [searchParams] = useSearchParams();
   const [paymentStatus, setPaymentStatus] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -45,7 +47,10 @@ export const CheckoutResult = () => {
             // Trying to create order with the same stripe session id
             setPaymentStatus("FAILED");
             setErrorMessage(orderData.message);
-          } else setPaymentStatus("SUCCESS");
+          } else {
+            setCart({ products: [], total: 0 });
+            setPaymentStatus("SUCCESS");
+          }
         } else if (isMounted) {
           setPaymentStatus("FAILED");
         }
