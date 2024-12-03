@@ -6,6 +6,7 @@ import sortTables from "../../utils/sortTables";
 import { formatDateFull } from "../../utils/dateUtils";
 import { OrderModal } from "./admin-components";
 import Pagination from "../Pagination";
+import { useAuth } from "../../context";
 
 export interface iOrder {
   id: number;
@@ -42,6 +43,8 @@ export interface iOrderProduct {
 
 export default function Orders() {
   const [orders, setOrders] = useState<iOrder[]>([]);
+  const { user } = useAuth();
+
   const [loading, setLoading] = useState(true);
   const [selectedOrder, setSelectedOrder] = useState<iOrder>({
     id: 0,
@@ -72,7 +75,8 @@ export default function Orders() {
       try {
         const token = restoreToken();
         if (!token) return;
-        const orders = await getOrders({ page, perPage });
+
+        const orders = await getOrders({ page, perPage, isUser: user.role === "user" });
         // console.log(orders);
 
         setTotalProducts(orders.total);
@@ -124,38 +128,42 @@ export default function Orders() {
                   </button>
                 </div>
               </th>
-              <th className="font-bold">
-                <div className="flex gap-1 items-center">
-                  <span>userId</span>
-                  <button title="Sort" className="hover:cursor-pointer" onClick={() => handleSortClick("userId")}>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      strokeWidth="1.5"
-                      stroke="currentColor"
-                      className="size-6">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 15 12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9" />
-                    </svg>
-                  </button>
-                </div>
-              </th>
-              <th className="font-bold">
-                <div className="flex gap-1 items-center">
-                  <span>Email</span>
-                  <button title="Sort" className="hover:cursor-pointer" onClick={() => handleSortClick("email")}>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      strokeWidth="1.5"
-                      stroke="currentColor"
-                      className="size-6">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 15 12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9" />
-                    </svg>
-                  </button>
-                </div>
-              </th>
+              {user.role !== "user" && (
+                <>
+                  <th className="font-bold">
+                    <div className="flex gap-1 items-center">
+                      <span>userId</span>
+                      <button title="Sort" className="hover:cursor-pointer" onClick={() => handleSortClick("userId")}>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          strokeWidth="1.5"
+                          stroke="currentColor"
+                          className="size-6">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 15 12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9" />
+                        </svg>
+                      </button>
+                    </div>
+                  </th>
+                  <th className="font-bold">
+                    <div className="flex gap-1 items-center">
+                      <span>Email</span>
+                      <button title="Sort" className="hover:cursor-pointer" onClick={() => handleSortClick("email")}>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          strokeWidth="1.5"
+                          stroke="currentColor"
+                          className="size-6">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 15 12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9" />
+                        </svg>
+                      </button>
+                    </div>
+                  </th>
+                </>
+              )}
               <th className="font-bold">
                 <div className="flex gap-1 items-center">
                   <span>Products</span>
@@ -174,7 +182,7 @@ export default function Orders() {
               </th>
               <th className="font-bold">
                 <div className="flex gap-1 items-center">
-                  <span>total</span>
+                  <span>Total</span>
                   <button title="Sort" className="hover:cursor-pointer" onClick={() => handleSortClick("total")}>
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -204,22 +212,24 @@ export default function Orders() {
                   </button>
                 </div>
               </th>
-              <th className="font-bold">
-                <div className="flex gap-1 items-center">
-                  <span>Updated At</span>
-                  <button title="Sort" className="hover:cursor-pointer" onClick={() => handleSortClick("updatedAt")}>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      strokeWidth="1.5"
-                      stroke="currentColor"
-                      className="size-6">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 15 12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9" />
-                    </svg>
-                  </button>
-                </div>
-              </th>
+              {user.role !== "user" && (
+                <th className="font-bold">
+                  <div className="flex gap-1 items-center">
+                    <span>Updated At</span>
+                    <button title="Sort" className="hover:cursor-pointer" onClick={() => handleSortClick("updatedAt")}>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth="1.5"
+                        stroke="currentColor"
+                        className="size-6">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 15 12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9" />
+                      </svg>
+                    </button>
+                  </div>
+                </th>
+              )}
             </tr>
           </thead>
           <tbody>
@@ -234,12 +244,16 @@ export default function Orders() {
                     if (orderModal) (orderModal as HTMLDialogElement).showModal();
                   }}>
                   <td className={borderMarkup}>{order.id}</td>
-                  <td className={borderMarkup}>{order.user.id}</td>
-                  <td className={borderMarkup}>{order.user.email}</td>
+                  {user.role !== "user" && (
+                    <>
+                      <td className={borderMarkup}>{order.user.id}</td>
+                      <td className={borderMarkup}>{order.user.email}</td>
+                    </>
+                  )}
                   <td className={borderMarkup}>{order.products.length}</td>
                   <td className={borderMarkup}>${order.total}</td>
                   <td className={borderMarkup}>{formatDateFull(order.createdAt)}</td>
-                  <td className={borderMarkup}>{formatDateFull(order.updatedAt)}</td>
+                  {user.role !== "user" && <td className={borderMarkup}>{formatDateFull(order.updatedAt)}</td>}
                 </tr>
               );
             })}

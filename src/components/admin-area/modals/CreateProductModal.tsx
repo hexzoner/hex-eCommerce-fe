@@ -149,12 +149,15 @@ export function CreateProductModal({
     setDetailsHtml(product.details);
     setNotesHtml(product.notes);
     setInstructionsHtml(product.instructions);
+    setReviews([]);
+    setProductPrices([]);
+    setPatterns(product.patterns);
   }
 
   useEffect(() => {
-    setLoading(true);
     resetFormToDefault();
     if (product.id === 0) return;
+    setLoading(true);
     const fetchReviews = async () => {
       try {
         const response = await getReviews({ productId: product.id });

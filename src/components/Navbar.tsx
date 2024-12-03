@@ -117,7 +117,7 @@ export default function Navbar() {
                   </>
                 )}
                 <NavLink
-                  to="/profile"
+                  to="/profile/account"
                   className={({ isActive }: { isActive: boolean }) =>
                     `cursor-pointer hover:opacity-75 "  + ${isActive ? `fill-[${activeColor}]` : "fill-current"} `
                   }>

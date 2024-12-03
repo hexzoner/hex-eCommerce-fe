@@ -56,6 +56,7 @@ function OrderProductCard({ item }: { item: iOrderProduct }) {
             <img className="object-cover  m-auto h-32 w-48" src={item.pattern.icon} alt="color" />
           </div>
           <div className="flex flex-col gap-2 text-left w-1/2 ">
+            <p className="font-bold">{item.name}</p>
             {item.pattern.name !== "Main" && item.pattern.name !== "Default" && <p className="">Color: {item.pattern.name}</p>}
             <p className="">Size: {item.size.name}</p>
           </div>
@@ -67,7 +68,10 @@ function OrderProductCard({ item }: { item: iOrderProduct }) {
           <div className="w-1/4 flex flex-col items-center gap-4">
             {/* {
               item.quantity > 1 && <span className="text-lg">{item.quantity} x </span>} */}
-            <span className="font-semibold text-xl">€{item.priceTotal ? item.priceTotal : item.price}</span>
+            <div className="text-xl">
+              {item.quantity > 1 && <span className="italic ">{item.quantity} x </span>}
+              <span className="font-semibold ">€{item.priceTotal ? item.priceTotal : item.price}</span>
+            </div>
           </div>
         </div>
       </div>

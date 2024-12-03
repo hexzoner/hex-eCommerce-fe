@@ -5,8 +5,8 @@ const API_URL = import.meta.env.VITE_API_URL;
 if (!API_URL) throw new Error("API URL is required, are you missing a .env file?");
 const baseURL = `${API_URL}/orders`;
 
-export const getOrders = async ({ page, perPage }: { page?: number; perPage?: number }) => {
-  let url = `${baseURL}?`;
+export const getOrders = async ({ page, perPage, isUser }: { page?: number; perPage?: number; isUser?: boolean }) => {
+  let url = isUser ? `${baseURL}/user?` : `${baseURL}?`;
   if (page) url += `page=${page}&`;
   if (perPage) url += `perPage=${perPage}&`;
   // console.log(url);
