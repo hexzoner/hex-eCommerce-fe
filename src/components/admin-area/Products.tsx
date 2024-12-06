@@ -62,6 +62,7 @@ export interface Product {
   new: boolean;
   bestSeller: boolean;
   patterns: iPattern[];
+  stripeProductId: string;
 }
 
 export default function Products() {
@@ -87,6 +88,7 @@ export default function Products() {
     defaultSize: {
       id: 0,
       name: "",
+      squareMeters: 0,
     },
     colors: [],
     active: false,
@@ -118,6 +120,7 @@ export default function Products() {
     new: false,
     bestSeller: false,
     patterns: [],
+    stripeProductId: "",
   };
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);

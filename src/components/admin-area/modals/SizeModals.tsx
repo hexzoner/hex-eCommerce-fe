@@ -16,7 +16,11 @@ export default function SizeModal({ size, setSelectedSize, setSizes }: SizeModal
   const [loading, setLoading] = useState(false);
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
-    setSelectedSize({ ...size, name: e.target.value });
+    // console.log(e.target.name, e.target.value);
+    setSelectedSize({
+      ...size,
+      [e.target.name]: e.target.value,
+    });
   }
 
   function handleDelete(e: React.MouseEvent) {
@@ -64,12 +68,24 @@ export default function SizeModal({ size, setSelectedSize, setSizes }: SizeModal
           ) : (
             <div className="max-w-96 m-auto ">
               {!editMode ? (
-                <h3 className="font-bold text-lg">{size.name}</h3>
+                <>
+                  <h3 className="font-bold text-lg">Name: {size.name}</h3>
+                  <p className="text-lg">Square Meters: {size.squareMeters}</p>
+                </>
               ) : (
                 <div>
                   <input
+                    name="name"
                     onChange={handleChange}
                     value={size.name}
+                    type="text"
+                    placeholder="Type here"
+                    className="input input-bordered w-full max-w-xs"
+                  />
+                  <input
+                    name="squareMeters"
+                    onChange={handleChange}
+                    value={size.squareMeters}
                     type="text"
                     placeholder="Type here"
                     className="input input-bordered w-full max-w-xs"
@@ -105,7 +121,7 @@ export default function SizeModal({ size, setSelectedSize, setSizes }: SizeModal
 
 export function CreateSizeModal({ setSizes }: { setSizes: React.Dispatch<React.SetStateAction<Size[]>> }) {
   const [loading, setLoading] = useState(false);
-  const [newSize, setNewSize] = useState<Size>({ id: 0, name: "" });
+  const [newSize, setNewSize] = useState<Size>({ id: 0, name: "", squareMeters: 0 });
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     setNewSize({ ...newSize, name: e.target.value });
@@ -119,7 +135,7 @@ export function CreateSizeModal({ setSizes }: { setSizes: React.Dispatch<React.S
     const sizes = await getSizes();
     setSizes(sizes);
     setLoading(false);
-    setNewSize({ id: 0, name: "" });
+    setNewSize({ id: 0, name: "", squareMeters: 0 });
     const sizeModal = document.getElementById("create_size_modal");
     if (sizeModal) (sizeModal as HTMLDialogElement).close();
   }
