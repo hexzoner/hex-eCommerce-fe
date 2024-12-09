@@ -33,7 +33,7 @@ export default function Navbar() {
           <span className="text-sm">4.7/5 Truspilot</span>
         </div>
       </div>
-      <div className="navbar max-w-screen-xl m-auto font-normal text-lg">
+      <div className="navbar max-w-screen-xl m-auto font-normal text-lg ">
         <div className="flex-1 flex-wrap ">
           <NavLink to="/" className="text-2xl mr-4">
             <Logo fill={"black"} />

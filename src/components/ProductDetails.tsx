@@ -116,11 +116,11 @@ export default function ProductDetails() {
   if (responseStatus == 404) return <div className="min-h-screen text-3xl flex flex-col items-center justify-center">Product not found</div>;
 
   function calcPrice() {
-    if (!selectedSize.name) return "N/A";
-    const heightWidth = selectedSize.name.split("x");
-    if (heightWidth.length == 2) return (product.price * (parseInt(heightWidth[0]) * parseInt(heightWidth[1]))).toFixed(2);
-    else return product.price;
+    if (!selectedSize || !selectedSize.squareMeters) return "N/A";
+    return (product.price * selectedSize.squareMeters).toFixed(2);
   }
+
+  console.log(selectedSize);
 
   return (
     <div className="">
@@ -142,7 +142,7 @@ export default function ProductDetails() {
       <div className="flex flex-col min-h-screen mt-8 text-left">
         {/* Product Image, Name, Price, Category, Size, Color, Add to Cart Button */}
         <div className="flex-col lg:flex-row flex gap-0 items-start max-w-[85rem] m-auto h-full">
-          <div className="w-full lg:w-1/2  lg:px-0  flex-1 self-stretch relative">
+          <div className="w-full lg:w-1/2  lg:px-0  flex-1  relative">
             <div className="max-w-80 m-auto md:max-w-xl lg:max-w-full">
               <ImageGallery
                 images={selectedColor.images ? selectedColor.images.map((image: any) => image.imageURL) : [getProductMainImageUrl(product)]}
@@ -159,35 +159,31 @@ export default function ProductDetails() {
             )}
           </div>
 
-          <div className="flex flex-col  self-stretch justify-around w-full bg-[#eff2f6] pt-4 lg:w-[40%] mx-auto mt-6 lg:mt-0 px-5 lg:px-8  gap-6 pb-6 ">
-            <div className="flex justify-between items-center w-full">
-              <p className="text-3xl font-semibold">{product.name}</p>
-              <FavIcon product={product} wishlist={wishlist} setWishlist={setWishlist} />
-            </div>
-            <p className="text-xl">€{calcPrice()}</p>
-            <div className="flex gap-4 italic">
+          <div className="flex flex-col sticky top-0 justify-around w-full bg-[#ebf2f8] pt-8 lg:w-[40%] mx-auto mt-6 lg:mt-0 px-5 lg:px-8  gap-4 pb-6 ">
+            <div>
+              <p className="text-3xl font-bold">{product.name}</p>
               <p>{product.category.name}</p>
             </div>
+            <div className="mt-3 flex justify-start items-center gap-2">
+              <Ratings rating={averateRating} size={size.small} />
+              <p className="text-sm">({totalReviews} Reviews)</p>
+            </div>
+
+            <p className="text-3xl font-bold mt-3">€{calcPrice()}</p>
+            {/* <div className="flex gap-4"></div> */}
             {/* Features section */}
             <div className="flex gap-4 flex-wrap ">
               {product.features &&
                 product.features.map((feature: any) => {
                   return (
-                    <div key={feature.id} className="flex gap-1 h-6 items-center  py-4">
-                      <img className="h-6 w-6" src={feature.image} alt={feature.name} />
+                    <div key={feature.id} className="flex gap-1 h-5 items-center  py-4">
+                      <img className="h-5 w-5" src={feature.image} alt={feature.name} />
                       <p className="text-sm">{feature.name}</p>
                     </div>
                   );
                 })}
             </div>
-            <div className="font-semibold text-lg">
-              <span>Size:</span> <span className="ml-1 ">{selectedSize.name}</span>
-            </div>
-            <div className="flex flex-wrap gap-3 items-center">
-              {product.sizes.map((size: any) => (
-                <ProductSize size={size} setSelectedSize={setSelectedSize} selectedSize={selectedSize} key={size.id} />
-              ))}
-            </div>
+
             {product.patterns.length > 1 && <p className="font-semibold text-lg">Color: {selectedColor.name}</p>}
             {product.patterns?.length > 1 && (
               <div className="flex flex-wrap gap-6 items-center ">
@@ -197,13 +193,31 @@ export default function ProductDetails() {
                 ))}
               </div>
             )}
-            <button
-              onClick={handleAddToCart}
-              className={`btn btn-primary w-full rounded-none mt-2 ${cartLoading ? "btn-disabled" : ""}`}
-              // disabled={cartLoading}
-            >
-              {cartLoading ? "ADDING TO CART..." : "ADD TO CART"}
-            </button>
+            <div className="font-semibold text-lg">
+              <span>Size:</span> <span className="ml-1 ">{selectedSize.name}</span>
+            </div>
+            <div className="flex flex-wrap gap-3 items-center">
+              {product.sizes.map((size: any) => (
+                <ProductSize size={size} setSelectedSize={setSelectedSize} selectedSize={selectedSize} key={size.id} />
+              ))}
+            </div>
+            <div className="flex justify-between mt-2 gap-2 items-center">
+              <button
+                onClick={handleAddToCart}
+                className={`btn btn-neutral rounded-none w-[45%] ${cartLoading ? "btn-disabled" : ""}`}
+                // disabled={cartLoading}
+              >
+                {cartLoading ? "ADDING TO CART..." : "ADD TO CART"}
+              </button>
+              <button
+                // onClick={handleAddToCart}
+                className={`btn btn-neutral btn-outline rounded-none w-[45%] ${cartLoading ? "btn-disabled" : ""}`}
+                // disabled={cartLoading}
+              >
+                {cartLoading ? "PLEASE WAIT..." : "ORDER A SAMPLE"}
+              </button>
+              <FavIcon product={product} wishlist={wishlist} setWishlist={setWishlist} />
+            </div>
           </div>
         </div>
 
@@ -250,11 +264,6 @@ export default function ProductDetails() {
 
         {/* Customer Reviews */}
         <section className="bg-[#fcfaf5] w-full text-center px-4">
-          <div className="max-w-[40rem] m-auto py-20 border-b-[2.5px] border-black border-opacity-15 mb-4">
-            <p className="font-semibold text-2xl">Customer Reviews</p>
-            <p className="">{totalReviews} Reviews</p>
-            <Ratings rating={averateRating} size={size.large} />
-          </div>
           <div className="text-left flex flex-col gap-0 max-w-[40rem] m-auto ">
             {productReviews.map((review: any) => (
               <ReviewCard key={review.id} review={review} />
@@ -292,7 +301,7 @@ function ProductSize({ size, setSelectedSize, selectedSize }: { size: any; setSe
         setSelectedSize(size);
       }}
       key={size.id}
-      className={`btn btn-sm py-0 px-5 ${selectedSize.id == size.id ? "btn-primary" : "btn-outline"}`}>
+      className={`btn btn-sm py-0 px-5 rounded-none ${selectedSize.id == size.id ? "btn-neutral" : "btn-outline"}`}>
       {size.name}
     </button>
   );
@@ -300,16 +309,26 @@ function ProductSize({ size, setSelectedSize, selectedSize }: { size: any; setSe
 
 function ProductColor({ color, setSelectedColor, selectedColor }: { color: any; setSelectedColor: any; selectedColor: any }) {
   return (
-    <div className="flex flex-col items-center justify-center gap-2">
-      <img className="h-16 w-16 rounded-full object-cover p-0" src={color.icon} alt="" />
-      <button
+    <div className={`flex flex-col items-center justify-center gap-2`}>
+      <img
+        onClick={() => {
+          setSelectedColor(color);
+        }}
+        key={color.id}
+        className={`h-10 w-10 cursor-pointer rounded-full object-cover p-1 border-[1.5px] border-solid border-black ${
+          selectedColor.id == color.id ? "border-opacity-100" : "border-opacity-10"
+        }`}
+        src={color.icon}
+        alt=""
+      />
+      {/* <button
         onClick={() => {
           setSelectedColor(color);
         }}
         key={color.id}
         className={`btn btn-xs py-0 px-5 ${selectedColor.id == color.id ? "btn-primary" : "btn-outline"}`}>
         {color.name}
-      </button>
+      </button> */}
     </div>
   );
 }
@@ -324,7 +343,7 @@ enum size {
 function Ratings({ rating, size }: { rating: number; size: size }) {
   return (
     <div className={"rating rating-half " + size}>
-      <input checked={true} title="rating" type="radio" name="rating-10" className="rating-hidden pointer-events-none" readOnly />
+      {/* <input checked={true} title="rating" type="radio" name="rating-10" className="rating-hidden pointer-events-none" readOnly /> */}
       <input
         checked={false}
         title="rating"
