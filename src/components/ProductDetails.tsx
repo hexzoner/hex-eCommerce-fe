@@ -2,8 +2,9 @@ import { useParams } from "react-router-dom";
 import { getProductById } from "../api/products";
 import { useState, useEffect } from "react";
 import LoadingSpinner from "./LoadingSpinner";
+import { LoadingSpinnerSmall } from "./admin-area/admin-components";
 import { FavIcon } from "../pages/user/ProductBrowser";
-import { useShop } from "../context";
+import { useShop, useAuth } from "../context";
 import { getReviews } from "../api/reviews";
 import Pagination from "./Pagination";
 import { useNavigate } from "react-router-dom";
@@ -21,11 +22,13 @@ import ImageGallery from "../pages/user/product-details-components/ImageGallery"
 import { getProductMainImageUrl } from "../utils/miscUtils";
 
 export default function ProductDetails() {
+  const { wishlist, setWishlist, addToCart, cartLoading } = useShop();
+  const { authLoading } = useAuth();
   const { id } = useParams<{ id: string }>();
+
   const [product, setProduct] = useState<any>({});
   const [loading, setLoading] = useState(true);
   const [loadingReviews, setLoadingReviews] = useState(true);
-  const { wishlist, setWishlist, addToCart, cartLoading } = useShop();
   const [selectedSize, setSelectedSize] = useState<any>({});
   const [selectedColor, setSelectedColor] = useState<any>({});
   const [productReviews, setProductReviews] = useState<any>([]);
@@ -38,7 +41,6 @@ export default function ProductDetails() {
   const [averateRating, setAverageRating] = useState(0);
   const [responseStatus, setResponseStatus] = useState(200);
   const [rugsByProducer, setRugsByProducer] = useState<any>([]);
-
   const navigate = useNavigate();
 
   function setReviewsData(res: any) {
@@ -50,6 +52,7 @@ export default function ProductDetails() {
   }
 
   useEffect(() => {
+    if (authLoading) return;
     setSort("desc");
     getProductById(Number(id))
       .then((res) => {
@@ -80,9 +83,10 @@ export default function ProductDetails() {
       .finally(() => {
         setLoading(false);
       });
-  }, [id]);
+  }, [id, authLoading]);
 
   useEffect(() => {
+    if (authLoading) return;
     setLoadingReviews(true);
     // console.log("Fetching reviews");
     getReviews({
@@ -102,7 +106,7 @@ export default function ProductDetails() {
       .finally(() => {
         setLoadingReviews(false);
       });
-  }, [page, perPage, sort, id]);
+  }, [page, perPage, sort, id, authLoading]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -112,7 +116,7 @@ export default function ProductDetails() {
     addToCart(product, 1, selectedSize.id, selectedColor.id);
   }
 
-  if (loading || loadingReviews) return <LoadingSpinner />;
+  if (loading || loadingReviews || authLoading) return <LoadingSpinner />;
   if (responseStatus == 404) return <div className="min-h-screen text-3xl flex flex-col items-center justify-center">Product not found</div>;
 
   function calcPrice() {
@@ -157,9 +161,35 @@ export default function ProductDetails() {
                 <FeaturedReviewsCarousel reviews={featuredReviews} />
               </section>
             )}
+
+            {/* Description, Details, Notes, Instructions Tabs */}
+            <div className="w-full max-w-[85rem] m-auto border-[1.5px] border-black border-opacity-15 pb-12 mt-12">
+              <div role="tablist" className="tabs tabs-bordered ">
+                {/* Tab 1 */}
+                <input type="radio" name="my_tabs_1" role="tab" className="tab" aria-label="Description" defaultChecked />
+                <div role="tabpanel" className="tab-content p-10">
+                  <div className="prose max-w-[100ch]" dangerouslySetInnerHTML={{ __html: product.description }}></div>
+                </div>
+                {/* Tab 2 */}
+                <input type="radio" name="my_tabs_1" role="tab" className="tab" aria-label="Details" />
+                <div role="tabpanel" className="tab-content p-10 w-full ">
+                  <div className="prose max-w-[100ch]" dangerouslySetInnerHTML={{ __html: product.details }}></div>
+                </div>
+                {/* Tab 3 */}
+                <input type="radio" name="my_tabs_1" role="tab" className="tab" aria-label="Notes" />
+                <div role="tabpanel" className="tab-content p-10">
+                  <div className="prose max-w-[100ch]" dangerouslySetInnerHTML={{ __html: product.notes }}></div>
+                </div>
+                {/* Tab 4 */}
+                <input type="radio" name="my_tabs_1" role="tab" className="tab" aria-label="Instructions" />
+                <div role="tabpanel" className="tab-content p-10">
+                  <div className="prose max-w-[100ch]" dangerouslySetInnerHTML={{ __html: product.instructions }}></div>
+                </div>
+              </div>
+            </div>
           </div>
 
-          <div className="flex flex-col sticky top-0 justify-around w-full bg-[#ebf2f8] pt-8 lg:w-[40%] mx-auto mt-6 lg:mt-0 px-5 lg:px-8  gap-4 pb-6 ">
+          <div className="flex flex-col sticky top-0 justify-around w-full bg-[#ebf2f8] py-12 lg:w-[40%] mx-auto mt-6 lg:mt-0 px-5  lg:px-10  gap-4 ">
             <div>
               <p className="text-3xl font-bold">{product.name}</p>
               <p>{product.category.name}</p>
@@ -171,8 +201,21 @@ export default function ProductDetails() {
 
             <p className="text-3xl font-bold mt-3">€{calcPrice()}</p>
             {/* <div className="flex gap-4"></div> */}
-            {/* Features section */}
+            {/* Shipping features */}
             <div className="flex gap-4 flex-wrap ">
+              {/* {product.features &&
+                product.features.map((feature: any) => {
+                  return (
+                    <div key={feature.id} className="flex gap-1 h-5 items-center  py-4">
+                      <img className="h-5 w-5" src={feature.image} alt={feature.name} />
+                      <p className="text-sm">{feature.name}</p>
+                    </div>
+                  );
+                })} */}
+            </div>
+
+            {/* Features section */}
+            <div className="flex gap-4 flex-wrap border-t-[1.5px] border-solid border-black border-opacity-20 pt-4">
               {product.features &&
                 product.features.map((feature: any) => {
                   return (
@@ -184,65 +227,47 @@ export default function ProductDetails() {
                 })}
             </div>
 
-            {product.patterns.length > 1 && <p className="font-semibold text-lg">Color: {selectedColor.name}</p>}
-            {product.patterns?.length > 1 && (
-              <div className="flex flex-wrap gap-6 items-center ">
-                {/* flex-row-reverse mr-auto */}
-                {product.patterns.map((pattern: any) => (
-                  <ProductColor color={pattern} setSelectedColor={setSelectedColor} selectedColor={selectedColor} key={pattern.id} />
+            <div>
+              {product.patterns.length > 1 && <p className="font-normal text-base mb-2">Color: {selectedColor.name}</p>}
+              {product.patterns?.length > 1 && (
+                <div className="flex flex-wrap gap-6 items-center ">
+                  {/* flex-row-reverse mr-auto */}
+                  {product.patterns.map((pattern: any) => (
+                    <ProductColor color={pattern} setSelectedColor={setSelectedColor} selectedColor={selectedColor} key={pattern.id} />
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <div>
+              <div className="font-normal text-base mb-2">
+                <span>Size:</span> <span className="ml-1 ">{selectedSize.name}</span>
+              </div>
+              <div className="flex flex-wrap gap-3 items-center">
+                {product.sizes.map((size: any) => (
+                  <ProductSize size={size} setSelectedSize={setSelectedSize} selectedSize={selectedSize} key={size.id} />
                 ))}
               </div>
-            )}
-            <div className="font-semibold text-lg">
-              <span>Size:</span> <span className="ml-1 ">{selectedSize.name}</span>
             </div>
-            <div className="flex flex-wrap gap-3 items-center">
-              {product.sizes.map((size: any) => (
-                <ProductSize size={size} setSelectedSize={setSelectedSize} selectedSize={selectedSize} key={size.id} />
-              ))}
-            </div>
+
             <div className="flex justify-between mt-2 gap-2 items-center">
               <button
                 onClick={handleAddToCart}
                 className={`btn btn-neutral rounded-none w-[45%] ${cartLoading ? "btn-disabled" : ""}`}
                 // disabled={cartLoading}
               >
-                {cartLoading ? "ADDING TO CART..." : "ADD TO CART"}
+                {cartLoading ? <LoadingSpinnerSmall /> : "Add to Cart"}
               </button>
               <button
                 // onClick={handleAddToCart}
                 className={`btn btn-neutral btn-outline rounded-none w-[45%] ${cartLoading ? "btn-disabled" : ""}`}
                 // disabled={cartLoading}
               >
-                {cartLoading ? "PLEASE WAIT..." : "ORDER A SAMPLE"}
+                {cartLoading ? <LoadingSpinnerSmall /> : "Order a Sample"}
               </button>
-              <FavIcon product={product} wishlist={wishlist} setWishlist={setWishlist} />
-            </div>
-          </div>
-        </div>
-
-        {/* Description, Details, Notes, Instructions Tabs */}
-        <div className="w-full max-w-[85rem] m-auto border-b-2 border-black border-opacity-25 pb-12 mt-12">
-          <div role="tablist" className="tabs tabs-bordered ">
-            {/* Tab 1 */}
-            <input type="radio" name="my_tabs_1" role="tab" className="tab" aria-label="Description" defaultChecked />
-            <div role="tabpanel" className="tab-content p-10">
-              <div className="prose max-w-[100ch]" dangerouslySetInnerHTML={{ __html: product.description }}></div>
-            </div>
-            {/* Tab 2 */}
-            <input type="radio" name="my_tabs_1" role="tab" className="tab" aria-label="Details" />
-            <div role="tabpanel" className="tab-content p-10 w-full ">
-              <div className="prose max-w-[100ch]" dangerouslySetInnerHTML={{ __html: product.details }}></div>
-            </div>
-            {/* Tab 3 */}
-            <input type="radio" name="my_tabs_1" role="tab" className="tab" aria-label="Notes" />
-            <div role="tabpanel" className="tab-content p-10">
-              <div className="prose max-w-[100ch]" dangerouslySetInnerHTML={{ __html: product.notes }}></div>
-            </div>
-            {/* Tab 4 */}
-            <input type="radio" name="my_tabs_1" role="tab" className="tab" aria-label="Instructions" />
-            <div role="tabpanel" className="tab-content p-10">
-              <div className="prose max-w-[100ch]" dangerouslySetInnerHTML={{ __html: product.instructions }}></div>
+              <div className="pl-3">
+                <FavIcon product={product} wishlist={wishlist} setWishlist={setWishlist} />
+              </div>
             </div>
           </div>
         </div>
