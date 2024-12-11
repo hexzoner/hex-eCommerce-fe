@@ -151,7 +151,7 @@ export const createProduct = async (product: ProductProps) => {
 };
 
 export const updateProduct = async (product: ProductProps) => {
-  console.log(getBodyAPI(product));
+  // console.log(getBodyAPI(product));
   // console.log(product.id);
 
   const response = await axios
@@ -164,7 +164,7 @@ export const updateProduct = async (product: ProductProps) => {
     })
     .catch((err) => {
       toast.error(err.response.data.message);
-      console.log(err.response.data.message);
+      console.log(err);
     });
   return response;
 };
