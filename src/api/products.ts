@@ -102,6 +102,7 @@ interface ProductProps {
   new: boolean;
   bestSeller: boolean;
   patterns?: iPattern[];
+  producerQuote: string;
 }
 
 function getBodyAPI(product: ProductProps) {
@@ -129,6 +130,7 @@ function getBodyAPI(product: ProductProps) {
     new: product.new,
     bestSeller: product.bestSeller,
     patterns: product.patterns,
+    producerQuote: product.producerQuote,
   };
 }
 
@@ -149,7 +151,7 @@ export const createProduct = async (product: ProductProps) => {
 };
 
 export const updateProduct = async (product: ProductProps) => {
-  // console.log(getBodyAPI(product));
+  console.log(getBodyAPI(product));
   // console.log(product.id);
 
   const response = await axios

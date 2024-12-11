@@ -116,6 +116,7 @@ export function CreateProductModal({
     material: number | string;
     new: boolean;
     bestSeller: boolean;
+    producerQuote: string;
   }>();
 
   // const imageInput = watch("image");
@@ -123,6 +124,7 @@ export function CreateProductModal({
     // console.log(product);
     reset({
       name: product.name,
+      producerQuote: product.producerQuote,
       description: product.description,
       price: product.isEdit ? product.price : "",
       category: product.isEdit ? product.category.id : "",
@@ -194,6 +196,7 @@ export function CreateProductModal({
 
   async function onSubmit(data: {
     name: string;
+    producerQuote: string;
     description: string;
     price: string | number;
     category: number | string;
@@ -249,6 +252,7 @@ export function CreateProductModal({
       materialId: material,
       new: data.new,
       bestSeller: data.bestSeller,
+      producerQuote: data.producerQuote,
     };
 
     if (!product.isEdit) {
@@ -659,6 +663,20 @@ export function CreateProductModal({
                           </select>
                           {errors.defaultSize && (
                             <p className="text-error text-xs text-left right-8 font-semibold">{errors.defaultSize.message?.toString()}</p>
+                          )}
+                        </div>
+
+                        <div>
+                          <textarea
+                            className={inputStyle + " h-24"}
+                            placeholder="Enter a producer quote"
+                            autoComplete="off"
+                            {...register("producerQuote", {
+                              // required: "Name is required",
+                            })}
+                          />
+                          {errors.producerQuote && (
+                            <p className="font-semibold text-error text-xs text-left ">{errors.producerQuote.message?.toString()}</p>
                           )}
                         </div>
                       </div>

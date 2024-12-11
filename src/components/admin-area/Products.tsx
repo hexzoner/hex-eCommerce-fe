@@ -63,6 +63,7 @@ export interface Product {
   bestSeller: boolean;
   patterns: iPattern[];
   stripeProductId: string;
+  producerQuote: string;
 }
 
 export default function Products() {
@@ -121,6 +122,7 @@ export default function Products() {
     bestSeller: false,
     patterns: [],
     stripeProductId: "",
+    producerQuote: "",
   };
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);

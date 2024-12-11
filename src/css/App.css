@@ -67,3 +67,7 @@
 .swiper-slide {
   overflow: hidden;
 }
+
+.tab {
+  white-space: nowrap;
+}

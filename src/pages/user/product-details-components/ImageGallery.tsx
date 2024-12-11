@@ -105,17 +105,17 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({ images }) => {
           <Swiper
             onSwiper={(swiper) => setThumbsSwiper(swiper)}
             spaceBetween={0}
-            slidesPerView={4}
+            slidesPerView={3}
             // freeMode={true}
             watchSlidesProgress={true}
-            slidesPerGroup={4}
+            slidesPerGroup={3}
             style={style}
-            navigation={images.length > 4}
+            navigation={images.length > 3}
             modules={[Thumbs, Navigation, Pagination]}
             className="thumbs-carousel max-w-[40rem] relative">
             {images.map((src, index) => (
               <SwiperSlide key={index}>
-                <img src={src} alt={`Thumbnail ${index + 1}`} className=" border border-gray-300 w-24 h-20 object-cover cursor-pointer m-auto" />
+                <img src={src} alt={`Thumbnail ${index + 1}`} className=" border border-gray-300 w-36 h-36 object-cover cursor-pointer m-auto" />
               </SwiperSlide>
             ))}
             {/* <NavButtons /> */}

@@ -15,10 +15,11 @@ export function calculatePriceRange(_product: Product) {
 
   // console.log(_product);
   const sizesInSquareMeters = _product.sizes.map((size) => {
-    const heightWidth = size.name.split("x");
-    const squareMeters = parseInt(heightWidth[0]) * parseInt(heightWidth[1]);
-    return squareMeters;
+    // const heightWidth = size.name.split("x");
+    // const squareMeters = parseInt(heightWidth[0]) * parseInt(heightWidth[1]);
+    return size.squareMeters;
   });
+
   minPrice = Math.min(...sizesInSquareMeters) * _product.price;
   maxPrice = Math.max(...sizesInSquareMeters) * _product.price;
 
