@@ -2,8 +2,9 @@ import { useParams } from "react-router-dom";
 import { getProductById } from "../api/products";
 import { useState, useEffect } from "react";
 import LoadingSpinner from "./LoadingSpinner";
+import { LoadingSpinnerSmall } from "./admin-area/admin-components";
 import { FavIcon } from "../pages/user/ProductBrowser";
-import { useShop } from "../context";
+import { useShop, useAuth } from "../context";
 import { getReviews } from "../api/reviews";
 import Pagination from "./Pagination";
 import { useNavigate } from "react-router-dom";
@@ -21,11 +22,13 @@ import ImageGallery from "../pages/user/product-details-components/ImageGallery"
 import { getProductMainImageUrl } from "../utils/miscUtils";
 
 export default function ProductDetails() {
+  const { wishlist, setWishlist, addToCart, cartLoading } = useShop();
+  const { authLoading } = useAuth();
   const { id } = useParams<{ id: string }>();
+
   const [product, setProduct] = useState<any>({});
   const [loading, setLoading] = useState(true);
   const [loadingReviews, setLoadingReviews] = useState(true);
-  const { wishlist, setWishlist, addToCart, cartLoading } = useShop();
   const [selectedSize, setSelectedSize] = useState<any>({});
   const [selectedColor, setSelectedColor] = useState<any>({});
   const [productReviews, setProductReviews] = useState<any>([]);
@@ -38,7 +41,6 @@ export default function ProductDetails() {
   const [averateRating, setAverageRating] = useState(0);
   const [responseStatus, setResponseStatus] = useState(200);
   const [rugsByProducer, setRugsByProducer] = useState<any>([]);
-
   const navigate = useNavigate();
 
   function setReviewsData(res: any) {
@@ -50,6 +52,7 @@ export default function ProductDetails() {
   }
 
   useEffect(() => {
+    if (authLoading) return;
     setSort("desc");
     getProductById(Number(id))
       .then((res) => {
@@ -80,9 +83,10 @@ export default function ProductDetails() {
       .finally(() => {
         setLoading(false);
       });
-  }, [id]);
+  }, [id, authLoading]);
 
   useEffect(() => {
+    if (authLoading) return;
     setLoadingReviews(true);
     // console.log("Fetching reviews");
     getReviews({
@@ -102,7 +106,7 @@ export default function ProductDetails() {
       .finally(() => {
         setLoadingReviews(false);
       });
-  }, [page, perPage, sort, id]);
+  }, [page, perPage, sort, id, authLoading]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -112,15 +116,15 @@ export default function ProductDetails() {
     addToCart(product, 1, selectedSize.id, selectedColor.id);
   }
 
-  if (loading || loadingReviews) return <LoadingSpinner />;
+  if (loading || loadingReviews || authLoading) return <LoadingSpinner />;
   if (responseStatus == 404) return <div className="min-h-screen text-3xl flex flex-col items-center justify-center">Product not found</div>;
 
   function calcPrice() {
-    if (!selectedSize.name) return "N/A";
-    const heightWidth = selectedSize.name.split("x");
-    if (heightWidth.length == 2) return (product.price * (parseInt(heightWidth[0]) * parseInt(heightWidth[1]))).toFixed(2);
-    else return product.price;
+    if (!selectedSize || !selectedSize.squareMeters) return "N/A";
+    return (product.price * selectedSize.squareMeters).toFixed(2);
   }
+
+  // console.log(productReviews);
 
   return (
     <div className="">
@@ -141,8 +145,8 @@ export default function ProductDetails() {
       </div>
       <div className="flex flex-col min-h-screen mt-8 text-left">
         {/* Product Image, Name, Price, Category, Size, Color, Add to Cart Button */}
-        <div className="flex-col lg:flex-row flex gap-0 items-start max-w-[85rem] m-auto h-full">
-          <div className="w-full lg:w-1/2  lg:px-0  flex-1 self-stretch relative">
+        <div className="flex-col lg:flex-row flex gap-8 items-start max-w-[85rem] m-auto h-full">
+          <div className="w-full lg:w-1/2  lg:px-0  flex-1  relative">
             <div className="max-w-80 m-auto md:max-w-xl lg:max-w-full">
               <ImageGallery
                 images={selectedColor.images ? selectedColor.images.map((image: any) => image.imageURL) : [getProductMainImageUrl(product)]}
@@ -150,111 +154,162 @@ export default function ProductDetails() {
               <NewBestSellerBadge isNew={product.new} isBestSeller={product.bestSeller} />
             </div>
 
-            {/* Featured Reviews */}
-            {featuredReviews.length > 0 && (
-              <section className="max-w-xs md:max-w-[70rem] m-auto ">
-                <p className="font-semibold text-xl pt-6">Featured Reviews</p>
-                <FeaturedReviewsCarousel reviews={featuredReviews} />
-              </section>
+            {product.producerQuote.length > 0 && (
+              <div className="bg-[#ebf2f8] pl-[31px] pt-[24px] pr-[75px] pb-[46px] mt-[24px]">
+                <p>{product.producerQuote}</p>
+                <p className="text-sm italic mt-1">
+                  -{product.producer.name}, creator of {product.name}
+                </p>
+              </div>
             )}
+
+            {/* Description, Details, Notes, Instructions Tabs */}
+            <div className="w-full max-w-[85rem] m-auto border-[1.5px] border-black border-opacity-15 mt-12">
+              <div role="tablist" className="tabs tabs-bordered pt-6 px-8 bg-white pb-12">
+                {/* Tab 1 */}
+                <input type="radio" name="my_tabs_1" role="tab" className="tab text-lg" aria-label="Description" defaultChecked />
+                <div role="tabpanel" className="tab-content mt-6">
+                  <div className="prose max-w-[100ch]" dangerouslySetInnerHTML={{ __html: product.description }}></div>
+                </div>
+                {/* Tab 2 */}
+                {featuredReviews.length > 0 && (
+                  <>
+                    <input type="radio" name="my_tabs_1" role="tab" className="tab text-lg" aria-label="Top Reviews" />
+                    <div role="tabpanel" className="tab-content w-full mt-6">
+                      {/* Featured Reviews */}
+                      {featuredReviews.length > 0 && (
+                        <section className="max-w-xs md:max-w-[70rem] m-auto ">
+                          <p className="font-semibold text-xl pt-6 ">Top Reviews</p>
+                          <FeaturedReviewsCarousel reviews={featuredReviews} />
+                        </section>
+                      )}
+                    </div>
+                  </>
+                )}
+                {/* Tab 3 */}
+
+                <input type="radio" name="my_tabs_1" role="tab" className="tab text-lg" aria-label="Details" />
+
+                <div role="tabpanel" className="tab-content w-full mt-6">
+                  <div className="prose max-w-[100ch]" dangerouslySetInnerHTML={{ __html: product.details }}></div>
+                </div>
+                {/* Tab 4 */}
+                <input type="radio" name="my_tabs_1" role="tab" className="tab text-lg" aria-label="Notes" />
+                <div role="tabpanel" className="tab-content mt-6">
+                  <div className="prose max-w-[100ch]" dangerouslySetInnerHTML={{ __html: product.notes }}></div>
+                </div>
+                {/* Tab 5 */}
+                <input type="radio" name="my_tabs_1" role="tab" className="tab text-lg" aria-label="Instructions" />
+                <div role="tabpanel" className="tab-content mt-6">
+                  <div className="prose max-w-[100ch]" dangerouslySetInnerHTML={{ __html: product.instructions }}></div>
+                </div>
+              </div>
+            </div>
           </div>
 
-          <div className="flex flex-col  self-stretch justify-around w-full bg-[#eff2f6] pt-4 lg:w-[40%] mx-auto mt-6 lg:mt-0 px-5 lg:px-8  gap-6 pb-6 ">
-            <div className="flex justify-between items-center w-full">
-              <p className="text-3xl font-semibold">{product.name}</p>
-              <FavIcon product={product} wishlist={wishlist} setWishlist={setWishlist} />
-            </div>
-            <p className="text-xl">€{calcPrice()}</p>
-            <div className="flex gap-4 italic">
+          <div className="flex flex-col sticky top-0 justify-around w-full bg-[#ebf2f8] py-12 lg:w-1/2 mx-auto mt-6 lg:mt-0 px-5  lg:px-10  gap-4 ">
+            <div>
+              <p className="text-3xl font-bold">{product.name}</p>
               <p>{product.category.name}</p>
             </div>
-            {/* Features section */}
+            <div className="mt-3 flex justify-start items-center gap-2">
+              <Ratings rating={averateRating} size={size.small} />
+              <p className="text-sm">({totalReviews} Reviews)</p>
+            </div>
+
+            <p className="text-3xl font-bold mt-3">€{calcPrice()}</p>
+            {/* <div className="flex gap-4"></div> */}
+            {/* Shipping features */}
             <div className="flex gap-4 flex-wrap ">
+              {/* {product.features &&
+                product.features.map((feature: any) => {
+                  return (
+                    <div key={feature.id} className="flex gap-1 h-5 items-center  py-4">
+                      <img className="h-5 w-5" src={feature.image} alt={feature.name} />
+                      <p className="text-sm">{feature.name}</p>
+                    </div>
+                  );
+                })} */}
+            </div>
+
+            {/* Features section */}
+            <div className="flex gap-4 flex-wrap border-t-[1.5px] border-solid border-black border-opacity-20 pt-4">
               {product.features &&
                 product.features.map((feature: any) => {
                   return (
-                    <div key={feature.id} className="flex gap-1 h-6 items-center  py-4">
-                      <img className="h-6 w-6" src={feature.image} alt={feature.name} />
+                    <div key={feature.id} className="flex gap-1 h-5 items-center  py-4">
+                      <img className="h-5 w-5" src={feature.image} alt={feature.name} />
                       <p className="text-sm">{feature.name}</p>
                     </div>
                   );
                 })}
             </div>
-            <div className="font-semibold text-lg">
-              <span>Size:</span> <span className="ml-1 ">{selectedSize.name}</span>
+
+            <div>
+              {product.patterns.length > 1 && <p className="font-normal text-base mb-2">Color: {selectedColor.name}</p>}
+              {product.patterns?.length > 1 && (
+                <div className="flex flex-wrap gap-6 items-center ">
+                  {/* flex-row-reverse mr-auto */}
+                  {product.patterns.map((pattern: any) => (
+                    <ProductColor color={pattern} setSelectedColor={setSelectedColor} selectedColor={selectedColor} key={pattern.id} />
+                  ))}
+                </div>
+              )}
             </div>
-            <div className="flex flex-wrap gap-3 items-center">
-              {product.sizes.map((size: any) => (
-                <ProductSize size={size} setSelectedSize={setSelectedSize} selectedSize={selectedSize} key={size.id} />
-              ))}
-            </div>
-            {product.patterns.length > 1 && <p className="font-semibold text-lg">Color: {selectedColor.name}</p>}
-            {product.patterns?.length > 1 && (
-              <div className="flex flex-wrap gap-6 items-center ">
-                {/* flex-row-reverse mr-auto */}
-                {product.patterns.map((pattern: any) => (
-                  <ProductColor color={pattern} setSelectedColor={setSelectedColor} selectedColor={selectedColor} key={pattern.id} />
+
+            <div>
+              <div className="font-normal text-base mb-2">
+                <span>Size:</span> <span className="ml-1 ">{selectedSize.name}</span>
+              </div>
+              <div className="flex flex-wrap gap-3 items-center">
+                {product.sizes.map((size: any) => (
+                  <ProductSize size={size} setSelectedSize={setSelectedSize} selectedSize={selectedSize} key={size.id} />
                 ))}
               </div>
-            )}
-            <button
-              onClick={handleAddToCart}
-              className={`btn btn-primary w-full rounded-none mt-2 ${cartLoading ? "btn-disabled" : ""}`}
-              // disabled={cartLoading}
-            >
-              {cartLoading ? "ADDING TO CART..." : "ADD TO CART"}
-            </button>
-          </div>
-        </div>
+            </div>
 
-        {/* Description, Details, Notes, Instructions Tabs */}
-        <div className="w-full max-w-[85rem] m-auto border-b-2 border-black border-opacity-25 pb-12 mt-12">
-          <div role="tablist" className="tabs tabs-bordered ">
-            {/* Tab 1 */}
-            <input type="radio" name="my_tabs_1" role="tab" className="tab" aria-label="Description" defaultChecked />
-            <div role="tabpanel" className="tab-content p-10">
-              <div className="prose max-w-[100ch]" dangerouslySetInnerHTML={{ __html: product.description }}></div>
-            </div>
-            {/* Tab 2 */}
-            <input type="radio" name="my_tabs_1" role="tab" className="tab" aria-label="Details" />
-            <div role="tabpanel" className="tab-content p-10 w-full ">
-              <div className="prose max-w-[100ch]" dangerouslySetInnerHTML={{ __html: product.details }}></div>
-            </div>
-            {/* Tab 3 */}
-            <input type="radio" name="my_tabs_1" role="tab" className="tab" aria-label="Notes" />
-            <div role="tabpanel" className="tab-content p-10">
-              <div className="prose max-w-[100ch]" dangerouslySetInnerHTML={{ __html: product.notes }}></div>
-            </div>
-            {/* Tab 4 */}
-            <input type="radio" name="my_tabs_1" role="tab" className="tab" aria-label="Instructions" />
-            <div role="tabpanel" className="tab-content p-10">
-              <div className="prose max-w-[100ch]" dangerouslySetInnerHTML={{ __html: product.instructions }}></div>
+            <div className="flex justify-between mt-2 gap-2 items-center">
+              <button
+                onClick={handleAddToCart}
+                className={`btn btn-neutral rounded-none w-[45%] ${cartLoading ? "btn-disabled" : ""}`}
+                // disabled={cartLoading}
+              >
+                {cartLoading ? <LoadingSpinnerSmall /> : "Add to Cart"}
+              </button>
+              <button
+                // onClick={handleAddToCart}
+                className={`btn btn-neutral btn-outline rounded-none w-[45%] ${cartLoading ? "btn-disabled" : ""}`}
+                // disabled={cartLoading}
+              >
+                {cartLoading ? <LoadingSpinnerSmall /> : "Order a Sample"}
+              </button>
+              <div className="pl-3">
+                <FavIcon product={product} wishlist={wishlist} setWishlist={setWishlist} />
+              </div>
             </div>
           </div>
         </div>
 
         {/* Meet the producer section */}
-        <section className="max-w-[70rem] m-auto pb-16 mt-16">
-          <div className="flex flex-wrap md:flex-nowrap gap-8">
-            <div className="w-full md:w-2/3 flex flex-col gap-8">
-              <p className="font-semibold text-4xl">Meet {product.producer.name}</p>
+        <section className="max-w-[85rem] m-auto pb-16 mt-16">
+          <p className="font-semibold text-4xl mb-6">Those who make the magic </p>
+          <div className="flex flex-wrap md:flex-nowrap gap-12">
+            <div className="w-full md:w-1/3 flex flex-col gap-4">
+              <img className="w-full rounded-none object-cover max-h-80 " src={product.producer.image} alt="producer image" />
+              <p className="font-semibold text-2xl">Meet {product.producer.name}</p>
               <p>{product.producer.description}</p>
-              <p className="font-semibold text-xl mt-16">More rugs from this producer</p>
+            </div>
+            <div className="md:w-2/3 ">
+              <p className="font-semibold text-2xl mt-20 pl-9">More rugs from {product.producer.name}</p>
               <div className="m-auto w-80 md:w-full">
                 <RugsByProducer products={rugsByProducer} />
               </div>
             </div>
-            <img className="w-full md:w-1/3 rounded-xl object-cover max-h-80 " src={product.producer.image} alt="producer image" />
           </div>
         </section>
 
         {/* Customer Reviews */}
         <section className="bg-[#fcfaf5] w-full text-center px-4">
-          <div className="max-w-[40rem] m-auto py-20 border-b-[2.5px] border-black border-opacity-15 mb-4">
-            <p className="font-semibold text-2xl">Customer Reviews</p>
-            <p className="">{totalReviews} Reviews</p>
-            <Ratings rating={averateRating} size={size.large} />
-          </div>
           <div className="text-left flex flex-col gap-0 max-w-[40rem] m-auto ">
             {productReviews.map((review: any) => (
               <ReviewCard key={review.id} review={review} />
@@ -292,7 +347,7 @@ function ProductSize({ size, setSelectedSize, selectedSize }: { size: any; setSe
         setSelectedSize(size);
       }}
       key={size.id}
-      className={`btn btn-sm py-0 px-5 ${selectedSize.id == size.id ? "btn-primary" : "btn-outline"}`}>
+      className={`btn btn-sm py-0 px-5 rounded-none ${selectedSize.id == size.id ? "btn-neutral" : "btn-outline"}`}>
       {size.name}
     </button>
   );
@@ -300,16 +355,26 @@ function ProductSize({ size, setSelectedSize, selectedSize }: { size: any; setSe
 
 function ProductColor({ color, setSelectedColor, selectedColor }: { color: any; setSelectedColor: any; selectedColor: any }) {
   return (
-    <div className="flex flex-col items-center justify-center gap-2">
-      <img className="h-16 w-16 rounded-full object-cover p-0" src={color.icon} alt="" />
-      <button
+    <div className={`flex flex-col items-center justify-center gap-2`}>
+      <img
+        onClick={() => {
+          setSelectedColor(color);
+        }}
+        key={color.id}
+        className={`h-10 w-10 cursor-pointer rounded-full object-cover p-1 border-[1.5px] border-solid border-black ${
+          selectedColor.id == color.id ? "border-opacity-100" : "border-opacity-10"
+        }`}
+        src={color.icon}
+        alt=""
+      />
+      {/* <button
         onClick={() => {
           setSelectedColor(color);
         }}
         key={color.id}
         className={`btn btn-xs py-0 px-5 ${selectedColor.id == color.id ? "btn-primary" : "btn-outline"}`}>
         {color.name}
-      </button>
+      </button> */}
     </div>
   );
 }
@@ -324,7 +389,7 @@ enum size {
 function Ratings({ rating, size }: { rating: number; size: size }) {
   return (
     <div className={"rating rating-half " + size}>
-      <input checked={true} title="rating" type="radio" name="rating-10" className="rating-hidden pointer-events-none" readOnly />
+      {/* <input checked={true} title="rating" type="radio" name="rating-10" className="rating-hidden pointer-events-none" readOnly /> */}
       <input
         checked={false}
         title="rating"

@@ -6,6 +6,7 @@ export default {
         sofia: ["Sofia Pro", "sans-serif"],
         raleway: ["Raleway", "sans-serif"],
         montserrat: ["Montserrat", "sans-serif"],
+        nunito: ["Nunito Sans", "sans-serif"],
       },
     },
   },

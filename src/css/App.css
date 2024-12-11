@@ -3,13 +3,6 @@
   text-align: center;
 }
 
-@font-face {
-  font-family: "Sofia Pro";
-  src: url("/assets/sofia-pro-font/Sofia Pro Regular Az.otf") format("opentype");
-  font-weight: normal;
-  font-style: normal;
-}
-
 .text-outline-sm {
   text-shadow: -0.5px -0.5px 0 #fff, 0.5px -0.5px 0 #fff, -0.5px 0.5px 0 #fff, 0.5px 0.5px 0 #fff;
 }
@@ -73,4 +66,8 @@
 
 .swiper-slide {
   overflow: hidden;
+}
+
+.tab {
+  white-space: nowrap;
 }

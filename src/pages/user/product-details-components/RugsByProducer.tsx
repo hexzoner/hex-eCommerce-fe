@@ -8,6 +8,7 @@ import Slider from "react-slick";
 import { useNavigate } from "react-router-dom";
 import { NextArrow, PrevArrow } from "../home-components/LatestArrivalsCarousel";
 import { getProductMainImageUrl } from "../../../utils/miscUtils";
+import { calculatePriceRange } from "../../../utils/miscUtils";
 
 function RugsByProducer({ products }: { products: Product[] }) {
   // if (products.length == 0) return <></>;
@@ -50,12 +51,12 @@ function RugsByProducer({ products }: { products: Product[] }) {
 
   const navigate = useNavigate();
   return (
-    <div className={`slider-container ${settings.slidesToShow > 1 ? "max-w-[40rem]" : "max-w-[20rem]"} `}>
+    <div className={`slider-container ${settings.slidesToShow > 1 ? "max-w-full" : "max-w-[20rem]"} `}>
       {products.length > 0 && (
         <Slider {...settings}>
           {products.map((product, index) => (
             <div key={index} className="text-sm m-auto ">
-              <div className="flex flex-col justify-between px-6 py-8  ">
+              <div className="flex flex-col justify-between px-6 py-8 gap-4 items-start">
                 <img
                   onClick={() => {
                     navigate(`/product/${product.id}`);
@@ -67,8 +68,9 @@ function RugsByProducer({ products }: { products: Product[] }) {
                 />
                 <div>
                   {/* <Rating initialValue={Number(product.rating)} size={20} readonly={true} className="my-1" /> */}
-                  <p className="font-semibold text-center">{product.name}</p>
+                  <p className="font-bold text-center text-[20px]">{product.name}</p>
                 </div>
+                <p className="text-center text-[16px] font-normal">{calculatePriceRange(product)}</p>
 
                 {/* <p className="">{product.review}</p> */}
                 {/* <p className="font-semibold">{product.author}</p> */}

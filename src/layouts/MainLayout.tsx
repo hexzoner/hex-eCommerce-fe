@@ -6,7 +6,7 @@ import { ShopContextProvider } from "../context";
 const MainLayout = () => {
   return (
     <>
-      <div className="font-montserrat font-medium">
+      <div className="font-nunito font-medium bg-[#f5f6fa]">
         <AuthContextProvider>
           <ShopContextProvider>
             <Navbar />

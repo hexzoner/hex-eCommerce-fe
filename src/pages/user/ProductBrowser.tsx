@@ -253,7 +253,7 @@ export function FavIcon({ product, wishlist, setWishlist }: { product: Product; 
   return (
     <svg
       onClick={handleAddtoWishlist}
-      className="size-4 stroke-black hover:cursor-pointer hover:animate-pulse"
+      className="size-6  stroke-black hover:cursor-pointer hover:animate-pulse"
       width="22"
       height="19"
       viewBox="0 0 22 19"
