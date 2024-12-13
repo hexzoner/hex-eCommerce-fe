@@ -8,10 +8,6 @@ import { iPattern } from "../components/admin-area/modals/CreateProductModal";
 const API_URL = import.meta.env.VITE_API_URL;
 if (!API_URL) throw new Error("API URL is required, are you missing a .env file?");
 const baseURL = `${API_URL}/products`;
-const headers = {
-  "Content-Type": "application/json",
-  Authorization: `Bearer ${restoreToken()}`,
-};
 
 export const getProducts = async ({
   categories,
@@ -64,7 +60,10 @@ export const getProducts = async ({
   // console.log(url);
   const response = await axios
     .get(url, {
-      headers,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${restoreToken()}`,
+      },
     })
     .then((res) => {
       //   console.log(res.data);
@@ -137,7 +136,10 @@ function getBodyAPI(product: ProductProps) {
 export const createProduct = async (product: ProductProps) => {
   const response = await axios
     .post(`${baseURL}`, getBodyAPI(product), {
-      headers,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${restoreToken()}`,
+      },
     })
     .then((res) => {
       //   console.log(res.data);
@@ -156,7 +158,10 @@ export const updateProduct = async (product: ProductProps) => {
 
   const response = await axios
     .put(`${baseURL}/${product.id}`, getBodyAPI(product), {
-      headers,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${restoreToken()}`,
+      },
     })
     .then((res) => {
       //   console.log(res.data);
@@ -172,7 +177,10 @@ export const updateProduct = async (product: ProductProps) => {
 export const deleteProduct = async (id: number) => {
   const response = await axios
     .delete(`${baseURL}/${id}`, {
-      headers,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${restoreToken()}`,
+      },
     })
     .then((res) => {
       // console.log(res.data);
