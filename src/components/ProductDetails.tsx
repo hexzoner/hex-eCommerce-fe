@@ -179,11 +179,12 @@ export default function ProductDetails() {
                     <div role="tabpanel" className="tab-content w-full mt-6">
                       {/* Featured Reviews */}
                       {featuredReviews.length > 0 && (
-                        <section className="max-w-xs md:max-w-[70rem] m-auto ">
-                          <p className="font-semibold text-xl pt-6 ">Top Reviews</p>
+                        <section className="max-w-xs md:max-w-[30rem] m-auto ">
+                          {/* <p className="font-semibold text-xl pt-6 ">Top Reviews</p> */}
                           <FeaturedReviewsCarousel reviews={featuredReviews} />
                         </section>
                       )}
+                      <p className="underline text-center cursor-pointer text-sm">See All Reviews</p>
                     </div>
                   </>
                 )}
@@ -215,7 +216,7 @@ export default function ProductDetails() {
             </div>
             <div className="mt-3 flex justify-start items-center gap-2">
               <Ratings rating={averateRating} size={size.small} />
-              <p className="text-sm">({totalReviews} Reviews)</p>
+              <p className="text-sm underline cursor-pointer">({totalReviews} Reviews)</p>
             </div>
 
             <p className="text-3xl font-bold mt-3 text-black">€{calcPrice()}</p>

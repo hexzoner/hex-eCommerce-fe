@@ -70,7 +70,16 @@ export default function FeaturedReviewsCarousel({ reviews }: { reviews: Review[]
                 </div>
 
                 <p className="text-justify">{review.review}</p>
-                <p className="font-semibold text-left">{review.author}</p>
+                <div>
+                  <p className="font-semibold text-left">{review.author}</p>
+                  <p className="text-xs mt-1">
+                    {new Intl.DateTimeFormat("en-US", {
+                      month: "long",
+                      day: "numeric",
+                      year: "numeric",
+                    }).format(new Date(review.createdAt))}
+                  </p>
+                </div>
               </div>
             </div>
           ))}
