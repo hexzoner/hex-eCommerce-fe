@@ -20,6 +20,7 @@ import { Review } from "../pages/admin/Reviews";
 // import { getProductMainImageUrl } from "../utils/miscUtils";
 import ImageGallery from "../pages/user/product-details-components/ImageGallery";
 import { getProductMainImageUrl } from "../utils/miscUtils";
+import ProductFAQ from "../pages/user/product-details-components/ProductFAQ";
 
 export default function ProductDetails() {
   const { wishlist, setWishlist, addToCart, cartLoading } = useShop();
@@ -128,7 +129,7 @@ export default function ProductDetails() {
 
   return (
     <div className="">
-      <div className="breadcrumbs text-sm text-blue-600  text-left max-w-[85rem] m-auto mt-6">
+      <div className="breadcrumbs text-sm text-blue-600  text-left max-w-[75rem] m-auto mt-6">
         <ul>
           <li>
             <a onClick={() => navigate("/")}>Home</a>
@@ -145,7 +146,7 @@ export default function ProductDetails() {
       </div>
       <div className="flex flex-col min-h-screen mt-8 text-left">
         {/* Product Image, Name, Price, Category, Size, Color, Add to Cart Button */}
-        <div className="flex-col lg:flex-row flex gap-8 items-start max-w-[85rem] m-auto h-full">
+        <div className="flex-col lg:flex-row flex gap-8 items-start max-w-[75rem] m-auto h-full">
           <div className="w-full lg:w-1/2  lg:px-0  flex-1  relative">
             <div className="max-w-80 m-auto md:max-w-xl lg:max-w-full">
               <ImageGallery
@@ -154,7 +155,7 @@ export default function ProductDetails() {
               <NewBestSellerBadge isNew={product.new} isBestSeller={product.bestSeller} />
             </div>
 
-            {product.producerQuote.length > 0 && (
+            {product.producerQuote && product.producerQuote.length > 0 && (
               <div className="bg-[#ebf2f8] pl-[31px] pt-[24px] pr-[75px] pb-[46px] mt-[24px]">
                 <p>{product.producerQuote}</p>
                 <p className="text-sm italic mt-1">
@@ -164,7 +165,7 @@ export default function ProductDetails() {
             )}
 
             {/* Description, Details, Notes, Instructions Tabs */}
-            <div className="w-full max-w-[85rem] m-auto border-[1.5px] border-black border-opacity-15 mt-12">
+            <div className="w-full max-w-[75rem] m-auto border-[1.5px] border-black border-opacity-15 mt-12">
               <div role="tablist" className="tabs tabs-bordered pt-6 px-8 bg-white pb-12">
                 {/* Tab 1 */}
                 <input type="radio" name="my_tabs_1" role="tab" className="tab text-lg" aria-label="Description" defaultChecked />
@@ -210,7 +211,7 @@ export default function ProductDetails() {
           <div className="flex flex-col sticky top-0 justify-around w-full bg-[#ebf2f8] py-12 lg:w-1/2 mx-auto mt-6 lg:mt-0 px-5  lg:px-10  gap-4 ">
             <div>
               <p className="text-3xl font-bold">{product.name}</p>
-              <p>{product.category.name}</p>
+              <p>{product.category ? product.category.name : "N/A"}</p>
             </div>
             <div className="mt-3 flex justify-start items-center gap-2">
               <Ratings rating={averateRating} size={size.small} />
@@ -246,7 +247,7 @@ export default function ProductDetails() {
             </div>
 
             <div>
-              {product.patterns.length > 1 && <p className="font-normal text-base mb-2">Color: {selectedColor.name}</p>}
+              {product.patterns?.length > 1 && <p className="font-normal text-base mb-2">Color: {selectedColor.name}</p>}
               {product.patterns?.length > 1 && (
                 <div className="flex flex-wrap gap-6 items-center ">
                   {/* flex-row-reverse mr-auto */}
@@ -262,7 +263,7 @@ export default function ProductDetails() {
                 <span>Size:</span> <span className="ml-1 ">{selectedSize.name}</span>
               </div>
               <div className="flex flex-wrap gap-3 items-center">
-                {product.sizes.map((size: any) => (
+                {product.sizes?.map((size: any) => (
                   <ProductSize size={size} setSelectedSize={setSelectedSize} selectedSize={selectedSize} key={size.id} />
                 ))}
               </div>
@@ -290,17 +291,19 @@ export default function ProductDetails() {
           </div>
         </div>
 
+        <ProductFAQ />
+
         {/* Meet the producer section */}
-        <section className="max-w-[85rem] m-auto pb-16 mt-16">
+        <section className="max-w-[75rem] m-auto pb-16 mt-16">
           <p className="font-semibold text-4xl mb-6">Those who make the magic </p>
           <div className="flex flex-wrap md:flex-nowrap gap-12">
             <div className="w-full md:w-1/3 flex flex-col gap-4">
-              <img className="w-full rounded-none object-cover max-h-80 " src={product.producer.image} alt="producer image" />
-              <p className="font-semibold text-2xl">Meet {product.producer.name}</p>
-              <p>{product.producer.description}</p>
+              <img className="w-full rounded-none object-cover max-h-80 " src={product.producer?.image} alt="producer image" />
+              <p className="font-semibold text-2xl">Meet {product.producer?.name}</p>
+              <p>{product.producer?.description}</p>
             </div>
             <div className="md:w-2/3 ">
-              <p className="font-semibold text-2xl mt-20 pl-9">More rugs from {product.producer.name}</p>
+              <p className="font-semibold text-2xl mt-20 pl-9">More rugs from {product.producer?.name}</p>
               <div className="m-auto w-80 md:w-full">
                 <RugsByProducer products={rugsByProducer} />
               </div>
