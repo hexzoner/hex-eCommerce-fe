@@ -210,7 +210,7 @@ export default function ProductDetails() {
 
           <div className="flex flex-col sticky top-0 justify-around w-full bg-[#ebf2f8] py-12 lg:w-1/2 mx-auto mt-6 lg:mt-0 px-5  lg:px-10  gap-4 ">
             <div>
-              <p className="text-3xl font-bold">{product.name}</p>
+              <p className="text-3xl font-bold text-black">{product.name}</p>
               <p>{product.category ? product.category.name : "N/A"}</p>
             </div>
             <div className="mt-3 flex justify-start items-center gap-2">
@@ -218,7 +218,7 @@ export default function ProductDetails() {
               <p className="text-sm">({totalReviews} Reviews)</p>
             </div>
 
-            <p className="text-3xl font-bold mt-3">€{calcPrice()}</p>
+            <p className="text-3xl font-bold mt-3 text-black">€{calcPrice()}</p>
             {/* <div className="flex gap-4"></div> */}
             {/* Shipping features */}
             <div className="flex gap-4 flex-wrap ">
@@ -247,7 +247,7 @@ export default function ProductDetails() {
             </div>
 
             <div>
-              {product.patterns?.length > 1 && <p className="font-normal text-base mb-2">Color: {selectedColor.name}</p>}
+              {product.patterns?.length > 1 && <p className="font-medium text-base mb-2 text-black">Color: {selectedColor.name}</p>}
               {product.patterns?.length > 1 && (
                 <div className="flex flex-wrap gap-6 items-center ">
                   {/* flex-row-reverse mr-auto */}
@@ -259,7 +259,7 @@ export default function ProductDetails() {
             </div>
 
             <div>
-              <div className="font-normal text-base mb-2">
+              <div className="font-medium text-base mb-2 text-black">
                 <span>Size:</span> <span className="ml-1 ">{selectedSize.name}</span>
               </div>
               <div className="flex flex-wrap gap-3 items-center">

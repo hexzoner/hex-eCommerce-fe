@@ -15,7 +15,7 @@ export default function ProductFAQ() {
         <div role="tabpanel" className="tab-content pt-6 text-base w-full">
           <div className="flex gap-10 ">
             <div className="w-1/2 flex flex-col justify-between gap-2">
-              <img src={HowThisWorks} alt="How it works" />
+              <img src={HowThisWorks} alt="How it works" className="mb-2" />
               <p className={header2}>Perfect samples, perfect choices! Try our rugs sample service</p>
               <p>
                 Explore your favorites at home, stress-free – that’s our promise. Along with free expert advice, you can order a sample of any product
