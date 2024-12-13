@@ -19,3 +19,11 @@ export function formatDateShort(dateString: string) {
   // Format the date to DD/MM/YYYY
   return `${day}.${month}.${year}`;
 }
+
+export function formatDateShortWithMonthName(dateString: string) {
+  return new Intl.DateTimeFormat("en-US", {
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  }).format(new Date(dateString));
+}

@@ -7,6 +7,7 @@ import { Rating } from "react-simple-star-rating";
 import Slider from "react-slick";
 // import { useNavigate } from "react-router-dom";
 import { NextArrow, PrevArrow } from "../home-components/LatestArrivalsCarousel";
+import { formatDateShortWithMonthName } from "../../../utils/dateUtils";
 
 export default function FeaturedReviewsCarousel({ reviews }: { reviews: Review[] }) {
   // if (products.length == 0) return <></>;
@@ -72,13 +73,7 @@ export default function FeaturedReviewsCarousel({ reviews }: { reviews: Review[]
                 <p className="text-justify">{review.review}</p>
                 <div>
                   <p className="font-semibold text-left">{review.author}</p>
-                  <p className="text-xs mt-1">
-                    {new Intl.DateTimeFormat("en-US", {
-                      month: "long",
-                      day: "numeric",
-                      year: "numeric",
-                    }).format(new Date(review.createdAt))}
-                  </p>
+                  <p className="text-xs mt-1">{formatDateShortWithMonthName(review.createdAt)}</p>
                 </div>
               </div>
             </div>
