@@ -10,6 +10,10 @@ import LoadingSpinner from "./LoadingSpinner";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useShop } from "../context";
+import rounded_1 from "../assets/rounded-1.png";
+import rounded_2 from "../assets/rounded-2.png";
+import rounded_3 from "../assets/rounded-3.png";
+import rounded_4 from "../assets/rounded-4.png";
 
 export const homeMainBG = "bg-[#eff2f6]";
 export default function Home() {
@@ -19,8 +23,8 @@ export default function Home() {
   const { rooms, setFilter } = useShop();
 
   const tipsSubHeader = "text-lg font-bold";
-  const tipsText = "text-lg font-medium";
-  const numberMarkup = "text-xl bg-[#CECECE] rounded-full py-4";
+  const tipsText = "text-lg font-medium text-left w-full";
+  // const numberMarkup = "text-xl bg-[#CECECE] rounded-full py-4";
   const neutralButtonClass = "btn btn-lg btn-neutral rounded-none max-w-sm m-auto mt-12";
   const headerMarkup = "font-semibold text-4xl";
   const outlineButtonClass = "btn btn-outline rounded-none w-fit btn-lg";
@@ -142,29 +146,29 @@ export default function Home() {
           </div>
           <div className="w-full md:w-1/2 flex flex-col justify-between h-full min-h-[572px] py-16">
             <div className="flex items-center justify-between gap-2">
-              <p className={numberMarkup + "  px-[26px]"}>1</p>
-              <div>
+              <img className="w-[60px] h-[60px]" src={rounded_1} alt="1" />
+              <div className="w-full">
                 <p className={tipsSubHeader}>Explore Our Products</p>
                 <p className={tipsText}>Browse through our wide range of products and choose your favorites.</p>
               </div>
             </div>
             <div className="flex items-center justify-between gap-2">
-              <p className={numberMarkup + "  px-[24px]"}>2</p>
-              <div>
+              <img className="w-[60px] h-[60px]" src={rounded_2} alt="2" />
+              <div className="w-full">
                 <p className={tipsSubHeader}>Order Your Samples</p>
                 <p className={tipsText}>For each product, you can order a sample directly from our shop.</p>
               </div>
             </div>
             <div className="flex items-center justify-between gap-2">
-              <p className={numberMarkup + "  px-[24px]"}>3</p>
-              <div>
+              <img className="w-[60px] h-[60px]" src={rounded_3} alt="3" />
+              <div className="w-full">
                 <p className={tipsSubHeader}>Fast Processing</p>
                 <p className={tipsText}>Once you place your order, our sample department processes it immediately.</p>
               </div>
             </div>
             <div className="flex items-center justify-between gap-2">
-              <p className={numberMarkup + "  px-[23px]"}>4</p>
-              <div>
+              <img className="w-[60px] h-[60px]" src={rounded_4} alt="4" />
+              <div className="w-full">
                 <p className={tipsSubHeader}>Did you like the sample?</p>
                 <p className={tipsText}>Enjoy an special discount if you order the same rug as one of the samples you order.</p>
               </div>
