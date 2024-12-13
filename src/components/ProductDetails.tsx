@@ -12,7 +12,7 @@ import { getProducts } from "../api/products";
 // import { updateCart } from "../api/cart";
 // import { toast } from "react-toastify";
 import { NewBestSellerBadge } from "./components";
-import { formatDateShort } from "../utils/dateUtils";
+// import { formatDateShort } from "../utils/dateUtils";
 import { Rating } from "react-simple-star-rating";
 import RugsByProducer from "../pages/user/product-details-components/RugsByProducer";
 import FeaturedReviewsCarousel from "../pages/user/product-details-components/FeaturedReviewsCarousel";
@@ -21,6 +21,7 @@ import { Review } from "../pages/admin/Reviews";
 import ImageGallery from "../pages/user/product-details-components/ImageGallery";
 import { getProductMainImageUrl } from "../utils/miscUtils";
 import ProductFAQ from "../pages/user/product-details-components/ProductFAQ";
+import { formatDateShortWithMonthName } from "../utils/dateUtils";
 
 export default function ProductDetails() {
   const { wishlist, setWishlist, addToCart, cartLoading } = useShop();
@@ -184,7 +185,11 @@ export default function ProductDetails() {
                           <FeaturedReviewsCarousel reviews={featuredReviews} />
                         </section>
                       )}
-                      <p className="underline text-center cursor-pointer text-sm">See All Reviews</p>
+                      <div className="flex items-center">
+                        <a href="#reviews" className="underline cursor-pointer text-sm m-auto">
+                          See All Reviews
+                        </a>
+                      </div>
                     </div>
                   </>
                 )}
@@ -214,10 +219,7 @@ export default function ProductDetails() {
               <p className="text-3xl font-bold text-black">{product.name}</p>
               <p>{product.category ? product.category.name : "N/A"}</p>
             </div>
-            <div className="mt-3 flex justify-start items-center gap-2">
-              <Ratings rating={averateRating} size={size.small} />
-              <p className="text-sm underline cursor-pointer">({totalReviews} Reviews)</p>
-            </div>
+            <ReviewsStats totalReviews={totalReviews} averateRating={averateRating} />
 
             <p className="text-3xl font-bold mt-3 text-black">€{calcPrice()}</p>
             {/* <div className="flex gap-4"></div> */}
@@ -313,8 +315,13 @@ export default function ProductDetails() {
         </section>
 
         {/* Customer Reviews */}
-        <section className="bg-[#fcfaf5] w-full text-center px-4">
-          <div className="text-left flex flex-col gap-0 max-w-[40rem] m-auto ">
+        <section id="reviews" className="bg-[#ebf2f8] max-w-[75rem] w-full m-auto text-center px-4">
+          <div className="text-left flex flex-col gap-0 max-w-[40rem] m-auto text-black">
+            <p className="font-bold text-3xl text-left pt-20 ">Customers Reviews</p>
+            <div className="border-b-2 border-black border-opacity-15 pb-8 flex gap-4 items-center">
+              <p className="text-3xl pt-3">{averateRating}</p>
+              <ReviewsStats totalReviews={totalReviews} averateRating={averateRating} />
+            </div>
             {productReviews.map((review: any) => (
               <ReviewCard key={review.id} review={review} />
             ))}
@@ -331,15 +338,15 @@ export default function ProductDetails() {
 function ReviewCard({ review }: { review: any }) {
   return (
     <div className="border-b-[2.5px] border-black border-opacity-15 py-16 ">
-      <div className="flex items-center justify-between">
-        <p className="text-md font-semibold">{review.author}</p>
-        <p className="">{formatDateShort(review.date)}</p>
-      </div>
       <Rating initialValue={review.rating} size={20} readonly={true} className="my-1" />
       <p className="font-bold text-lg">{review.title}</p>
 
       <p className="mt-6 text-sm">{review.review}</p>
-      <div className="w-full">{/* <Rating initialValue={review.rating} /> */}</div>
+      <div className="flex flex-col items-left justify-between mt-3">
+        <p className="text-md font-semibold">{review.author}</p>
+        <p className="text-sm mt-1">{formatDateShortWithMonthName(review.date)}</p>
+      </div>
+      {/* <div className="w-full"><Rating initialValue={review.rating} /></div> */}
     </div>
   );
 }
@@ -388,6 +395,17 @@ enum size {
   small = "rating-sm",
   medium = "rating-md",
   large = "rating-lg",
+}
+
+function ReviewsStats({ totalReviews, averateRating }: { totalReviews: number; averateRating: number }) {
+  return (
+    <div className="mt-3 flex justify-start items-center gap-2">
+      <Ratings rating={averateRating} size={size.small} />
+      <a href="#reviews" className="text-sm underline cursor-pointer">
+        ({totalReviews} Reviews)
+      </a>
+    </div>
+  );
 }
 
 function Ratings({ rating, size }: { rating: number; size: size }) {
