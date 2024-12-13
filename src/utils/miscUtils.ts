@@ -27,6 +27,7 @@ export function calculatePriceRange(_product: Product) {
 }
 
 export function getProductMainImageUrl(product: Product) {
+  if (!product.patterns || product.patterns.length === 0) return "https://placehold.co/200";
   const url = product.patterns.find((x) => x.order === 0)?.images.find((x) => x.order === 0)?.imageURL;
   if (url) return url;
   return "https://placehold.co/200";
