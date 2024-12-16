@@ -4,15 +4,24 @@ import { toast } from "react-toastify";
 // import { updateCart } from "../api/cart";
 import { createCheckout } from "../api/checkout";
 import { getProductPricesByProductId } from "../api/productPrices";
-
+import { restoreToken } from "../utils/storage";
+import { useAuth } from "../context";
 import LoadingSpinner from "./LoadingSpinner";
 
 export default function Cart() {
   const { cart, shopLoading, updateCartQuantity, cartLoading, deleteFromCart } = useShop();
+  const { authLoading } = useAuth();
 
   const navigate = useNavigate();
 
   async function handleCheckout() {
+    const token = restoreToken();
+    if (!token) {
+      // navigate("/login");
+      navigate(`/login?redirect=${encodeURIComponent(window.location.pathname)}`);
+      return;
+    }
+
     const items = await Promise.all(
       cart.products.map(async (item: any) => {
         // console.log({ productId: item.product.id, sizeId: item.size.id });
@@ -47,7 +56,7 @@ export default function Cart() {
     });
   }
 
-  if (shopLoading) return <LoadingSpinner />;
+  if (shopLoading || authLoading) return <LoadingSpinner />;
 
   return (
     <div className="min-h-screen max-w-[70rem] m-auto">

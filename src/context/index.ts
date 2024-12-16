@@ -49,6 +49,7 @@ interface ShopContextProps {
   setSizes: React.Dispatch<React.SetStateAction<any[]>>;
   cart: {
     products: any[];
+    // samples: any[];
     total: number;
   };
   setCart: React.Dispatch<React.SetStateAction<any>>;
@@ -88,6 +89,7 @@ const ShopContext = createContext<ShopContextProps>({
   setSizes: () => {},
   cart: {
     products: [],
+    // samples: [],
     total: 0,
   },
   setCart: () => {},

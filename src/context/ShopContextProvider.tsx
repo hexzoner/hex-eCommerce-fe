@@ -23,6 +23,7 @@ interface iCartProductItem {
   id: number;
   name: string;
   price: number;
+  samplePrice: number;
   image: string;
   description: string;
   priceTotal: number;
@@ -34,6 +35,7 @@ interface iShopCartProduct {
   size: {
     id: number;
     name: string;
+    squareMeters: number;
   };
   pattern: {
     id: number;
@@ -73,9 +75,13 @@ const ShopProvider = ({ children }: { children: ReactNode }) => {
 
   function calcCart(userCart: iShopCartProduct[]) {
     for (let i = 0; i < userCart.length; i++) {
-      const heightWidth = userCart[i].size.name.split("x");
-      if (heightWidth.length === 2)
-        userCart[i].product.priceTotal = Number((userCart[i].product.price * Number(heightWidth[0]) * Number(heightWidth[1])).toFixed(2));
+      // const heightWidth = userCart[i].size.name.split("x");
+      // if (heightWidth.length === 2)
+      // userCart[i].product.priceTotal = Number((userCart[i].product.price * Number(heightWidth[0]) * Number(heightWidth[1])).toFixed(2));
+      // console.log(userCart[i].size.name);
+      if (userCart[i].size.name === "Sample") {
+        userCart[i].product.priceTotal = userCart[i].product.samplePrice;
+      } else userCart[i].product.priceTotal = Number((userCart[i].product.price * userCart[i].size.squareMeters).toFixed(2));
     }
 
     // Calculate the total price
@@ -117,6 +123,7 @@ const ShopProvider = ({ children }: { children: ReactNode }) => {
             id: product.id,
             name: product.name,
             price: product.price,
+            samplePrice: product.samplePrice,
             image: product.image,
             description: product.description,
             priceTotal: 0, // This will be calculated later
@@ -249,7 +256,24 @@ const ShopProvider = ({ children }: { children: ReactNode }) => {
     getCart()
       .then((res) => {
         setCart(res);
-        // console.log(res);
+
+        const cartFromStorage = restoreCart();
+        const newItemsFromStorage = cartFromStorage.products.filter(
+          (item: any) =>
+            !res.products.find((i: any) => i.product.id === item.product.id && i.size.id === item.size.id && i.pattern.id === item.pattern.id)
+        );
+
+        if (newItemsFromStorage.length > 0) {
+          newItemsFromStorage.forEach((item: any) => {
+            addToCart(item.product, item.quantity, item.size.id, item.pattern.id)
+              .then(() => {})
+              .catch((err) => {
+                console.log(err);
+              });
+          });
+        }
+
+        storeCart({ total: 0, products: [] });
       })
       .catch((err) => {
         console.log(err);

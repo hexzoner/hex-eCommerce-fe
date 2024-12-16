@@ -54,6 +54,7 @@ export default function ProductDetails() {
   }
 
   useEffect(() => {
+    setLoading(true);
     if (authLoading) return;
     setSort("desc");
     getProductById(Number(id))
@@ -118,12 +119,17 @@ export default function ProductDetails() {
     addToCart(product, 1, selectedSize.id, selectedColor.id);
   }
 
+  function handleAddSample() {
+    addToCart(product, 1, product.sizes.find((x: any) => x.name === "Sample").id, selectedColor.id);
+  }
+
   if (loading || loadingReviews || authLoading) return <LoadingSpinner />;
   if (responseStatus == 404) return <div className="min-h-screen text-3xl flex flex-col items-center justify-center">Product not found</div>;
 
   function calcPrice() {
     if (!selectedSize || !selectedSize.squareMeters) return "N/A";
-    return (product.price * selectedSize.squareMeters).toFixed(2);
+
+    return selectedSize.name === "Sample" ? product.samplePrice.toFixed(2) : (product.price * selectedSize.squareMeters).toFixed(2);
   }
 
   // console.log(productReviews);
@@ -266,9 +272,11 @@ export default function ProductDetails() {
                 <span>Size:</span> <span className="ml-1 ">{selectedSize.name}</span>
               </div>
               <div className="flex flex-wrap gap-3 items-center">
-                {product.sizes?.map((size: any) => (
-                  <ProductSize size={size} setSelectedSize={setSelectedSize} selectedSize={selectedSize} key={size.id} />
-                ))}
+                {product.sizes
+                  ?.filter((s: any) => s.name != "Sample")
+                  .map((size: any) => (
+                    <ProductSize size={size} setSelectedSize={setSelectedSize} selectedSize={selectedSize} key={size.id} />
+                  ))}
               </div>
             </div>
 
@@ -280,13 +288,15 @@ export default function ProductDetails() {
               >
                 {cartLoading ? <LoadingSpinnerSmall /> : "Add to Cart"}
               </button>
-              <button
-                // onClick={handleAddToCart}
-                className={`btn btn-neutral btn-outline rounded-none w-[45%] ${cartLoading ? "btn-disabled" : ""}`}
-                // disabled={cartLoading}
-              >
-                {cartLoading ? <LoadingSpinnerSmall /> : "Order a Sample"}
-              </button>
+              {product.sizes?.find((x: any) => x.name === "Sample") && (
+                <button
+                  onClick={handleAddSample}
+                  className={`btn btn-neutral btn-outline rounded-none w-[45%] ${cartLoading ? "btn-disabled" : ""}`}
+                  // disabled={cartLoading}
+                >
+                  {cartLoading ? <LoadingSpinnerSmall /> : "Order a Sample"}
+                </button>
+              )}
               <div className="pl-3">
                 <FavIcon product={product} wishlist={wishlist} setWishlist={setWishlist} />
               </div>
@@ -294,7 +304,7 @@ export default function ProductDetails() {
           </div>
         </div>
 
-        <ProductFAQ />
+        <ProductFAQ handleAddSample={handleAddSample} product={product} />
 
         {/* Meet the producer section */}
         <section className="max-w-[75rem] m-auto pb-16 mt-16">
