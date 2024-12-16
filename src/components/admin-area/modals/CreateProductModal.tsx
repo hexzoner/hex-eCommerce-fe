@@ -117,6 +117,7 @@ export function CreateProductModal({
     new: boolean;
     bestSeller: boolean;
     producerQuote: string;
+    samplePrice: number | string;
   }>();
 
   // const imageInput = watch("image");
@@ -127,6 +128,7 @@ export function CreateProductModal({
       producerQuote: product.producerQuote,
       description: product.description,
       price: product.isEdit ? product.price : "",
+      samplePrice: product.isEdit ? product.samplePrice : "",
       category: product.isEdit ? product.category.id : "",
       color: product.isEdit ? product.defaultColor.id : "",
       image: product.image,
@@ -199,6 +201,7 @@ export function CreateProductModal({
     producerQuote: string;
     description: string;
     price: string | number;
+    samplePrice: string | number;
     category: number | string;
     color: number | string;
     image: string;
@@ -218,6 +221,7 @@ export function CreateProductModal({
     // console.log(data);
     // parsing the data to the correct type before sending it to the server
     const price = typeof data.price === "string" ? parseFloat(data.price) : data.price;
+    const samplePrice = typeof data.samplePrice === "string" ? parseFloat(data.samplePrice) : data.samplePrice;
     const category = typeof data.category === "string" ? parseInt(data.category) : data.category;
     const producer = typeof data.producer === "string" ? parseInt(data.producer) : data.producer;
     const color = typeof data.color === "string" ? parseInt(data.color) : data.color;
@@ -253,7 +257,9 @@ export function CreateProductModal({
       new: data.new,
       bestSeller: data.bestSeller,
       producerQuote: data.producerQuote,
+      samplePrice,
     };
+    // console.log(body);
 
     if (!product.isEdit) {
       try {
@@ -554,28 +560,60 @@ export function CreateProductModal({
                           )}
                         </div>
 
-                        <div>
-                          <input
-                            type="text"
-                            className={inputStyle}
-                            placeholder="Enter a product price"
-                            autoComplete="off"
-                            {...register("price", {
-                              required: "Price is required",
-                              pattern: {
-                                value: /^\d+(\.\d{1,2})?$/,
-                                message: "Price must be a valid number with up to two decimal places",
-                              },
-                              validate: (value) => {
-                                {
-                                  const _v = typeof value === "string" ? parseFloat(value) : value;
-                                  if (_v < 0) return "Price must be greater than 0";
-                                  return true;
-                                }
-                              },
-                            })}
-                          />
-                          {errors.price && <p className="font-semibold text-error text-xs text-left ">{errors.price.message?.toString()}</p>}
+                        <div className="flex">
+                          <div>
+                            <label className="input flex items-center gap-2 text-sm ">
+                              PriceMeter
+                              <input
+                                type="text"
+                                className={inputStyle}
+                                placeholder="Enter a product price"
+                                autoComplete="off"
+                                {...register("price", {
+                                  required: "Price is required",
+                                  pattern: {
+                                    value: /^\d+(\.\d{1,2})?$/,
+                                    message: "Price must be a valid number with up to two decimal places",
+                                  },
+                                  validate: (value) => {
+                                    {
+                                      const _v = typeof value === "string" ? parseFloat(value) : value;
+                                      if (_v < 0) return "Price must be greater than 0";
+                                      return true;
+                                    }
+                                  },
+                                })}
+                              />
+                            </label>
+                            {errors.price && <p className="font-semibold text-error text-xs text-left ">{errors.price.message?.toString()}</p>}
+                          </div>
+                          <div>
+                            <label className="input flex items-center gap-2 text-sm ">
+                              PriceSample
+                              <input
+                                type="text"
+                                className={inputStyle}
+                                placeholder="Enter a sample price"
+                                autoComplete="off"
+                                {...register("samplePrice", {
+                                  pattern: {
+                                    value: /^\d+(\.\d{1,2})?$/,
+                                    message: "Price must be a valid number with up to two decimal places",
+                                  },
+                                  validate: (value) => {
+                                    {
+                                      const _v = typeof value === "string" ? parseFloat(value) : value;
+                                      if (_v < 0) return "Price must be greater than 0";
+                                      return true;
+                                    }
+                                  },
+                                })}
+                              />
+                            </label>
+                            {errors.samplePrice && (
+                              <p className="font-semibold text-error text-xs text-left ">{errors.samplePrice.message?.toString()}</p>
+                            )}
+                          </div>
                         </div>
 
                         <div className="flex items-center gap-4">

@@ -4,7 +4,7 @@ import Rounded_2 from "../../../assets/rounded-2.png";
 import Rounded_3 from "../../../assets/rounded-3.png";
 import Rounded_4 from "../../../assets/rounded-4.png";
 
-export default function ProductFAQ() {
+export default function ProductFAQ({ handleAddSample, product }: { handleAddSample: () => void; product: any }) {
   const header2 = "font-bold text-[32px] leading-10 text-black";
   const header4 = "font-bold text-[20px] mb-1 text-black";
 
@@ -51,7 +51,11 @@ export default function ProductFAQ() {
                   <p>Enjoy an special discount if you order the same rug as one of the samples you order.</p>
                 </div>
               </div>
-              <button className="btn btn-outline w-full rounded-none">Order a Sample</button>
+              {product.sizes?.find((x: any) => x.name === "Sample") && (
+                <button onClick={handleAddSample} className="btn btn-outline w-full rounded-none">
+                  Order a Sample
+                </button>
+              )}
             </div>
           </div>
         </div>

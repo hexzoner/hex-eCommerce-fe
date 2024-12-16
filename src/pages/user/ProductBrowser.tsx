@@ -147,15 +147,17 @@ export default function ProductBrowser() {
               })}
             </div>
             {products.length === 0 && <p className="text-center text-xl mt-24">No products found</p>}
-            <Pagination
-              page={page}
-              setPage={setPage}
-              perPage={perPage}
-              setPerPage={setPerPage}
-              totalPages={totalPages}
-              totalResults={totalProducts}
-              options={[8, 16, 24]}
-            />
+            <div className="max-w-[75rem] m-auto">
+              <Pagination
+                page={page}
+                setPage={setPage}
+                perPage={perPage}
+                setPerPage={setPerPage}
+                totalPages={totalPages}
+                totalResults={totalProducts}
+                options={[8, 16, 24]}
+              />
+            </div>
           </>
         )}
       </section>

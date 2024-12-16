@@ -102,6 +102,7 @@ interface ProductProps {
   bestSeller: boolean;
   patterns?: iPattern[];
   producerQuote: string;
+  samplePrice: number;
 }
 
 function getBodyAPI(product: ProductProps) {
@@ -130,6 +131,7 @@ function getBodyAPI(product: ProductProps) {
     bestSeller: product.bestSeller,
     patterns: product.patterns,
     producerQuote: product.producerQuote,
+    samplePrice: product.samplePrice,
   };
 }
 

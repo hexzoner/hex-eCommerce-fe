@@ -13,8 +13,9 @@ export function calculatePriceRange(_product: Product) {
   let minPrice = 0;
   let maxPrice = 0;
 
+  const sizesWithoutSample = _product.sizes.filter((size) => size.name !== "Sample");
   // console.log(_product);
-  const sizesInSquareMeters = _product.sizes.map((size) => {
+  const sizesInSquareMeters = sizesWithoutSample.map((size) => {
     // const heightWidth = size.name.split("x");
     // const squareMeters = parseInt(heightWidth[0]) * parseInt(heightWidth[1]);
     return size.squareMeters;

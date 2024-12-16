@@ -64,6 +64,7 @@ export interface Product {
   patterns: iPattern[];
   stripeProductId: string;
   producerQuote: string;
+  samplePrice: number;
 }
 
 export default function Products() {
@@ -123,6 +124,7 @@ export default function Products() {
     patterns: [],
     stripeProductId: "",
     producerQuote: "",
+    samplePrice: 0,
   };
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);

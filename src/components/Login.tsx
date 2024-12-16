@@ -8,6 +8,7 @@ import { useShop } from "../context";
 // import { storeToken } from "../utils/storage";
 // import { toast } from "react-toastify";
 // import { mainMakrupColors } from "./Home";
+import useRedirect from "../hooks/useRedirect";
 
 export default function Login() {
   const [isLoading, setIsLoading] = useState(false);
@@ -20,6 +21,7 @@ export default function Login() {
     formState: { errors },
   } = useForm<{ email: string; password: string }>();
 
+  const { redirectTo } = useRedirect();
   async function onSubmit(data: { email: string; password: string }) {
     setIsLoading(true);
     try {
@@ -27,7 +29,10 @@ export default function Login() {
       login(res);
       setIsLoading(false);
       if (res.user.role === "admin") navigate("/admin/dashboard");
-      else navigate("/");
+      else {
+        redirectTo();
+        // navigate("/");
+      }
     } catch (err) {
       setIsLoading(false);
       // toast.error("Login failed");
