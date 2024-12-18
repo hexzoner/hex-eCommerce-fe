@@ -43,8 +43,8 @@ export default function Wishlist() {
 export function WishlistCard({
   item,
   setWishlist,
-  addToCart,
-  cartLoading,
+  // addToCart,
+  // // cartLoading,
   wishlist,
 }: {
   item: any;
@@ -78,9 +78,9 @@ export function WishlistCard({
     navigate(`/product/${item.id}`);
   }
 
-  function handleAddToCart() {
-    addToCart(item, 1, item.defaultSizeId, item.defaultColorId);
-  }
+  // function handleAddToCart() {
+  //   addToCart(item, 1, item.defaultSizeId, item.defaultColorId);
+  // }
 
   return (
     <div className="bg-white border border-gray-200 p-4 rounded-lg w-72 m-auto">
@@ -93,9 +93,9 @@ export function WishlistCard({
           {item.name}
         </p>
         <p className="text-lg font-semibold">{calculatePriceRange(item)}</p>
-        <button onClick={handleAddToCart} className="btn btn-primary rounded-none mx-2" disabled={cartLoading}>
+        {/* <button onClick={handleAddToCart} className="btn btn-primary rounded-none mx-2" disabled={cartLoading}>
           ADD TO CART
-        </button>
+        </button> */}
       </div>
     </div>
   );
