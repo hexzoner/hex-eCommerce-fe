@@ -255,9 +255,11 @@ const ShopProvider = ({ children }: { children: ReactNode }) => {
     setShopLoading(true);
     getCart()
       .then((res) => {
-        setCart(res);
+        if (!res) res = { total: 0, products: [] };
 
+        setCart(res);
         const cartFromStorage = restoreCart();
+
         const newItemsFromStorage = cartFromStorage.products.filter(
           (item: any) =>
             !res.products.find((i: any) => i.product.id === item.product.id && i.size.id === item.size.id && i.pattern.id === item.pattern.id)
@@ -281,7 +283,7 @@ const ShopProvider = ({ children }: { children: ReactNode }) => {
       .finally(() =>
         getWishlist(restoreToken())
           .then((res) => {
-            // console.log(res);
+            if (!res) res = [];
             const wishlistFromStorage = restoreWishlist();
 
             const newItemsFromStorage = wishlistFromStorage.filter((item: any) => !res.find((i: any) => i.id === item.id));
