@@ -26,6 +26,7 @@ import CheckoutResult from "../pages/user/checkout/CheckoutResult";
 import Settings from "../pages/user/user-profile/Settings";
 import PersonalDetails from "../pages/user/user-profile/PersonalDetails";
 import OrderHistory from "../pages/user/user-profile/OrderHistory";
+import ConfirmEmail from "../pages/user/ConfirmEmail";
 
 export {
   About,
@@ -56,4 +57,5 @@ export {
   Settings,
   PersonalDetails,
   OrderHistory,
+  ConfirmEmail,
 };
