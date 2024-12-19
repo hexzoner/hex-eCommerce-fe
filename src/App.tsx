@@ -21,6 +21,7 @@ import {
   Settings,
   // OrderHistory,
   PersonalDetails,
+  ConfirmEmail,
 } from "./components/components";
 import {
   Dashboard,
@@ -49,6 +50,7 @@ const router = createBrowserRouter(
       <Route path="about" element={<About />} />
       <Route path="login" element={<Login />} />
       <Route path="signup" element={<Signup />} />
+      <Route path="verification" element={<ConfirmEmail />} />
       <Route path="forgot-password" element={<ForgotPassword />} />
       {/* /products/room/Hallway */}
       {/* /products/type/Wool */}
