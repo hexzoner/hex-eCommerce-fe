@@ -6,6 +6,7 @@ import { LoadingSpinner } from "./components";
 import { toast } from "react-toastify";
 import { signUpApiCall } from "../api/auth";
 // import { storeToken } from "../utils/storage";
+import { sendVerificationEmail } from "../api/email";
 
 export const inputMarkup = "input input-bordered flex items-center gap-2  border-neutral border-opacity-40";
 
@@ -32,6 +33,10 @@ export default function Signup() {
       login(res);
       setIsLoading(false);
       navigate("/");
+
+      sendVerificationEmail(data.email).then(() => {
+        toast.info("Verification email sent to your email address");
+      });
     } catch (err) {
       setIsLoading(false);
       // reset();

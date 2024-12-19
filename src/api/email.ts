@@ -24,3 +24,26 @@ export const verifyEmailToken = async (token: string) => {
     });
   return response;
 };
+
+export const sendVerificationEmail = async (email: string) => {
+  const response = await axios
+    .post(
+      `${baseURL}/verification`,
+      { email },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    )
+    .then((res) => {
+      // console.log(res.data);
+      return res.data;
+    })
+    .catch((err) => {
+      // console.log(err);
+      // toast.error(err.response.data.message);
+      return err.response.data;
+    });
+  return response;
+};

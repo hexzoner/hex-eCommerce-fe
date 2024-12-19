@@ -1,12 +1,31 @@
 import { useAuth } from "../context";
 import { Navigate } from "react-router-dom";
 import LoadingSpinner from "./LoadingSpinner";
+import { sendVerificationEmail } from "../api/email";
+import { toast } from "react-toastify";
+import { useState } from "react";
+import { LoadingSpinnerSmall } from "./admin-area/admin-components";
 
 export default function Profile() {
   const { user, authLoading } = useAuth();
+  const [loading, setLoading] = useState(false);
 
   if (authLoading) return <LoadingSpinner />;
   if (!user) <Navigate to={"/"} />;
+
+  async function sendVerificationEmailHandler() {
+    setLoading(true);
+    sendVerificationEmail(user.email)
+      .then((res) => {
+        toast.info("Verification email sent to: " + user.email);
+        console.log(res);
+        setLoading(false);
+      })
+      .catch((err) => {
+        toast.error(err.message);
+        setLoading(false);
+      });
+  }
 
   return (
     <div className="min-h-screen">
@@ -14,7 +33,7 @@ export default function Profile() {
       <div className="min-h-screen flex flex-col gap-4 justify-center items-center text-2xl text-left">
         <div className="flex justify-between w-full max-w-sm items-center">
           <p className="w-1/2">Email: </p>
-          <div className="flex w-1/2 items-center">
+          <div className="flex w-1/2 items-center gap-2">
             <p className="">{user.email}</p>
             <p
               className={
@@ -24,6 +43,11 @@ export default function Profile() {
               }>
               ({user.verified ? "Verified" : "Not verified"})
             </p>
+            {!user.verified && (
+              <button onClick={sendVerificationEmailHandler} className="btn btn-success btn-sm">
+                {loading ? <LoadingSpinnerSmall /> : "Resend email"}
+              </button>
+            )}
           </div>
         </div>
         <div className="flex justify-between w-full max-w-sm items-center">
