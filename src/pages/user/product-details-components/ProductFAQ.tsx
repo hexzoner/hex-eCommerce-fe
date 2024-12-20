@@ -9,20 +9,27 @@ export default function ProductFAQ({ handleAddSample, product }: { handleAddSamp
   const header4 = "font-bold text-[20px] mb-1 text-black";
 
   return (
-    <div className="max-w-[75rem] m-auto pb-20 mt-16 bg-[#ebf2f8] w-full pl-[57px] pr-[66px] pt-12 ">
+    <div className="max-w-[75rem] m-auto pb-20 mt-16 bg-[#ebf2f8] w-full lg:pl-[57px] lg:pr-[66px] sm:px-8 px-3 pt-12 ">
       <div role="tablist" className="tabs tabs-bordered">
-        <input type="radio" name="my_tabs_2" role="tab" className="tab text-base" aria-label="This is How it Works" defaultChecked />
+        <input
+          type="radio"
+          name="my_tabs_2"
+          role="tab"
+          className="tab text-xs sm:text-sm lg:text-lg px-0 md:text-base"
+          aria-label="This is How it Works"
+          defaultChecked
+        />
         <div role="tabpanel" className="tab-content pt-6 text-base w-full">
-          <div className="flex gap-10 ">
-            <div className="w-1/2 flex flex-col justify-between gap-2">
+          <div className="lg:flex gap-10 ">
+            <div className="w-full lg:w-1/2 flex flex-col justify-between gap-2">
               <img src={HowThisWorks} alt="How it works" className="mb-2" />
-              <p className={header2}>Perfect samples, perfect choices! Try our rugs sample service</p>
+              <p className={header2 + " mt-3"}>Perfect samples, perfect choices! Try our rugs sample service</p>
               <p>
                 Explore your favorites at home, stress-free – that’s our promise. Along with free expert advice, you can order a sample of any product
                 in our shop. We pride ourselves on lightning-fast delivery, with our team processing your orders right away.
               </p>
             </div>
-            <div className="w-1/2 flex flex-col justify-between">
+            <div className="w-full lg:w-1/2 flex flex-col justify-between lg:gap-0 lg:mt-0 gap-6 mt-6">
               <div className="flex gap-4">
                 <img className="w-[50px] h-[50px]" src={Rounded_1} alt="" />
                 <div>
@@ -60,12 +67,12 @@ export default function ProductFAQ({ handleAddSample, product }: { handleAddSamp
           </div>
         </div>
 
-        <input type="radio" name="my_tabs_2" role="tab" className="tab text-base" aria-label="Our Rags" />
+        <input type="radio" name="my_tabs_2" role="tab" className="tab text-xs sm:text-sm md:text-base lg:text-lg" aria-label="Our Rags" />
         <div role="tabpanel" className="tab-content p-10">
           Our Rags
         </div>
 
-        <input type="radio" name="my_tabs_2" role="tab" className="tab text-base" aria-label="Frequent Questions" />
+        <input type="radio" name="my_tabs_2" role="tab" className="tab text-xs sm:text-sm md:text-base lg:text-lg" aria-label="Frequent Questions" />
         <div role="tabpanel" className="tab-content p-10">
           Frequent Questions
         </div>

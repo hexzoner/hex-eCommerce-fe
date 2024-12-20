@@ -45,6 +45,8 @@ export default function ProductDetails() {
   const [rugsByProducer, setRugsByProducer] = useState<any>([]);
   const navigate = useNavigate();
 
+  const descriptionTabClass = "tab text-xs sm:text-sm md:text-base lg:text-lg px-2 ";
+
   function setReviewsData(res: any) {
     setProductReviews(res.reviews);
     setTotalPages(res.totalPages);
@@ -154,8 +156,8 @@ export default function ProductDetails() {
       <div className="flex flex-col min-h-screen mt-8 text-left">
         {/* Product Image, Name, Price, Category, Size, Color, Add to Cart Button */}
         <div className="flex-col lg:flex-row flex gap-8 items-start max-w-[75rem] m-auto h-full">
-          <div className="w-full lg:w-1/2  lg:px-0  flex-1  relative">
-            <div className="max-w-80 m-auto md:max-w-xl lg:max-w-full">
+          <div className="w-full xl:w-1/2  lg:px-0  flex-1  relative m-auto">
+            <div className="max-w-[20rem] sm:m-auto sm:max-w-xl lg:w-full m-auto">
               <ImageGallery
                 images={selectedColor.images ? selectedColor.images.map((image: any) => image.imageURL) : [getProductMainImageUrl(product)]}
               />
@@ -163,7 +165,7 @@ export default function ProductDetails() {
             </div>
 
             {product.producerQuote && product.producerQuote.length > 0 && (
-              <div className="bg-[#ebf2f8] pl-[31px] pt-[24px] pr-[75px] pb-[46px] mt-[24px]">
+              <div className="bg-[#ebf2f8] pl-[31px] pt-[24px] pr-[75px] pb-[46px] mt-[24px] mx-6 lg:mx-0">
                 <p>{product.producerQuote}</p>
                 <p className="text-sm italic mt-1">
                   -{product.producer.name}, creator of {product.name}
@@ -172,17 +174,17 @@ export default function ProductDetails() {
             )}
 
             {/* Description, Details, Notes, Instructions Tabs */}
-            <div className="w-full max-w-[75rem] m-auto border-[1.5px] border-black border-opacity-15 mt-12">
-              <div role="tablist" className="tabs tabs-bordered pt-6 px-8 bg-white pb-12">
+            <div className="w-full max-w-[75rem] m-auto  mt-12">
+              <div role="tablist" className="tabs tabs-bordered mx-6 lg:mx-0 pt-6 px-8 bg-white pb-12 border-[1.5px] border-black border-opacity-15">
                 {/* Tab 1 */}
-                <input type="radio" name="my_tabs_1" role="tab" className="tab text-lg" aria-label="Description" defaultChecked />
+                <input type="radio" name="my_tabs_1" role="tab" className={descriptionTabClass} aria-label="Description" defaultChecked />
                 <div role="tabpanel" className="tab-content mt-6">
                   <div className="prose max-w-[100ch]" dangerouslySetInnerHTML={{ __html: product.description }}></div>
                 </div>
                 {/* Tab 2 */}
                 {featuredReviews.length > 0 && (
                   <>
-                    <input type="radio" name="my_tabs_1" role="tab" className="tab text-lg" aria-label="Top Reviews" />
+                    <input type="radio" name="my_tabs_1" role="tab" className={descriptionTabClass} aria-label="Top Reviews" />
                     <div role="tabpanel" className="tab-content w-full mt-6">
                       {/* Featured Reviews */}
                       {featuredReviews.length > 0 && (
@@ -201,18 +203,18 @@ export default function ProductDetails() {
                 )}
                 {/* Tab 3 */}
 
-                <input type="radio" name="my_tabs_1" role="tab" className="tab text-lg" aria-label="Details" />
+                <input type="radio" name="my_tabs_1" role="tab" className={descriptionTabClass} aria-label="Details" />
 
                 <div role="tabpanel" className="tab-content w-full mt-6">
                   <div className="prose max-w-[100ch]" dangerouslySetInnerHTML={{ __html: product.details }}></div>
                 </div>
                 {/* Tab 4 */}
-                <input type="radio" name="my_tabs_1" role="tab" className="tab text-lg" aria-label="Notes" />
+                <input type="radio" name="my_tabs_1" role="tab" className={descriptionTabClass} aria-label="Notes" />
                 <div role="tabpanel" className="tab-content mt-6">
                   <div className="prose max-w-[100ch]" dangerouslySetInnerHTML={{ __html: product.notes }}></div>
                 </div>
                 {/* Tab 5 */}
-                <input type="radio" name="my_tabs_1" role="tab" className="tab text-lg" aria-label="Instructions" />
+                <input type="radio" name="my_tabs_1" role="tab" className={descriptionTabClass} aria-label="Instructions" />
                 <div role="tabpanel" className="tab-content mt-6">
                   <div className="prose max-w-[100ch]" dangerouslySetInnerHTML={{ __html: product.instructions }}></div>
                 </div>
@@ -220,7 +222,7 @@ export default function ProductDetails() {
             </div>
           </div>
 
-          <div className="flex flex-col sticky top-0 justify-around w-full bg-[#ebf2f8] py-12 lg:w-1/2 mx-auto mt-6 lg:mt-0 px-5  lg:px-10  gap-4 ">
+          <div className="flex flex-col lg:sticky top-0 justify-around w-full bg-[#ebf2f8] py-12 lg:w-1/2  mt-6 lg:mt-0 px-5  lg:px-10  gap-4 ">
             <div>
               <p className="text-3xl font-bold text-black">{product.name}</p>
               <p>{product.category ? product.category.name : "N/A"}</p>
@@ -304,10 +306,12 @@ export default function ProductDetails() {
           </div>
         </div>
 
-        <ProductFAQ handleAddSample={handleAddSample} product={product} />
+        <div className="mx-0 sm:px-6">
+          <ProductFAQ handleAddSample={handleAddSample} product={product} />
+        </div>
 
         {/* Meet the producer section */}
-        <section className="max-w-[75rem] m-auto pb-16 mt-16">
+        <section className="max-w-[75rem] m-auto pb-16 mt-16 mx-6">
           <p className="font-semibold text-4xl mb-6">Those who make the magic </p>
           <div className="flex flex-wrap md:flex-nowrap gap-12">
             <div className="w-full md:w-1/3 flex flex-col gap-4">
