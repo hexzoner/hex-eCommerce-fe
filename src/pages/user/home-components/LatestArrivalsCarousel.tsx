@@ -16,14 +16,14 @@ const LatestArrivalsCarousel = ({ products }: { products: any[] }) => {
 
   const settings = {
     initailSlide: 0,
-    dots: false, // Disable dots navigation
-    infinite: true, // Infinite scrolling
+    dots: false,
+    infinite: true,
     speed: 500,
-    slidesToShow: slideToShow, // Adjust to show 5 items at a time (center + sides)
+    slidesToShow: slideToShow,
     slidesToScroll: 1,
     centerMode: true, // Enables center item
-    centerPadding: "0px", // No padding around the center item
-    arrows: true, // Show arrows for navigation
+    centerPadding: "0px",
+    arrows: true,
     nextArrow: <NextArrow />,
     prevArrow: <PrevArrow />,
     beforeChange: (oldIndex: number, newIndex: number) => {
@@ -68,7 +68,7 @@ const LatestArrivalsCarousel = ({ products }: { products: any[] }) => {
 
     if (relativePos === 0) return "scale-[101%]"; // Center slide
     if (relativePos === 1 || relativePos === totalSlides - 1) return "scale-[80%]"; // Sides around center
-    return "scale-[60%]"; // Outermost slides
+    return "scale-[80%]"; // Outermost slides
   };
 
   return (
@@ -87,6 +87,7 @@ const LatestArrivalsCarousel = ({ products }: { products: any[] }) => {
                   alt={`Product ${productId}`}
                   className="w-full h-96 object-cover rounded-lg"
                 />
+                {getScale(index) === "scale-[101%]" && <p className="mb-6 mt-2 font-bold text-lg text-black">{product.name}</p>}
               </div>
             </div>
           );
@@ -99,7 +100,7 @@ const LatestArrivalsCarousel = ({ products }: { products: any[] }) => {
 export const NextArrow = (props: any) => {
   const { onClick } = props;
   return (
-    <div className="custom-arrow right-arrow text-center font-semibold opacity-75" onClick={onClick}>
+    <div className="custom-arrow right-arrow text-center font-semibold hover:bg-blue-100" onClick={onClick}>
       &#10095; {/* Right arrow symbol */}
     </div>
   );
@@ -108,7 +109,7 @@ export const NextArrow = (props: any) => {
 export const PrevArrow = (props: any) => {
   const { onClick } = props;
   return (
-    <div className="custom-arrow left-arrow text-center font-semibold opacity-75" onClick={onClick}>
+    <div className="custom-arrow left-arrow text-center font-semibold hover:bg-blue-100" onClick={onClick}>
       &#10094; {/* Left arrow symbol */}
     </div>
   );

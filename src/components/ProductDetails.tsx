@@ -311,11 +311,11 @@ export default function ProductDetails() {
         </div>
 
         {/* Meet the producer section */}
-        <section className="max-w-[75rem] m-auto pb-16 mt-16 mx-6">
+        <section className="max-w-[75rem] m-auto pb-16 mt-16 ">
           <p className="font-semibold text-4xl mb-6">Those who make the magic </p>
           <div className="flex flex-wrap md:flex-nowrap gap-12">
             <div className="w-full md:w-1/3 flex flex-col gap-4">
-              <img className="w-full rounded-none object-cover max-h-80 " src={product.producer?.image} alt="producer image" />
+              <img className="rounded-none object-cover h-96 w-full" src={product.producer?.image} alt="producer image" />
               <p className="font-semibold text-2xl">Meet {product.producer?.name}</p>
               <p>{product.producer?.description}</p>
             </div>
