@@ -6,11 +6,12 @@ import { Review } from "../../admin/Reviews";
 import Slider from "react-slick";
 import { Rating } from "react-simple-star-rating";
 import { NextArrow, PrevArrow } from "./LatestArrivalsCarousel";
+import { formatDateShortWithMonthName } from "../../../utils/dateUtils";
 
 function ReviewsCarousel({ reviews }: { reviews: Review[] }) {
   const settings = {
     // centerPadding: "50px",
-    dots: true,
+    dots: false,
     infinite: true,
     speed: 500,
     slidesToShow: 5,
@@ -48,17 +49,20 @@ function ReviewsCarousel({ reviews }: { reviews: Review[] }) {
     ],
   };
   return (
-    <div className="slider-container">
+    <div className="slider-container mb-4">
       <Slider {...settings}>
         {reviews.map((review, index) => (
-          <div key={index} className="text-sm m-auto px-12 sm:px-3 xl:px-0 xl:max-w-[208px] xl:ml-6">
-            <div className="flex flex-col justify-between min-h-[327.75px] bg-[#f6f6f6] px-6 py-8 border-[1.5px] border-black rounded-xl border-opacity-25">
+          <div key={index} className="text-sm m-auto px-12 sm:px-3 xl:px-0 xl:max-w-[208px] xl:ml-6 mb-6">
+            <div className="flex flex-col justify-between min-h-[327.75px] bg-[#f6f6f6] px-6 py-8 border-[1.5px] border-black rounded-none border-opacity-25">
               <div>
                 <Rating initialValue={Number(review.rating)} size={20} readonly={true} className="my-1" />
                 <p className="font-semibold">{review.title}</p>
               </div>
               <p className="">{review.review}</p>
-              <p className="font-semibold">{review.author}</p>
+              <div>
+                <p className="font-semibold">{review.author}</p>
+                <p>{formatDateShortWithMonthName(review.createdAt)}</p>
+              </div>
             </div>
           </div>
         ))}

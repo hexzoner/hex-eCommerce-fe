@@ -29,15 +29,18 @@
 /* Custom arrow styling */
 .custom-arrow {
   position: absolute;
-  width: 32px;
-  height: 32px;
-  top: 50%;
-  transform: translateY(-50%);
+  width: 48px;
+  height: 48px;
+  bottom: 0%;
+  left: 48%;
+  transform: translateY(100%);
   background-color: rgba(255, 255, 255, 0);
   border-color: rgba(0, 0, 0, 0.541);
-  border-width: 2px;
+  font-size: large;
+  font-weight: lighter;
+  border-width: 1.5px;
   color: rgb(0, 0, 0);
-  padding: 3px;
+  padding-top: 11px;
   border-radius: 50%;
   z-index: 10;
   cursor: pointer;
@@ -45,10 +48,12 @@
 
 /* Left arrow positioned on the left side */
 .left-arrow {
-  left: -20px; /* Adjust the positioning to fit inside the container */
+  /* left: 0px;  */
+  margin: 0 0 0 -40px;
 }
 
 /* Right arrow positioned on the right side */
 .right-arrow {
-  right: -20px; /* Adjust the positioning to fit inside the container */
+  /* right: 0px;  */
+  margin: 0 0 0 40px;
 }

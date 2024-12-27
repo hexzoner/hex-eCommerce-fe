@@ -93,7 +93,7 @@ export default function Home() {
       </section>
 
       {/* Our Latest Arrivals */}
-      <section className="bg-white h-[673.65px] mb-12">
+      <section className="bg-white mb-12 pb-32">
         <div>
           <p className="font-semibold text-4xl pt-20"> Featured Rugs</p>
         </div>
@@ -102,13 +102,13 @@ export default function Home() {
           <LatestArrivalsCarousel products={products} />
         </div>
 
-        <button onClick={() => navigate("/products")} className={"h-[50px] w-[194px] font-semibold text-[22px] "}>
+        {/* <button onClick={() => navigate("/products")} className={"h-[50px] w-[194px] font-semibold text-[22px] "}>
           SEE ALL
-        </button>
+        </button> */}
       </section>
 
       {/* Rooms and Sizes section */}
-      <section className={"md:h-[523px] mb-12 px-4 py-8 md:px-0  " + homeMainBG}>
+      <section className={"md:h-[523px] mb-12 px-4 py-8 md:px-0  "}>
         <div className="max-w-screen-lg m-auto gap-4 flex flex-col justify-between h-full ">
           <p className="font-semibold text-3xl max-w-96 m-auto">Find the perfect rug size for your room.</p>
           <p className="max-w-72 m-auto text-justify">Our rugs come in a variety of sizes to fit any room in your home.</p>
@@ -207,7 +207,7 @@ export default function Home() {
           <div className="mt-12 m-auto w-80 md:w-full">
             <ReviewsCarousel reviews={reviews} />
           </div>
-          <button className="text-center text-base font-semibold mt-14 w-fit m-auto">SEE ALL REVIEWS</button>
+          {/* <button className="text-center text-base font-semibold mt-14 w-fit m-auto">SEE ALL REVIEWS</button> */}
         </div>
       </section>
     </div>

@@ -14,7 +14,7 @@ function RugsByProducer({ products }: { products: Product[] }) {
   // if (products.length == 0) return <></>;
   const settings = {
     // centerPadding: "50px",
-    dots: products.length > 3 ? true : false,
+    // dots: products.length > 3 ? true : false,
     infinite: products.length > 3 ? true : false,
     speed: 500,
     slidesToShow: products.length > 3 ? 3 : products.length,
