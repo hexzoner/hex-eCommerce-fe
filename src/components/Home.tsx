@@ -71,14 +71,14 @@ export default function Home() {
     <div className={"min-h-screen " + homeMainBG}>
       {/* Hero section */}
       <section className="mt-20 bg-[#ebf2f8]">
-        <div className="max-w-[1206px] m-auto  flex flex-wrap md:flex-nowrap md:h-[435px] justify-center  text-black  ">
+        <div className="max-w-[1206px] m-auto  flex flex-wrap gap-4 lg:gap-0 md:min-h-[435px] justify-center items-center text-black  ">
           <div className=" rounded-none w-full md:w-1/2 flex flex-col justify-center ">
             <div className=" max-w-[555px] m-auto">
               <p className={"w-fit mx-auto rounded-none py-2 " + headerMarkup}>Where Heritage Meets Home</p>
               <p className="text-[16px] leading-6 py-2 px-4 w-fit mx-auto rounded-xl">
                 Lorem ipsum dolor sit amet consectetur adipiscing elit Ut et. Lorem ipsum dolor sit amet consectetur adipiscing elit Ut et.
               </p>
-              <div className="flex gap-2 mt-6">
+              <div className="flex gap-2 mt-6 flex-wrap">
                 <button onClick={buttonNewArrivals} className={buttonMarkup}>
                   New Arrivals
                 </button>
@@ -88,7 +88,8 @@ export default function Home() {
               </div>
             </div>
           </div>
-          <div className="w-full md:w-1/2 justify-between font-normal text-xl">
+          <div className="w-full lg:w-1/2 ">
+            <img className="m-auto " src={homeHeroImage} alt="room example" />
             {/* <div className="hero-2-background h-[251px] gap-4 rounded-xl text-center flex flex-col justify-between py-4">
               <p></p>
               <button
@@ -100,9 +101,9 @@ export default function Home() {
                 Wool Rugs
               </button>
             </div> */}
-            <div className=" rounded-none text-center ">
-              <img className="" src={homeHeroImage} alt="room example" />
-              {/* <button
+            {/* <div className=" rounded-none text-center "> */}
+
+            {/* <button
                 onClick={() => {
                   setFilter({ type: "New Arrivals", id: 0, value: "true" });
                   navigate("/products");
@@ -110,7 +111,7 @@ export default function Home() {
                 className="btn text-lg  mx-auto px-6 rounded-md py-2">
                 New Arrivals
               </button> */}
-            </div>
+            {/* </div> */}
           </div>
         </div>
       </section>
@@ -131,7 +132,7 @@ export default function Home() {
       </section>
 
       {/* Rooms and Sizes section */}
-      <section className={"md:h-[696px]  px-4 py-12 md:px-0 bg-[#ebf2f8] "}>
+      <section className={"md:min-h-[696px]  px-4 py-12 md:px-0 bg-[#ebf2f8] "}>
         <div className="max-w-screen-xl m-auto gap-4 flex flex-col justify-between h-full ">
           <div className="flex flex-col">
             <p className={"max-w-[512px] m-auto " + headerMarkup}>Find the perfect rug size for your room.</p>
@@ -203,7 +204,7 @@ export default function Home() {
       </section>
 
       {/* Featured Producer section */}
-      <section className={"md:h-[629px] mb-12 bg-[#1f3041] text-[#CCD4DD]"}>
+      <section className={"md:min-h-[629px] mb-12 bg-[#1f3041] text-[#CCD4DD]"}>
         <div className="max-w-screen-lg m-auto px-4 lg:px-0">
           <div className="flex justify-between pt-20 flex-wrap md:flex-nowrap gap-6 md:gap-6">
             <div className="m-auto">
@@ -219,7 +220,7 @@ export default function Home() {
                 Rajveer Bhardwaj, founder of Kaarigari Creations, blends traditional Indian rug craftsmanship with modern design. His passion for
                 preserving heritage results in exquisite, handwoven rugs that celebrate India’s rich artistry.
               </p>
-              <button className={outlineButtonClass + " text-[#CCD4DD] font-normal w-[366px] h-[49px]"}>Meet our Producers</button>
+              <button className={outlineButtonClass + " text-[#CCD4DD] font-normal w-[366px] h-[49px] mb-6"}>Meet our Producers</button>
             </div>
           </div>
         </div>
@@ -229,7 +230,7 @@ export default function Home() {
       <section className={"min-h-[721.75px] pt-20 text-left pb-28 " + homeMainBG}>
         <div className="max-w-screen-xl m-auto flex flex-col justify-between ">
           <p className={headerMarkup + " text-center"}>Here’s what our customers are saying</p>
-          <div className="mt-12 m-auto w-80 md:w-full">
+          <div className="mt-12 m-auto w-full px-2">
             <ReviewsCarousel reviews={reviews} />
           </div>
           {/* <button className="text-center text-base font-semibold mt-14 w-fit m-auto">SEE ALL REVIEWS</button> */}
