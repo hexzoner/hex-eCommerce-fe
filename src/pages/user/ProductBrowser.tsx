@@ -1,4 +1,4 @@
-export const mainMakrupColors = "bg-white text-[#363636]";
+export const mainMakrupColors = "bg-[#f5f6fa] text-[#363636]";
 import { getProducts } from "../../api/products";
 import { useEffect, useState } from "react";
 // import LoadingSpinner from "./LoadingSpinner";
@@ -63,6 +63,7 @@ export default function ProductBrowser() {
       page,
       perPage,
       isNew: filter.type === "New Arrivals" ? (filter.value === "true" ? true : false) : undefined,
+      isBestSeller: filter.type === "Best Sellers" ? (filter.value === "true" ? true : false) : undefined,
     })
       .then((res) => {
         setProducts(res.results.filter((x: any) => x.active == true));
@@ -172,7 +173,7 @@ export const ProductCard = ({ product, wishlist, setWishlist }: { product: Produ
   }
 
   return (
-    <div className="card bg-base-100 w-72 mx-auto ">
+    <div className="card bg-base-100 py-4 w-72 mx-auto rounded-none">
       <figure className="relative tooltip">
         <img onClick={handleClick} className="w-72 h-48 object-cover  cursor-pointer p-2" src={getProductMainImageUrl(product)} alt="Rug Image" />
         <NewBestSellerBadge isNew={product.new} isBestSeller={product.bestSeller} />

@@ -14,20 +14,15 @@ import rounded_1 from "../assets/rounded-1.png";
 import rounded_2 from "../assets/rounded-2.png";
 import rounded_3 from "../assets/rounded-3.png";
 import rounded_4 from "../assets/rounded-4.png";
+import homeHeroImage from "../assets/home_hero_image.png";
 
-export const homeMainBG = "bg-[#eff2f6]";
+export const homeMainBG = "bg-[#f5f6fa]";
 export default function Home() {
   const [loading, setLoading] = useState(true);
   const [products, setProducts] = useState<Product[]>([]);
   const [reviews, setReviews] = useState<Review[]>([]);
   const { rooms, setFilter } = useShop();
 
-  const tipsSubHeader = "text-lg font-bold";
-  const tipsText = "text-lg font-medium text-left w-full";
-  // const numberMarkup = "text-xl bg-[#CECECE] rounded-full py-4";
-  const neutralButtonClass = "btn btn-lg btn-neutral rounded-none max-w-sm m-auto mt-12";
-  const headerMarkup = "font-semibold text-4xl";
-  const outlineButtonClass = "btn btn-outline rounded-none w-fit btn-lg";
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -46,27 +41,55 @@ export default function Home() {
 
   if (loading) return <LoadingSpinner />;
 
+  const buttonMarkup = "btn btn-neutral rounded-none mx-auto px-12 w-[247px] h-[49px] text-[14px] leading-5";
+  // const titleText = "font-semibold text-4xl";
+
+  function buttonNewArrivals() {
+    setFilter({ type: "New Arrivals", id: 0, value: "true" });
+    navigate("/products");
+  }
+
+  // function buttonShopAll() {
+  //   setFilter({ type: "", id: 0, value: "" });
+  //   navigate("/products");
+  // }
+
+  function bestSellers() {
+    setFilter({ type: "Best Sellers", id: 0, value: "true" });
+    navigate("/products");
+  }
+
+  const headerMarkup = " font-bold text-[40px] text-black ";
+  const tipsSubHeader = "text-lg font-bold";
+  const tipsText = "text-lg font-medium text-left w-full";
+  // const numberMarkup = "text-xl bg-[#CECECE] rounded-full py-4";
+  // const neutralButtonClass = "btn btn-lg btn-neutral rounded-none max-w-sm m-auto mt-12";
+  // const headerMarkup = "font-semibold text-4xl";
+  const outlineButtonClass = "btn btn-outline rounded-none w-fit  text-sm";
+
   return (
-    <div className={"min-h-screen "}>
+    <div className={"min-h-screen " + homeMainBG}>
       {/* Hero section */}
-      <section className="max-w-[1115px] m-auto py-20">
-        <div className="flex flex-wrap md:flex-nowrap md:h-[521px] justify-center gap-4  text-black">
-          <div className="hero-1-background rounded-2xl w-full md:w-2/3 flex flex-col justify-evenly ">
-            <p className="font-semibold text-5xl w-fit mx-auto text-outline rounded-xl py-2 px-12">Where Heritage Meets Home</p>
-            <p className="font-semibold text-xl py-2 px-4 w-fit mx-auto text-outline  rounded-xl">
-              Lorem ipsum dolor sit amet consectetur adipiscing elit Ut et.
-            </p>
-            <button
-              onClick={() => {
-                setFilter({ type: "", id: 0, value: "" });
-                navigate("/products");
-              }}
-              className="btn btn-neutral rounded-none max-w-[194px] mx-auto btn-lg px-12">
-              Shop All
-            </button>
+      <section className="mt-20 bg-[#ebf2f8]">
+        <div className="max-w-[1206px] m-auto  flex flex-wrap md:flex-nowrap md:h-[435px] justify-center  text-black  ">
+          <div className=" rounded-none w-full md:w-1/2 flex flex-col justify-center ">
+            <div className=" max-w-[555px] m-auto">
+              <p className={"w-fit mx-auto rounded-none py-2 " + headerMarkup}>Where Heritage Meets Home</p>
+              <p className="text-[16px] leading-6 py-2 px-4 w-fit mx-auto rounded-xl">
+                Lorem ipsum dolor sit amet consectetur adipiscing elit Ut et. Lorem ipsum dolor sit amet consectetur adipiscing elit Ut et.
+              </p>
+              <div className="flex gap-2 mt-6">
+                <button onClick={buttonNewArrivals} className={buttonMarkup}>
+                  New Arrivals
+                </button>
+                <button onClick={bestSellers} className={buttonMarkup}>
+                  Best Sellers
+                </button>
+              </div>
+            </div>
           </div>
-          <div className="flex flex-col gap-4 md:gap-0 w-full md:w-1/3 justify-between font-normal text-xl">
-            <div className="hero-2-background h-[251px] gap-4 rounded-xl text-center flex flex-col justify-between py-4">
+          <div className="w-full md:w-1/2 justify-between font-normal text-xl">
+            {/* <div className="hero-2-background h-[251px] gap-4 rounded-xl text-center flex flex-col justify-between py-4">
               <p></p>
               <button
                 onClick={() => {
@@ -76,26 +99,26 @@ export default function Home() {
                 className="btn text-lg  mx-auto px-6 rounded-md py-2">
                 Wool Rugs
               </button>
-            </div>
-            <div className="hero-3-background h-[251px] gap-4 rounded-xl text-center flex flex-col justify-between py-4">
-              <p></p>
-              <button
+            </div> */}
+            <div className=" rounded-none text-center ">
+              <img className="" src={homeHeroImage} alt="room example" />
+              {/* <button
                 onClick={() => {
                   setFilter({ type: "New Arrivals", id: 0, value: "true" });
                   navigate("/products");
                 }}
                 className="btn text-lg  mx-auto px-6 rounded-md py-2">
                 New Arrivals
-              </button>
+              </button> */}
             </div>
           </div>
         </div>
       </section>
 
       {/* Our Latest Arrivals */}
-      <section className="bg-white mb-12 pb-32">
+      <section className="bg-white pb-32">
         <div>
-          <p className="font-semibold text-4xl pt-20"> Featured Rugs</p>
+          <p className={"pt-20 " + headerMarkup}> Featured Rugs</p>
         </div>
         {/* <div className="m-auto w-80 md:w-full"></div> */}
         <div className="mt-12 m-auto w-80 md:w-full">
@@ -108,11 +131,13 @@ export default function Home() {
       </section>
 
       {/* Rooms and Sizes section */}
-      <section className={"md:h-[523px] mb-12 px-4 py-8 md:px-0  "}>
-        <div className="max-w-screen-lg m-auto gap-4 flex flex-col justify-between h-full ">
-          <p className="font-semibold text-3xl max-w-96 m-auto">Find the perfect rug size for your room.</p>
-          <p className="max-w-72 m-auto text-justify">Our rugs come in a variety of sizes to fit any room in your home.</p>
-          <div className="flex justify-between items-center gap-4 flex-wrap md:flex-nowrap ">
+      <section className={"md:h-[696px]  px-4 py-12 md:px-0 bg-[#ebf2f8] "}>
+        <div className="max-w-screen-xl m-auto gap-4 flex flex-col justify-between h-full ">
+          <div className="flex flex-col">
+            <p className={"max-w-[512px] m-auto " + headerMarkup}>Find the perfect rug size for your room.</p>
+            <p className="m-auto text-justify">Our rugs come in a variety of sizes to fit any room in your home.</p>
+          </div>
+          <div className="flex  gap-4 flex-wrap ">
             {rooms.map((room, index) => {
               return (
                 <div
@@ -121,28 +146,28 @@ export default function Home() {
                     setFilter({ type: "Rug Sizes", id: room.id, value: room.name });
                   }}
                   key={index}
-                  className="flex flex-col justify-between gap-4 mt-4 m-auto cursor-pointer">
-                  <img className="h-[8.25rem] w-[8.25rem]" src={room.image} alt={room.name} />
-                  <p className="font-bold text-sm cursor-pointer">{room.name + " >"}</p>
+                  className="flex items-center justify-center gap-0 mt-4 m-auto cursor-pointer w-[306px] h-[141px] border-[1px] border-[#CCD4DD] hover:bg-white">
+                  <img className="w-[60%]" src={room.image} alt={room.name} />
+                  <p className="w-[40%] text-left text-black font-bold text-lg cursor-pointer   ">{room.name}</p>
                   {/* <p className="font-normal text-xl">Shop Now</p> */}
                 </div>
               );
             })}
           </div>
-          <button className={neutralButtonClass}>To Size Selection</button>
+          <button className={outlineButtonClass + " m-auto w-[378px] h-[49px] mt-3"}>To Size Selection</button>
         </div>
       </section>
 
       {/* Tips section */}
       <section className="bg-white text-left">
         <div className="max-w-screen-xl m-auto flex gap-10 h-full pb-20 flex-wrap md:flex-nowrap px-4 md:px-0">
-          <div className="w-full md:w-1/2 flex flex-col justify-evenly h-full min-h-[572px] pb-20">
+          <div className="w-full md:w-1/2 flex flex-col justify-center gap-4 h-full min-h-[572px] ">
             <p className={headerMarkup}>Perfect samples, perfect choices! Try our rugs sample service</p>
             <p className={tipsText}>
               Explore your favorites at home, stress-free – that’s our promise. Along with free expert advice, you can order a sample of any product
               in our shop. We pride ourselves on lightning-fast delivery, with our team processing your orders right away.
             </p>
-            <button className={outlineButtonClass}>This is how it works</button>
+            <button className={outlineButtonClass + " w-full mt-8"}>This is how it works</button>
           </div>
           <div className="w-full md:w-1/2 flex flex-col justify-between h-full min-h-[572px] py-16">
             <div className="flex items-center justify-between gap-2">
@@ -178,32 +203,32 @@ export default function Home() {
       </section>
 
       {/* Featured Producer section */}
-      <section className={"md:h-[629px] mb-12 " + homeMainBG}>
-        <div className="max-w-[968.25px] m-auto px-4 lg:px-0">
-          <div className="flex justify-between pt-20 flex-wrap md:flex-nowrap gap-6 md:gap-0">
+      <section className={"md:h-[629px] mb-12 bg-[#1f3041] text-[#CCD4DD]"}>
+        <div className="max-w-screen-lg m-auto px-4 lg:px-0">
+          <div className="flex justify-between pt-20 flex-wrap md:flex-nowrap gap-6 md:gap-6">
+            <div className="m-auto">
+              <img
+                className="h-[437px] w-[395px] rounded-none object-cover"
+                src="https://www.indianhandmaderugs.com/wp-content/uploads/2022/06/Quality-Control-carpet-rug-manufacturer-in-india.jpg"
+                alt="Producer Image"
+              />
+            </div>
             <div className="flex flex-col gap-10 justify-start text-left max-w-[519px] m-auto">
-              <p className={headerMarkup}>Meet Rajveer</p>
+              <p className={headerMarkup + " text-white"}>Meet Rajveer</p>
               <p className={tipsText}>
                 Rajveer Bhardwaj, founder of Kaarigari Creations, blends traditional Indian rug craftsmanship with modern design. His passion for
                 preserving heritage results in exquisite, handwoven rugs that celebrate India’s rich artistry.
               </p>
-              <button className={outlineButtonClass}>Meet our Producers</button>
-            </div>
-            <div className="m-auto">
-              <img
-                className="h-[437px] w-[395px] rounded-[15px] object-cover"
-                src="https://www.indianhandmaderugs.com/wp-content/uploads/2022/06/Quality-Control-carpet-rug-manufacturer-in-india.jpg"
-                alt="Producer Image"
-              />
+              <button className={outlineButtonClass + " text-[#CCD4DD] font-normal w-[366px] h-[49px]"}>Meet our Producers</button>
             </div>
           </div>
         </div>
       </section>
 
       {/* Reviews section */}
-      <section className="min-h-[721.75px] bg-white pt-20 text-left pb-28">
+      <section className={"min-h-[721.75px] pt-20 text-left pb-28 " + homeMainBG}>
         <div className="max-w-screen-xl m-auto flex flex-col justify-between ">
-          <p className={headerMarkup}>Here’s what our customers are saying…</p>
+          <p className={headerMarkup + " text-center"}>Here’s what our customers are saying</p>
           <div className="mt-12 m-auto w-80 md:w-full">
             <ReviewsCarousel reviews={reviews} />
           </div>
