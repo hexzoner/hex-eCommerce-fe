@@ -116,7 +116,7 @@ export default function Home() {
       </section>
 
       {/* Our Latest Arrivals */}
-      <section className="bg-white pb-32">
+      <section className="pb-32">
         <div>
           <p className={"pt-20 " + headerMarkup}> Featured Rugs</p>
         </div>
@@ -159,7 +159,7 @@ export default function Home() {
       </section>
 
       {/* Tips section */}
-      <section className="bg-white text-left">
+      <section className="text-left">
         <div className="max-w-screen-xl m-auto flex gap-10 h-full pb-20 flex-wrap md:flex-nowrap px-4 md:px-0">
           <div className="w-full md:w-1/2 flex flex-col justify-center gap-4 h-full min-h-[572px] ">
             <p className={headerMarkup}>Perfect samples, perfect choices! Try our rugs sample service</p>
