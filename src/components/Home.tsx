@@ -117,7 +117,7 @@ export default function Home() {
       </section>
 
       {/* Our Latest Arrivals */}
-      <section className="pb-32">
+      <section className="pb-24">
         <div>
           <p className={"pt-20 " + headerMarkup}> Featured Rugs</p>
         </div>
@@ -125,10 +125,10 @@ export default function Home() {
         <div className="mt-12 m-auto w-80 md:w-full">
           <LatestArrivalsCarousel products={products} />
         </div>
-
-        {/* <button onClick={() => navigate("/products")} className={"h-[50px] w-[194px] font-semibold text-[22px] "}>
+              
+        <button onClick={() => navigate("/products")} className="h-[50px] w-[194px] font-semibold text-[22px] mt-20 btn btn-neutral rounded-none hover:opacity-80">
           SEE ALL
-        </button> */}
+        </button>
       </section>
 
       {/* Rooms and Sizes section */}
