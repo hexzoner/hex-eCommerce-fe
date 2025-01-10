@@ -65,6 +65,7 @@ export interface Product {
   stripeProductId: string;
   producerQuote: string;
   samplePrice: number;
+  shippingDays: number;
 }
 
 export default function Products() {
@@ -125,6 +126,7 @@ export default function Products() {
     stripeProductId: "",
     producerQuote: "",
     samplePrice: 0,
+    shippingDays: 10,
   };
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);

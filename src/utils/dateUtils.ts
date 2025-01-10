@@ -27,3 +27,11 @@ export function formatDateShortWithMonthName(dateString: string) {
     year: "numeric",
   }).format(new Date(dateString));
 }
+
+
+export function formatDateShortNoYear(dateString: string) {
+  return new Intl.DateTimeFormat("en-US", {
+    month: "short",
+    day: "numeric",
+  }).format(new Date(dateString));
+}

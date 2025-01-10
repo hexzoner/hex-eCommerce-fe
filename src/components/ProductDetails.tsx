@@ -21,7 +21,10 @@ import { Review } from "../pages/admin/Reviews";
 import ImageGallery from "../pages/user/product-details-components/ImageGallery";
 import { getProductMainImageUrl } from "../utils/miscUtils";
 import ProductFAQ from "../pages/user/product-details-components/ProductFAQ";
-import { formatDateShortWithMonthName } from "../utils/dateUtils";
+import { formatDateShortWithMonthName, formatDateShortNoYear } from "../utils/dateUtils";
+import shippingImg from "../assets/shipping.png"
+// import shippingReturnImg from "../assets/shipping-return.png"
+import shippingDateImg from "../assets/shipping-date.png"
 
 export default function ProductDetails() {
   const { wishlist, setWishlist, addToCart, cartLoading } = useShop();
@@ -44,6 +47,8 @@ export default function ProductDetails() {
   const [responseStatus, setResponseStatus] = useState(200);
   const [rugsByProducer, setRugsByProducer] = useState<any>([]);
   const navigate = useNavigate();
+  const [deliveryDateMin, setDeliveryDateMin] = useState("N/A");
+  const [deliveryDateMax, setDeliveryDateMax] = useState("N/A");
 
   const descriptionTabClass = "tab text-xs sm:text-sm md:text-base lg:text-lg px-2 ";
 
@@ -64,6 +69,11 @@ export default function ProductDetails() {
         res = { ...res, patterns: res.patterns.filter((pattern: any) => pattern.active) };
         setProduct(res);
         // console.log(res);
+        // DeliveryMin = Current date + res.deliveryDays - 5 days 
+        // DeliveryMax = Current date + res.deliveryDays + 5 days
+        setDeliveryDateMin(formatDateShortNoYear(new Date(Date.now() + (res.shippingDays - 5) * 24 * 60 * 60 * 1000).toISOString()));
+        setDeliveryDateMax(formatDateShortNoYear(new Date(Date.now() + (res.shippingDays + 5) * 24 * 60 * 60 * 1000).toISOString()));
+
         setSelectedSize(res.defaultSize);
         setSelectedColor(res.patterns.length > 0 ? res.patterns.find((x: any) => x.order == 0) : []);
 
@@ -232,24 +242,27 @@ export default function ProductDetails() {
             <p className="text-3xl font-bold mt-3 text-black">€{calcPrice()}</p>
             {/* <div className="flex gap-4"></div> */}
             {/* Shipping features */}
-            <div className="flex gap-4 flex-wrap ">
-              {/* {product.features &&
-                product.features.map((feature: any) => {
-                  return (
-                    <div key={feature.id} className="flex gap-1 h-5 items-center  py-4">
-                      <img className="h-5 w-5" src={feature.image} alt={feature.name} />
-                      <p className="text-sm">{feature.name}</p>
-                    </div>
-                  );
-                })} */}
+            <div className="flex gap-6 flex-wrap ">
+              <div className="flex gap-2 h-5 items-center  py-4">
+                <img className="" src={shippingImg} alt="Free Shipping" />
+                <p className="text-sm">Free Shipping</p>
+              </div>
+              <div className="flex gap-1 h-5 items-center  py-4">
+                <img className="" src={shippingDateImg} alt="Delivery date" />
+                <p className="text-sm">{`Estimated ship date ${deliveryDateMin} - ${deliveryDateMax}`}</p>
+              </div>
+              <div className="flex gap-1 h-5 items-center  py-4">
+                <img className="" src={shippingDateImg} alt="Shipping return" />
+                <p className="text-sm">30 days free return shipping</p>
+              </div>
             </div>
 
             {/* Features section */}
-            <div className="flex gap-4 flex-wrap border-t-[1.5px] border-solid border-black border-opacity-20 pt-4">
+            <div className="flex gap-6 flex-wrap border-t-[1.5px] border-solid border-black border-opacity-20 pt-4">
               {product.features &&
                 product.features.map((feature: any) => {
                   return (
-                    <div key={feature.id} className="flex gap-1 h-5 items-center  py-4">
+                    <div key={feature.id} className="flex gap-2 h-5 items-center  py-4">
                       <img className="h-5 w-5" src={feature.image} alt={feature.name} />
                       <p className="text-sm">{feature.name}</p>
                     </div>
@@ -286,7 +299,7 @@ export default function ProductDetails() {
               <button
                 onClick={handleAddToCart}
                 className={`btn btn-neutral rounded-none w-[45%] ${cartLoading ? "btn-disabled" : ""}`}
-                // disabled={cartLoading}
+              // disabled={cartLoading}
               >
                 {cartLoading ? <LoadingSpinnerSmall /> : "Add to Cart"}
               </button>
@@ -294,7 +307,7 @@ export default function ProductDetails() {
                 <button
                   onClick={handleAddSample}
                   className={`btn btn-neutral btn-outline rounded-none w-[45%] ${cartLoading ? "btn-disabled" : ""}`}
-                  // disabled={cartLoading}
+                // disabled={cartLoading}
                 >
                   {cartLoading ? <LoadingSpinnerSmall /> : "Order a Sample"}
                 </button>
@@ -386,9 +399,8 @@ function ProductColor({ color, setSelectedColor, selectedColor }: { color: any; 
           setSelectedColor(color);
         }}
         key={color.id}
-        className={`h-10 w-10 cursor-pointer rounded-full object-cover p-1 border-[1.5px] border-solid border-black ${
-          selectedColor.id == color.id ? "border-opacity-100" : "border-opacity-10"
-        }`}
+        className={`h-10 w-10 cursor-pointer rounded-full object-cover p-1 border-[1.5px] border-solid border-black ${selectedColor.id == color.id ? "border-opacity-100" : "border-opacity-10"
+          }`}
         src={color.icon}
         alt=""
       />
