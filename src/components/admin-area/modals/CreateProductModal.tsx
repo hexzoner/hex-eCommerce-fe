@@ -118,6 +118,7 @@ export function CreateProductModal({
     bestSeller: boolean;
     producerQuote: string;
     samplePrice: number | string;
+    shippingDays: number | string;
   }>();
 
   // const imageInput = watch("image");
@@ -144,6 +145,7 @@ export function CreateProductModal({
       material: product.isEdit ? product.material.id : "",
       new: product.isEdit ? product.new : false,
       bestSeller: product.isEdit ? product.bestSeller : false,
+      shippingDays: product.isEdit ? product.shippingDays : "",
     });
     setSelectedSizes(product.isEdit ? product.sizes.map((x) => ({ id: x.id, name: x.name, squareMeters: x.squareMeters })) : []);
     setSelectedColors(product.isEdit ? product.colors.map((x) => ({ id: x.id, name: x.name, image: x.image })) : []);
@@ -217,6 +219,7 @@ export function CreateProductModal({
     material: number | string;
     new: boolean;
     bestSeller: boolean;
+    shippingDays: string | number;
   }) {
     // console.log(data);
     // parsing the data to the correct type before sending it to the server
@@ -230,6 +233,7 @@ export function CreateProductModal({
     const shape = typeof data.shape === "string" ? parseInt(data.shape) : data.shape;
     const technique = typeof data.technique === "string" ? parseInt(data.technique) : data.technique;
     const material = typeof data.material === "string" ? parseInt(data.material) : data.material;
+    const shippingDays = typeof data.shippingDays === "string" ? parseInt(data.shippingDays) : data.shippingDays;
 
     // console.log({ name: data.name, description: data.description, price, categoryId: category });
     setLoading(true);
@@ -258,6 +262,7 @@ export function CreateProductModal({
       bestSeller: data.bestSeller,
       producerQuote: data.producerQuote,
       samplePrice,
+      shippingDays: shippingDays,
     };
     // console.log(body);
 
@@ -563,11 +568,11 @@ export function CreateProductModal({
                         <div className="flex">
                           <div>
                             <label className="input flex items-center gap-2 text-sm ">
-                              PriceMeter
+                              Price / m2
                               <input
                                 type="text"
                                 className={inputStyle}
-                                placeholder="Enter a product price"
+                                placeholder="Price / m2"
                                 autoComplete="off"
                                 {...register("price", {
                                   required: "Price is required",
@@ -589,11 +594,11 @@ export function CreateProductModal({
                           </div>
                           <div>
                             <label className="input flex items-center gap-2 text-sm ">
-                              PriceSample
+                              Sample Price
                               <input
                                 type="text"
                                 className={inputStyle}
-                                placeholder="Enter a sample price"
+                                placeholder="Sample price"
                                 autoComplete="off"
                                 {...register("samplePrice", {
                                   pattern: {
@@ -614,7 +619,33 @@ export function CreateProductModal({
                               <p className="font-semibold text-error text-xs text-left ">{errors.samplePrice.message?.toString()}</p>
                             )}
                           </div>
+
+                          <div>
+                            <label className="input flex items-center gap-2 text-sm ">
+                              Shipping Days
+                              <input
+                                type="text"
+                                className={inputStyle}
+                                placeholder="Shipping days"
+                                autoComplete="off"
+                                {...register("shippingDays", {
+                                  validate: (value) => {
+                                    {
+                                      const _v = typeof value === "string" ? parseFloat(value) : value;
+                                      if (typeof _v === "number" && _v < 6) return "Shipping Days must be greater than 6";
+                                      return true;
+                                    }
+                                  },
+                                })}
+                              />
+                            </label>
+                            {errors.shippingDays && (
+                              <p className="font-semibold text-error text-xs text-left ">{errors.shippingDays.message?.toString()}</p>
+                            )}
+                          </div>
                         </div>
+
+
 
                         <div className="flex items-center gap-4">
                           <p className="text-sm">Is Active?</p>

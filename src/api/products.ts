@@ -103,6 +103,7 @@ interface ProductProps {
   patterns?: iPattern[];
   producerQuote: string;
   samplePrice: number;
+  shippingDays: number;
 }
 
 function getBodyAPI(product: ProductProps) {
@@ -132,6 +133,7 @@ function getBodyAPI(product: ProductProps) {
     patterns: product.patterns,
     producerQuote: product.producerQuote,
     samplePrice: product.samplePrice,
+    shippingDays: product.shippingDays,
   };
 }
 
