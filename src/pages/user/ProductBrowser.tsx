@@ -108,7 +108,7 @@ export default function ProductBrowser() {
           </li>
         </ul>
       </div>
-      <p className="text-2xl text-left mt-8 font-semibold px-5">Our collection of handmade rugs</p>
+      <p className="text-4xl text-left mt-8 font-bold px-5">Our collection of handmade rugs</p>
       <p className="text-base text-left mt-4 px-5">Discover our collection, handmade of eco-friendly wool material</p>
       <div className="px-5 my-6">
         <Filters
@@ -166,6 +166,8 @@ export default function ProductBrowser() {
   );
 }
 
+const badgeClass = "rounded-none px-2 py-1 bg-[#ebf2f8] border-opacity-50 text-xs border-2 border-solid"
+
 export const ProductCard = ({ product, wishlist, setWishlist }: { product: Product; wishlist: any; setWishlist: any }) => {
   const navigate = useNavigate();
   function handleClick() {
@@ -173,25 +175,24 @@ export const ProductCard = ({ product, wishlist, setWishlist }: { product: Produ
   }
 
   return (
-    <div className="card bg-base-100 py-4 w-72 mx-auto rounded-none">
+    <div className="card py-4 w-72 mx-auto rounded-none">
       <figure className="relative tooltip">
         <img onClick={handleClick} className="w-72 h-48 object-cover  cursor-pointer p-2" src={getProductMainImageUrl(product)} alt="Rug Image" />
         <NewBestSellerBadge isNew={product.new} isBestSeller={product.bestSeller} />
       </figure>
-      <div className="card-body">
-        <h2 className="text-xl font-bold text-center flex items-center justify-between ">
-          <div className="opacity-0">+</div>
+      <div className="card-body p-0">
+        <h2 className="text-xl font-bold text-center flex items-center justify-between px-3">
           <div onClick={handleClick} className="cursor-pointer hover:text-[#b04e2d]">
             {product.name}
           </div>
           {/* <div className="badge badge-secondary"></div> */}
           <FavIcon product={product} wishlist={wishlist} setWishlist={setWishlist} />
         </h2>
-        {calculatePriceRange(product)}
+        <div className="text-left text-[#676e75] px-3 ">{calculatePriceRange(product)}</div>
         {/* <p className="text-sm text-justify ">{truncateText(product.description, 128)}</p> */}
-        <div className="card-actions justify-end">
-          <div className="badge badge-outline">{product.category.name}</div>
-          <div className="badge badge-outline">{product.defaultColor.name}</div>
+        <div className="card-actions justify-start cursor-default px-3">
+          <div className={badgeClass}>{product.category.name}</div>
+          <div className={badgeClass}>{product.defaultColor.name}</div>
         </div>
       </div>
     </div>
