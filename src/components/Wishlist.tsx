@@ -14,7 +14,7 @@ export default function Wishlist() {
   const { wishlist, setWishlist, shopLoading } = useShop();
   if (shopLoading) return <LoadingSpinner />;
 
-  console.log(wishlist)
+
 
   return (
     <div className="min-h-screen pb-12 max-w-screen-xl m-auto">
@@ -34,7 +34,7 @@ export default function Wishlist() {
                 //   cartLoading={cartLoading}
                 //   wishlist={wishlist}
                 // />
-                <ProductCard product={item} wishlist={wishlist} setWishlist={setWishlist} />
+                <ProductCard key={item.id} product={item} wishlist={wishlist} setWishlist={setWishlist} />
               ))}
             </div>
           )}
