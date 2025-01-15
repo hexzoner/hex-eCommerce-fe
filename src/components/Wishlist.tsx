@@ -8,14 +8,17 @@ import { useNavigate } from "react-router-dom";
 import { calculatePriceRange } from "../utils/miscUtils";
 import { getProductMainImageUrl } from "../utils/miscUtils";
 import { storeWishlist } from "../utils/storage";
+import { ProductCard } from "../pages/user/ProductBrowser";
 
 export default function Wishlist() {
-  const { wishlist, setWishlist, shopLoading, addToCart, cartLoading } = useShop();
+  const { wishlist, setWishlist, shopLoading } = useShop();
   if (shopLoading) return <LoadingSpinner />;
 
+  console.log(wishlist)
+
   return (
-    <div className="min-h-screen pb-12">
-      <p className="text-3xl mt-8">My Wishlist</p>
+    <div className="min-h-screen pb-12 max-w-screen-xl m-auto">
+      <p className="text-4xl mt-16 mb-8 text-black text-left font-bold">My Wishlist</p>
       <section>
         <div>
           {wishlist.length === 0 ? (
@@ -23,14 +26,15 @@ export default function Wishlist() {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mt-4 max-w-[75rem] m-auto ">
               {wishlist.map((item) => (
-                <WishlistCard
-                  key={item.id}
-                  item={item}
-                  setWishlist={setWishlist}
-                  addToCart={addToCart}
-                  cartLoading={cartLoading}
-                  wishlist={wishlist}
-                />
+                // <WishlistCard
+                //   key={item.id}
+                //   item={item}
+                //   setWishlist={setWishlist}
+                //   addToCart={addToCart}
+                //   cartLoading={cartLoading}
+                //   wishlist={wishlist}
+                // />
+                <ProductCard product={item} wishlist={wishlist} setWishlist={setWishlist} />
               ))}
             </div>
           )}
