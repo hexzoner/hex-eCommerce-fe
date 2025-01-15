@@ -72,6 +72,7 @@ const ShopProvider = ({ children }: { children: ReactNode }) => {
 
   const [shopLoading, setShopLoading] = useState(true);
   const [cartLoading, setCartLoading] = useState(false);
+  const [loginTrigger, setLoginTrigger] = useState(false)
 
   function calcCart(userCart: iShopCartProduct[]) {
     for (let i = 0; i < userCart.length; i++) {
@@ -268,7 +269,7 @@ const ShopProvider = ({ children }: { children: ReactNode }) => {
         if (newItemsFromStorage.length > 0) {
           newItemsFromStorage.forEach((item: any) => {
             addToCart(item.product, item.quantity, item.size.id, item.pattern.id)
-              .then(() => {})
+              .then(() => { })
               .catch((err) => {
                 console.log(err);
               });
@@ -283,41 +284,14 @@ const ShopProvider = ({ children }: { children: ReactNode }) => {
       .finally(() =>
         getWishlist(restoreToken())
           .then((res) => {
-            if (!res) res = [];
-            const wishlistFromStorage = restoreWishlist();
-
-            const newItemsFromStorage = wishlistFromStorage.filter((item: any) => !res.find((i: any) => i.id === item.id));
-            // console.log(newItemsFromStorage);
-            // console.log("-----------------");
-            if (newItemsFromStorage.length > 0) {
-              newItemsFromStorage.forEach((item: any) => {
-                addToWishlist(restoreToken(), item.id)
-                  .then(() => {
-                    // if (res.status === "success") {
-                    //   // toast.success(res.message);
-                    //   storeWishlist(wishlistFromStorage.filter((i: any) => i.id !== item.id));
-                    // }
-                  })
-                  .catch((err) => {
-                    console.log(err);
-                  });
-              });
-            }
-
-            const combinedWithlist = [...wishlistFromStorage, ...res].reduce((acc, current) => {
-              // Check if the current item is already in the accumulator array
-              const x = acc.find((item: any) => item.id === current.id);
-              if (!x) {
-                // If not found, add the current item to the accumulator array
-                acc.push(current);
-              }
-              // Return the accumulator array
-              return acc;
-            }, []); // Initial value for the accumulator is an empty array
-
-            // storeWishlist([]);
-            setWishlist(combinedWithlist);
             // console.log(res);
+            if (!res) res = [];
+            if (loginTrigger) {
+              combineWishlists(res)
+              setLoginTrigger(false)
+            }
+            else
+              setWishlist(res)
           })
           .catch((err) => {
             console.log(err);
@@ -326,11 +300,47 @@ const ShopProvider = ({ children }: { children: ReactNode }) => {
       );
   }, [user, isAuthenticated]);
 
+  function combineWishlists(res: any) {
+    const wishlistFromStorage = restoreWishlist();
+    const newItemsFromStorage = wishlistFromStorage.filter((item: any) => !res.find((i: any) => i.id === item.id));
+
+    if (newItemsFromStorage.length > 0) {
+      newItemsFromStorage.forEach((item: any) => {
+        addToWishlist(restoreToken(), item.id)
+          .then(() => {
+            // if (res.status === "success") {
+            //   // toast.success(res.message);
+            //   storeWishlist(wishlistFromStorage.filter((i: any) => i.id !== item.id));
+            // }
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      });
+    }
+
+    const combinedWithlist = [...wishlistFromStorage, ...res].reduce((acc, current) => {
+      // Check if the current item is already in the accumulator array
+      const x = acc.find((item: any) => item.id === current.id);
+      if (!x) {
+        // If not found, add the current item to the accumulator array
+        acc.push(current);
+      }
+      // Return the accumulator array
+      return acc;
+    }, []); // Initial value for the accumulator is an empty array
+
+    // storeWishlist([]);
+    setWishlist(combinedWithlist);
+  }
+
   function login(res: any) {
+
     setUser(res.user);
     setIsAuthenticated(true);
     setAuthLoading(false);
     storeToken(res.token);
+    setLoginTrigger(true);
   }
 
   return (
@@ -369,6 +379,7 @@ const ShopProvider = ({ children }: { children: ReactNode }) => {
         filter,
         setFilter,
         deleteFromCart,
+        setLoginTrigger
       }}>
       {children}
     </ShopContext.Provider>

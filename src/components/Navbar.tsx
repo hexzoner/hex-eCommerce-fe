@@ -17,7 +17,7 @@ export default function Navbar() {
   //   if (user && user.role == "admin") htmlElement.setAttribute("data-theme", "business");
   //   else htmlElement.setAttribute("data-theme", "winter");
   // }
-
+  // console.log(user)
   return (
     <div className="bg-[#eff2f6] text-black">
       <div className="bg-[#303030]">

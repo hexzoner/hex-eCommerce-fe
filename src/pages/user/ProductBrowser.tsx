@@ -173,6 +173,7 @@ export const ProductCard = ({ product, wishlist, setWishlist }: { product: Produ
   function handleClick() {
     navigate(`/product/${product.id}`);
   }
+  // console.log(product)
 
   return (
     <div className="card py-4 w-72 mx-auto rounded-none">

@@ -20,12 +20,12 @@ interface AuthContextProps {
 
 const AuthContext = createContext<AuthContextProps>({
   user: null,
-  setUser: () => {},
+  setUser: () => { },
   authLoading: true,
-  setAuthLoading: () => {},
+  setAuthLoading: () => { },
   isAuthenticated: false,
-  setIsAuthenticated: () => {},
-  logout: () => {},
+  setIsAuthenticated: () => { },
+  logout: () => { },
 });
 
 const useAuth = () => {
@@ -73,50 +73,52 @@ interface ShopContextProps {
   filter: iFilter;
   setFilter: React.Dispatch<React.SetStateAction<iFilter>>;
   deleteFromCart: (productId: number, color: number, size: number) => void;
+  setLoginTrigger: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const ShopContext = createContext<ShopContextProps>({
-  login: () => {},
+  login: () => { },
   wishlist: [],
-  setWishlist: () => {},
+  setWishlist: () => { },
   shopLoading: true,
-  setShopLoading: () => {},
+  setShopLoading: () => { },
   categories: [],
-  setCategories: () => {},
+  setCategories: () => { },
   colors: [],
-  setColors: () => {},
+  setColors: () => { },
   sizes: [],
-  setSizes: () => {},
+  setSizes: () => { },
   cart: {
     products: [],
     // samples: [],
     total: 0,
   },
-  setCart: () => {},
-  addToCart: () => {},
+  setCart: () => { },
+  addToCart: () => { },
   cartLoading: false,
-  updateCartQuantity: () => {},
+  updateCartQuantity: () => { },
   styles: [],
-  setStyles: () => {},
+  setStyles: () => { },
   materials: [],
-  setMaterials: () => {},
+  setMaterials: () => { },
   techniques: [],
-  setTechniques: () => {},
+  setTechniques: () => { },
   shapes: [],
-  setShapes: () => {},
+  setShapes: () => { },
   producers: [],
-  setProducers: () => {},
+  setProducers: () => { },
   rooms: [],
-  setRooms: () => {},
+  setRooms: () => { },
   features: [],
-  setFeatures: () => {},
+  setFeatures: () => { },
   filter: {
     id: 0,
     type: "",
     value: "",
   },
-  setFilter: () => {},
-  deleteFromCart: () => {},
+  setFilter: () => { },
+  deleteFromCart: () => { },
+  setLoginTrigger: () => false
 });
 
 const useShop = () => {
