@@ -53,7 +53,7 @@ export default function Filters({
 
   return (
     <div>
-      <div className="border-b-[1.5px] border-t-[1.5px] border-black flex flex-wrap items-start mb-2 gap-4 py-4">
+      <div className="border-black flex flex-wrap items-start mb-2 gap-4 py-4">
         <FilterDropdown
           name="Category"
           options={categories}
@@ -263,10 +263,10 @@ export function FilterDropdown({
 
   return (
     <div className={`dropdown ${isHovered ? "dropdown-open" : ""}`} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} ref={dropdownRef}>
-      <div tabIndex={0} role="button" className="border-[1.5px] select-bordered w-full pl-6 br-8 select select-sm rounded-none">
+      <div tabIndex={0} role="button" className="border-[1.5px] select-bordered w-full pl-6 br-8 select select-sm rounded-none bg-[#f5f6fa]">
         {name}
       </div>
-      <ul tabIndex={0} className={`dropdown-content menu bg-base-100 rounded-box z-[30] p-2 shadow max-h-72 ` + filterMarkup}>
+      <ul tabIndex={0} className={`dropdown-content menu bg-base-100 rounded-none z-[30] p-2 shadow max-h-72 ` + filterMarkup}>
         {options.map((option) => {
           return (
             <li key={option.id}>
@@ -317,11 +317,9 @@ function MultiSelectLine({
   }
 
   return (
-    <div className="rounded-none ">
-      <label className="max-w-72 flex items-center cursor-pointer">
-        <input onChange={handleChange} checked={checked} type="checkbox" className="checkbox rounded-none bg-base-300 checkbox-xs" />
-        <div className="text-sm text-left w-full ml-2">{name}</div>
-      </label>
-    </div>
+    <label className="w-full p-2 flex items-center cursor-pointer rounded-none">
+      <input onChange={handleChange} checked={checked} type="checkbox" className="checkbox rounded-none bg-base-300 checkbox-xs" />
+      <div className="text-sm text-left w-full ml-2">{name}</div>
+    </label>
   );
 }
