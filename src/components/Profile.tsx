@@ -27,6 +27,27 @@ export default function Profile() {
       });
   }
 
+  // const [result, setResult] = useState<string[]>([])
+  // const iterable = 'A' //-> ['A', 'B', 'C', 'c', 'A', 'D']
+  // const iterableArray = Array.from(iterable);
+  // function calculateResult() {
+  //   const r = [];
+  //   r.push(iterableArray[0])
+  //   for (let i = 0; i < iterableArray.length; i++) {
+  //     for (let k = i; k < iterableArray.length; k++) {
+  //       console.log("Tracking :" + iterableArray[i])
+  //       console.log("comparing with " + iterableArray[k])
+  //       if (iterableArray[i] != iterableArray[k]) {
+  //         console.log("New " + iterableArray[k] + " found with index: " + k)
+  //         r.push(iterableArray[k]);
+  //         i = k - 1;
+  //         break;
+  //       }
+  //     }
+  //   }
+  //   setResult(r)
+  // }
+
   return (
     <div className="min-h-screen">
       {/* <p className="text-3xl font-semibold mt-8"> User Profile</p> */}
@@ -58,6 +79,12 @@ export default function Profile() {
           <p className="w-1/2">Last Name:</p>
           <p className="w-1/2"> {user.lastName}</p>
         </div>
+        {/* <div>
+          <p>{iterable}</p>
+          <input type="text" className="input" />
+          <button onClick={calculateResult} className="btn btn-neutral">Result</button>
+          <p>{result}</p>
+        </div> */}
       </div>
     </div>
   );
