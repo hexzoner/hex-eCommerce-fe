@@ -91,10 +91,10 @@ export function WishlistCard({
       <p onClick={handleRemoveClick} className="text-right font-bold cursor-pointer">
         ✕
       </p>
-      <img onClick={handleNavigate} src={getProductMainImageUrl(item)} alt={item.name} className=" h-36 w-72 object-cover px-4 cursor-pointer" />
+      <img onClick={handleNavigate} src={getProductMainImageUrl(item)} alt={item.name ? item.name : "Product image"} className=" h-36 w-72 object-cover px-4 cursor-pointer" />
       <div className="grid grid-col gap-3">
         <p onClick={handleNavigate} className="text-lg font-semibold cursor-pointer hover:text-[#b04e2d]">
-          {item.name}
+          {item.name ? item.name : ""}
         </p>
         <p className="text-lg font-semibold">{calculatePriceRange(item)}</p>
         {/* <button onClick={handleAddToCart} className="btn btn-primary rounded-none mx-2" disabled={cartLoading}>
