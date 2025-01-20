@@ -43,7 +43,7 @@ export default function ProductDetails() {
   const [sort, setSort] = useState("desc");
   const [totalPages, setTotalPages] = useState(1);
   const [totalReviews, setTotalReviews] = useState(0);
-  const [averateRating, setAverageRating] = useState(0);
+  const [averageRating, setAverageRating] = useState(0);
   const [responseStatus, setResponseStatus] = useState(200);
   const [rugsByProducer, setRugsByProducer] = useState<any>([]);
   const navigate = useNavigate();
@@ -144,7 +144,7 @@ export default function ProductDetails() {
     return selectedSize.name === "Sample" ? product.samplePrice.toFixed(2) : (product.price * selectedSize.squareMeters).toFixed(2);
   }
 
-  // console.log(productReviews);
+  // console.log(averateRating);
 
   return (
     <div className="">
@@ -233,11 +233,19 @@ export default function ProductDetails() {
           </div>
 
           <div className="flex flex-col lg:sticky top-0 justify-around w-full bg-[#ebf2f8] py-12 lg:w-1/2  mt-6 lg:mt-0 px-5  lg:px-10  gap-4 ">
-            <div>
+            <div className="text-black">
               <p className="text-3xl font-bold text-black">{product.name}</p>
               <p>{product.category ? product.category.name : "N/A"}</p>
             </div>
-            <ReviewsStats totalReviews={totalReviews} averateRating={averateRating} />
+
+            {/* <div className="flex gap-2 items-end text-black ">
+              {averateRating > 0 && <p className="text-3xl pt-3">{averateRating}</p>}
+              <div className="flex gap-2 items-center pb-1">
+                <Rating allowFraction={true} initialValue={averateRating} size={20} readonly={true} className="my-1" />
+                <a href="#reviews" className="underline text-sm">({totalReviews} Reviews)</a>
+              </div>
+            </div> */}
+            <ReviewsStats averageRating={averageRating} totalReviews={totalReviews} />
 
             <p className="text-3xl font-bold mt-3 text-black">€{calcPrice()}</p>
             {/* <div className="flex gap-4"></div> */}
@@ -345,13 +353,16 @@ export default function ProductDetails() {
         <section id="reviews" className="bg-[#ebf2f8] max-w-[75rem] w-full m-auto text-center px-4">
           <div className="text-left flex flex-col gap-0 max-w-[40rem] m-auto text-black">
             <p className="font-bold text-3xl text-left pt-20 ">Customers Reviews</p>
-            <div className="border-b-2 border-black border-opacity-15 pb-8 flex gap-4 items-center">
-              <p className="text-3xl pt-3">{averateRating}</p>
+            {/* <div className="border-b-2 border-black border-opacity-15 pb-8 flex gap-4 items-center">
+              {averateRating > 0 && <p className="text-3xl pt-3">{averateRating}</p>}
               <ReviewsStats totalReviews={totalReviews} averateRating={averateRating} />
+            </div> */}
+            <ReviewsStats averageRating={averageRating} totalReviews={totalReviews} />
+            <div className="border-t-2 border-black border-opacity-15 mt-8">
+              {productReviews.map((review: any) => (
+                <ReviewCard key={review.id} review={review} />
+              ))}
             </div>
-            {productReviews.map((review: any) => (
-              <ReviewCard key={review.id} review={review} />
-            ))}
           </div>
           <div className="mb-20 max-w-[40rem] m-auto">
             <Pagination page={page} setPage={setPage} perPage={perPage} setPerPage={setPerPage} totalResults={totalReviews} totalPages={totalPages} />
@@ -369,7 +380,7 @@ function ReviewCard({ review }: { review: any }) {
       <p className="font-bold text-lg">{review.title}</p>
 
       <p className="mt-6 text-sm">{review.review}</p>
-      <div className="flex flex-col items-left justify-between mt-3">
+      <div className="flex flex-col items-left justify-between mt-3 ">
         <p className="text-md font-semibold">{review.author}</p>
         <p className="text-sm mt-1">{formatDateShortWithMonthName(review.date)}</p>
       </div>
@@ -416,109 +427,12 @@ function ProductColor({ color, setSelectedColor, selectedColor }: { color: any; 
   );
 }
 
-enum size {
-  xsmall = "rating-xs",
-  small = "rating-sm",
-  medium = "rating-md",
-  large = "rating-lg",
-}
-
-function ReviewsStats({ totalReviews, averateRating }: { totalReviews: number; averateRating: number }) {
-  return (
-    <div className="mt-3 flex justify-start items-center gap-2">
-      <Ratings rating={averateRating} size={size.small} />
-      <a href="#reviews" className="text-sm underline cursor-pointer">
-        ({totalReviews} Reviews)
-      </a>
+function ReviewsStats({ averageRating, totalReviews }: { averageRating: number; totalReviews: number }) {
+  return <div className="flex gap-2 items-end text-black ">
+    {averageRating > 0 && <p className="text-3xl pt-3">{averageRating}</p>}
+    <div className="flex gap-2 items-center pb-1">
+      <Rating allowFraction={true} initialValue={averageRating > 0 ? averageRating : 0} size={20} readonly={true} className="my-1" />
+      <a href="#reviews" className="underline text-sm">({totalReviews} Reviews)</a>
     </div>
-  );
-}
-
-function Ratings({ rating, size }: { rating: number; size: size }) {
-  return (
-    <div className={"rating rating-half " + size}>
-      {/* <input checked={true} title="rating" type="radio" name="rating-10" className="rating-hidden pointer-events-none" readOnly /> */}
-      <input
-        checked={false}
-        title="rating"
-        type="radio"
-        name="rating-10"
-        className="mask mask-star-2 mask-half-1 bg-yellow-500 pointer-events-none"
-        readOnly
-      />
-      <input
-        checked={rating < 1.5 ? true : false}
-        title="rating"
-        type="radio"
-        name="rating-10"
-        className="mask mask-star-2 mask-half-2 bg-yellow-500 pointer-events-none"
-        readOnly
-      />
-      <input
-        checked={rating >= 1.5 && rating < 2.0 ? true : false}
-        title="rating"
-        type="radio"
-        name="rating-10"
-        className="mask mask-star-2 mask-half-1 bg-yellow-500 pointer-events-none"
-        readOnly
-      />
-      <input
-        checked={rating >= 2 && rating < 2.5 ? true : false}
-        title="rating"
-        type="radio"
-        name="rating-10"
-        className="mask mask-star-2 mask-half-2 bg-yellow-500 pointer-events-none"
-        readOnly
-      />
-      <input
-        checked={rating >= 2.5 && rating < 3 ? true : false}
-        title="rating"
-        type="radio"
-        name="rating-10"
-        className="mask mask-star-2 mask-half-1 bg-yellow-500 pointer-events-none"
-        readOnly={true}
-      />
-
-      <input
-        checked={rating >= 3 && rating < 3.5 ? true : false}
-        title="rating"
-        type="radio"
-        name="rating-10"
-        className="mask mask-star-2 mask-half-2 bg-yellow-500 pointer-events-none"
-        readOnly
-      />
-      <input
-        checked={rating >= 3.5 && rating < 4 ? true : false}
-        title="rating"
-        type="radio"
-        name="rating-10"
-        className="mask mask-star-2 mask-half-1 bg-yellow-500 pointer-events-none"
-        readOnly
-      />
-      <input
-        checked={rating >= 4 && rating < 4.5 ? true : false}
-        title="rating"
-        type="radio"
-        name="rating-10"
-        className="mask mask-star-2 mask-half-2 bg-yellow-500 pointer-events-none"
-        readOnly
-      />
-      <input
-        checked={rating >= 4.5 && rating < 5 ? true : false}
-        title="rating"
-        type="radio"
-        name="rating-10"
-        className="mask mask-star-2 mask-half-1 bg-yellow-500 pointer-events-none"
-        readOnly
-      />
-      <input
-        checked={rating == 5 ? true : false}
-        title="rating"
-        type="radio"
-        name="rating-10"
-        className="mask mask-star-2 mask-half-2 bg-yellow-500 pointer-events-none"
-        readOnly
-      />
-    </div>
-  );
+  </div>
 }
