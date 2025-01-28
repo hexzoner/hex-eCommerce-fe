@@ -2,7 +2,7 @@ import { Producer } from "./Producers";
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { createProducer, updateProducer } from "../../api/producers";
-import { LoadingSpinnerSmall } from "../../components/admin-area/admin-components";
+import { LoadingSpinnerSmall } from "./admin-components";
 
 export default function AddEditProducerPopup({ producer, setProducers }: { producer: Producer; setProducers: any }) {
   const {

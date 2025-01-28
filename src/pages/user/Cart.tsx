@@ -1,12 +1,12 @@
 import { useNavigate } from "react-router-dom";
-import { useShop } from "../context";
+import { useShop } from "../../context";
 import { toast } from "react-toastify";
 // import { updateCart } from "../api/cart";
-import { createCheckout } from "../api/checkout";
-import { getProductPricesByProductId } from "../api/productPrices";
-import { restoreToken } from "../utils/storage";
-import { useAuth } from "../context";
-import LoadingSpinner from "./LoadingSpinner";
+import { createCheckout } from "../../api/checkout";
+import { getProductPricesByProductId } from "../../api/productPrices";
+import { restoreToken } from "../../utils/storage";
+import { useAuth } from "../../context";
+import LoadingSpinner from "../../components/LoadingSpinner";
 
 export default function Cart() {
   const { cart, shopLoading, updateCartQuantity, cartLoading, deleteFromCart } = useShop();

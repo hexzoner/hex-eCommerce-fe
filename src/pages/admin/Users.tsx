@@ -1,7 +1,7 @@
 import { getUsers } from "../../api/users";
 import { useState, useEffect } from "react";
 import { restoreToken } from "../../utils/storage";
-import LoadingSpinner from "../LoadingSpinner";
+import LoadingSpinner from "../../components/LoadingSpinner";
 import sortTables from "../../utils/sortTables";
 import { formatDateFull } from "../../utils/dateUtils";
 import { UserModal } from "./admin-components";

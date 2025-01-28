@@ -2,7 +2,7 @@ import { useShop } from "../context";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { LoadingSpinner } from "./components";
+import { LoadingSpinner } from "../components/components";
 import { toast } from "react-toastify";
 import { signUpApiCall } from "../api/auth";
 // import { storeToken } from "../utils/storage";

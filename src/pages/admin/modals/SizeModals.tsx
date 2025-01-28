@@ -2,8 +2,8 @@ import { Size } from "../Sizes";
 import { useState } from "react";
 import { getSizes, createSize, updateSize, deleteSize } from "../../../api/sizes";
 // import { restoreToken } from "../../../utils/storage";
-import { ConfirmPopup } from "../admin-components";
-import { LoadingSpinnerSmall } from "../admin-components";
+import { ConfirmPopup, LoadingSpinnerSmall } from "../admin-components";
+
 
 interface SizeModalProps {
   size: Size;

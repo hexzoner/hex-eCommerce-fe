@@ -4,8 +4,8 @@ import { formatDateFull } from "../../utils/dateUtils";
 import { useForm } from "react-hook-form";
 import { createReview, updateReview, deleteReview } from "../../api/reviews";
 import { iCreateReviewAPI } from "../../api/reviews";
-import { ConfirmPopup } from "../../components/admin-area/admin-components";
-import { Product } from "../../components/admin-area/Products";
+import { ConfirmPopup } from "./admin-components";
+import { Product } from "./Products";
 // import LoadingSpinner from "../../components/LoadingSpinner";
 
 const AddEditReviewPopup = ({
@@ -186,7 +186,7 @@ const AddEditReviewPopup = ({
                       type="text"
                       className="grow rounded-none"
                       placeholder="Enter product here"
-                      //   {...register("product", { required: true })}
+                    //   {...register("product", { required: true })}
                     />
                     <FilterResults
                       setValue={setValue}

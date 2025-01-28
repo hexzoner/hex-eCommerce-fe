@@ -1,5 +1,5 @@
 import axios from "axios";
-import { Size } from "../components/admin-area/Sizes";
+import { Size } from "../pages/admin/Sizes";
 // import { toast } from "react-toastify";
 import { restoreToken } from "../utils/storage";
 

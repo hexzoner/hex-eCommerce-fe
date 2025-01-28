@@ -1,15 +1,15 @@
 import { getProducts } from "../../api/products";
 import { useState, useEffect } from "react";
-import LoadingSpinner from "../LoadingSpinner";
+import LoadingSpinner from "../../components/LoadingSpinner";
 import sortTables from "../../utils/sortTables";
 import { CreateProductModal } from "./admin-components";
 import { formatDateShort } from "../../utils/dateUtils";
 import { Size } from "./Sizes";
 // import { Color } from "../../pages/admin/Colors";
-import Pagination from "../Pagination";
+import Pagination from "../../components/Pagination";
 import { iRoom } from "../../utils/constants";
 import { iTaxonomy } from "../../pages/admin/Taxonomies";
-import { iPattern } from "./modals/CreateProductModal";
+import { iPattern } from "../../pages/admin/modals/CreateProductModal";
 
 export interface Product {
   id: number;

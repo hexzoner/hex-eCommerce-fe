@@ -1,10 +1,10 @@
-import { useAuth } from "../context";
+import { useAuth } from "../../context";
 import { Navigate } from "react-router-dom";
-import LoadingSpinner from "./LoadingSpinner";
-import { sendVerificationEmail } from "../api/email";
+import LoadingSpinner from "../../components/LoadingSpinner";
+import { sendVerificationEmail } from "../../api/email";
 import { toast } from "react-toastify";
 import { useState } from "react";
-import { LoadingSpinnerSmall } from "./admin-area/admin-components";
+import { LoadingSpinnerSmall } from "../admin/admin-components"
 
 export default function Profile() {
   const { user, authLoading } = useAuth();

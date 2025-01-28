@@ -2,11 +2,11 @@
 import { getLatestArrivals } from "../api/latest";
 import { getReviews } from "../api/reviews";
 import { useState, useEffect } from "react";
-import { Product } from "./admin-area/Products";
-import { Review } from "../pages/admin/Reviews";
-import LatestArrivalsCarousel from "../pages/user/home-components/LatestArrivalsCarousel";
-import ReviewsCarousel from "../pages/user/home-components/ReviewsCarousel";
-import LoadingSpinner from "./LoadingSpinner";
+import { Product } from "./admin/Products";
+import { Review } from "./admin/Reviews";
+import LatestArrivalsCarousel from "./user/home-components/LatestArrivalsCarousel";
+import ReviewsCarousel from "./user/home-components/ReviewsCarousel";
+import LoadingSpinner from "../components/LoadingSpinner";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useShop } from "../context";
@@ -125,7 +125,7 @@ export default function Home() {
         <div className="mt-12 m-auto w-80 md:w-full">
           <LatestArrivalsCarousel products={products} />
         </div>
-              
+
         <button onClick={() => navigate("/products")} className="h-[50px] w-[194px] font-semibold text-[22px] mt-20 btn btn-neutral rounded-none hover:opacity-80">
           SEE ALL
         </button>

@@ -1,7 +1,7 @@
 import "../../../css/carousel.css";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import { Product } from "../../../components/admin-area/Products";
+import { Product } from "../../admin/Products";
 // import { useState } from "react";
 import Slider from "react-slick";
 // import { Rating } from "react-simple-star-rating";
@@ -51,7 +51,7 @@ function RugsByProducer({ products }: { products: Product[] }) {
 
   const navigate = useNavigate();
   return (
-    <div className={`slider-container ${settings.slidesToShow > 1 ? "max-w-full" : "max-w-[20rem]"} `}>
+    <div className={`slider-container lg:max-w-full sm:max-w-[25rem] max-w-[20rem]`}>
       {products.length > 0 && (
         <Slider {...settings}>
           {products.map((product, index) => (

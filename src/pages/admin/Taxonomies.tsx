@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import sortTables from "../../utils/sortTables";
 import { toast } from "react-toastify";
 import LoadingSpinner from "../../components/LoadingSpinner";
-import { TaxonomyPopup } from "../../components/admin-area/admin-components";
+import { TaxonomyPopup } from "./admin-components";
 
 export interface iTaxonomy {
   id: number;

@@ -1,14 +1,14 @@
-import { removeFromWishlist } from "../api/wishlist";
+import { removeFromWishlist } from "../../api/wishlist";
 // import { useEffect, useState } from "react";
-import { restoreToken } from "../utils/storage";
+import { restoreToken } from "../../utils/storage";
 import { toast } from "react-toastify";
-import { useShop, useAuth } from "../context";
-import LoadingSpinner from "./LoadingSpinner";
+import { useShop, useAuth } from "../../context";
+import LoadingSpinner from "../../components/LoadingSpinner";
 import { useNavigate } from "react-router-dom";
-import { calculatePriceRange } from "../utils/miscUtils";
-import { getProductMainImageUrl } from "../utils/miscUtils";
-import { storeWishlist } from "../utils/storage";
-import { ProductCard } from "../pages/user/ProductBrowser";
+import { calculatePriceRange } from "../../utils/miscUtils";
+import { getProductMainImageUrl } from "../../utils/miscUtils";
+import { storeWishlist } from "../../utils/storage";
+import { ProductCard } from "./ProductBrowser";
 
 export default function Wishlist() {
   const { wishlist, setWishlist, shopLoading } = useShop();

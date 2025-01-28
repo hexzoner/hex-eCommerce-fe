@@ -41,7 +41,7 @@ import {
   Technqiue,
   Features,
   Rooms,
-} from "./components/admin-area/admin-components";
+} from "./pages/admin/admin-components";
 
 const router = createBrowserRouter(
   createRoutesFromElements(

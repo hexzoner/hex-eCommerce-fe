@@ -1,8 +1,9 @@
 import { getSizes } from "../../api/sizes";
 import { useState, useEffect } from "react";
-import LoadingSpinner from "../LoadingSpinner";
+
 import sortTables from "../../utils/sortTables";
 import { CreateSizeModal, SizeModal } from "./admin-components";
+import LoadingSpinner from "../../components/LoadingSpinner";
 
 export interface Size {
   id: number;
