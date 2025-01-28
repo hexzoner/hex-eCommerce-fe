@@ -1,4 +1,4 @@
-import { Product } from "../components/admin-area/Products";
+import { Product } from "../pages/admin/Products";
 
 export function truncateText(text: string, maxLength: number) {
   if (!text) return "";
