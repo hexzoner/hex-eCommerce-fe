@@ -1,4 +1,4 @@
-import { mainMakrupColors } from "../pages/user/ProductBrowser";
+import { mainMakrupColors } from "./user/ProductBrowser";
 
 export default function About() {
   return (

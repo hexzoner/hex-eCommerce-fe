@@ -1,30 +1,30 @@
 import { useParams } from "react-router-dom";
-import { getProductById } from "../api/products";
+import { getProductById } from "../../api/products";
 import { useState, useEffect } from "react";
-import LoadingSpinner from "./LoadingSpinner";
-import { LoadingSpinnerSmall } from "./admin-area/admin-components";
-import { FavIcon } from "../pages/user/ProductBrowser";
-import { useShop, useAuth } from "../context";
-import { getReviews } from "../api/reviews";
-import Pagination from "./Pagination";
+import LoadingSpinner from "../../components/LoadingSpinner";
+import { LoadingSpinnerSmall } from "../admin/admin-components";
+import { FavIcon } from "./ProductBrowser";
+import { useShop, useAuth } from "../../context";
+import { getReviews } from "../../api/reviews";
+import Pagination from "../../components/Pagination";
 import { useNavigate } from "react-router-dom";
-import { getProducts } from "../api/products";
+import { getProducts } from "../../api/products";
 // import { updateCart } from "../api/cart";
 // import { toast } from "react-toastify";
-import { NewBestSellerBadge } from "./components";
+import { NewBestSellerBadge } from "../../components/components";
 // import { formatDateShort } from "../utils/dateUtils";
 import { Rating } from "react-simple-star-rating";
-import RugsByProducer from "../pages/user/product-details-components/RugsByProducer";
-import FeaturedReviewsCarousel from "../pages/user/product-details-components/FeaturedReviewsCarousel";
-import { Review } from "../pages/admin/Reviews";
+import RugsByProducer from "./product-details-components/RugsByProducer";
+import FeaturedReviewsCarousel from "./product-details-components/FeaturedReviewsCarousel";
+import { Review } from "../admin/Reviews";
 // import { getProductMainImageUrl } from "../utils/miscUtils";
-import ImageGallery from "../pages/user/product-details-components/ImageGallery";
-import { getProductMainImageUrl } from "../utils/miscUtils";
-import ProductFAQ from "../pages/user/product-details-components/ProductFAQ";
-import { formatDateShortWithMonthName, formatDateShortNoYear } from "../utils/dateUtils";
-import shippingImg from "../assets/shipping.png"
+import ImageGallery from "./product-details-components/ImageGallery";
+import { getProductMainImageUrl } from "../../utils/miscUtils";
+import ProductFAQ from "./product-details-components/ProductFAQ";
+import { formatDateShortWithMonthName, formatDateShortNoYear } from "../../utils/dateUtils";
+import shippingImg from "../../assets/shipping.png"
 // import shippingReturnImg from "../assets/shipping-return.png"
-import shippingDateImg from "../assets/shipping-date.png"
+import shippingDateImg from "../../assets/shipping-date.png"
 
 export default function ProductDetails() {
   const { wishlist, setWishlist, addToCart, cartLoading } = useShop();
@@ -334,15 +334,15 @@ export default function ProductDetails() {
         {/* Meet the producer section */}
         <section className="max-w-[75rem] m-auto pb-16 mt-16 ">
           <p className="font-semibold text-4xl mb-6">Those who make the magic </p>
-          <div className="flex flex-wrap md:flex-nowrap gap-12">
-            <div className="w-full md:w-1/3 flex flex-col gap-4">
+          <div className="flex flex-wrap lg:flex-nowrap gap-12">
+            <div className="w-full lg:w-1/3 flex flex-col gap-4">
               <img className="rounded-none object-cover h-96 w-full" src={product.producer?.image} alt="producer image" />
               <p className="font-semibold text-2xl">Meet {product.producer?.name}</p>
               <p>{product.producer?.description}</p>
             </div>
-            <div className="md:w-2/3 ">
+            <div className="lg:w-2/3 w-full ">
               <p className="font-semibold text-2xl mt-20 pl-9">More rugs from {product.producer?.name}</p>
-              <div className="m-auto w-80 md:w-full">
+              <div className="m-auto w-80 md:w-full ">
                 <RugsByProducer products={rugsByProducer} />
               </div>
             </div>

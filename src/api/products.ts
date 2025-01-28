@@ -3,7 +3,7 @@ import axios from "axios";
 // import { Product } from "../components/admin-area/Products";
 import { toast } from "react-toastify";
 import { restoreToken } from "../utils/storage";
-import { iPattern } from "../components/admin-area/modals/CreateProductModal";
+import { iPattern } from "../pages/admin/modals/CreateProductModal";
 
 const API_URL = import.meta.env.VITE_API_URL;
 if (!API_URL) throw new Error("API URL is required, are you missing a .env file?");

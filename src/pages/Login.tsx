@@ -1,7 +1,7 @@
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { LoadingSpinner } from "./components";
+import { LoadingSpinner } from "../components/components";
 import { loginApiCall } from "../api/auth";
 // import { toast } from "react-toastify";
 import { useShop } from "../context";

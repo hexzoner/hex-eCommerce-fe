@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import sortTables from "../../utils/sortTables";
 import { getLatestArrivals } from "../../api/latest";
 import LoadingSpinner from "../../components/LoadingSpinner";
-import { ConfirmPopup, LoadingSpinnerPopup } from "../../components/admin-area/admin-components";
+import { ConfirmPopup, LoadingSpinnerPopup } from "./admin-components";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { createLatestArrival, updateLatestArrival, deleteLatestArrival } from "../../api/latest";
 import { toast } from "react-toastify";
@@ -296,7 +296,7 @@ const AddEditLatestArrival = ({
                       </div>
                     </div>
                     <div className="flex justify-start mx-0 gap-2">
-                      <button onClick={() => {}} className="btn btn-warning btn-sm ">
+                      <button onClick={() => { }} className="btn btn-warning btn-sm ">
                         Save
                       </button>
                       <button

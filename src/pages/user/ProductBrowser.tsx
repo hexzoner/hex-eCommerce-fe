@@ -2,7 +2,7 @@ export const mainMakrupColors = "bg-[#f5f6fa] text-[#363636]";
 import { getProducts } from "../../api/products";
 import { useEffect, useState } from "react";
 // import LoadingSpinner from "./LoadingSpinner";
-import { Product } from "../../components/admin-area/Products";
+import { Product } from "../admin/Products";
 // import { truncateText } from "../utils/sortTables";
 import { addToWishlist, removeFromWishlist } from "../../api/wishlist";
 import { restoreToken } from "../../utils/storage";

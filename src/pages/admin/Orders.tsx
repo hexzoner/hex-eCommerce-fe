@@ -1,11 +1,11 @@
 import { getOrders } from "../../api/orders";
 import { useState, useEffect } from "react";
 import { restoreToken } from "../../utils/storage";
-import LoadingSpinner from "../LoadingSpinner";
+import LoadingSpinner from "../../components/LoadingSpinner";
 import sortTables from "../../utils/sortTables";
 import { formatDateFull } from "../../utils/dateUtils";
 import { OrderModal } from "./admin-components";
-import Pagination from "../Pagination";
+import Pagination from "../../components/Pagination";
 import { useAuth } from "../../context";
 
 export interface iOrder {

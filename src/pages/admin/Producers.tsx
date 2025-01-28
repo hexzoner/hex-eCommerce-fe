@@ -4,7 +4,7 @@ import { getProducers } from "../../api/producers";
 import { toast } from "react-toastify";
 import LoadingSpinner from "../../components/LoadingSpinner";
 import { formatDateShort } from "../../utils/dateUtils";
-import { AddEditProducerPopup } from "../../components/admin-area/admin-components";
+import AddEditProducerPopup from "./AddEditProducerPopup";
 import { truncateText } from "../../utils/miscUtils";
 
 export interface Producer {
